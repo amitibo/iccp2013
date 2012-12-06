@@ -2,9 +2,9 @@
 
 \usepackage{iccp}
 \usepackage{times}
-\usepackage{epsfig}
 \usepackage{graphicx}
 \graphicspath{{./images/}}
+\usepackage{epstopdf}
 \usepackage{caption}
 \usepackage{subcaption}
 \usepackage{amsmath}
@@ -44,7 +44,7 @@
 \begin{document}
 
 %%%%%%%%% TITLE
-\title{Recovery of aerosol 3D distribution based on multiangular imaging: a single-scattering baseline}
+\title{Sky Tomography for 3D Aerosol Distribution Recovery}
 
 \author{Amit~Aides\\
 Electrical Engineering Dept.\\
@@ -63,12 +63,12 @@ Jet Propulsion Laboratory\\
 California Inst. Tech.\\
 CA 91011, United States\\
 {\tt\small Michael.J.Garay@jpl.nasa.gov}
-\and
-Vadim~Holodovsky\\
-Electrical Engineering Dept.\\
-Technion - Israel Inst. Tech.\\
-Haifa 32000, Israel\\
-{\tt\small vholod@tx.technion.ac.il}
+%\and
+%Vadim~Holodovsky\\
+%Electrical Engineering Dept.\\
+%Technion - Israel Inst. Tech.\\
+%Haifa 32000, Israel\\
+%{\tt\small vholod@tx.technion.ac.il}
 }
 
 \maketitle
@@ -101,6 +101,176 @@ Haifa 32000, Israel\\
 
 %%%%%%%%% BODY TEXT
 \section{Introduction}
+
+Lightfield and integral imaging~\cite{bishop,horstmeyer,levoy,kim}  samples the optical radiance distribution in location and direction. So far, this approach has mainly been used in small-scale setups. This paper deals with a huge scale, up to Earth's size.
+Notably, the atmosphere we live in allows light to pass through in multiple locations and directions. Light is affected by this medium. Therefore, in this paper we lay out a principle to recover this 3D medium using measured and modeled lightfields. Projecting this large object to various directions is similar to tomography in other scientific domains. However, the formulation is {\em different} than prior situations. Most tomography setups have a controlled and/or multidirectional radiation source~\cite{gorbunov,messer}. In contrast, our source is the uncontrolled, unidirectional Sun. Moreover, typical tomography relies on a linear model~\cite{gregson}: the pixel value is a linear combination of components along a line of sight (LOS), or a multiplicative combination which is linearized by a logarithm. This principle was used to detect a gas in a volcanic plume~\cite{wright}, which absorbs UV. Other gases in the atmosphere absorb IR. However, photographs of the atmosphere are typically dominated by {\em scattering} by particles (aerosols), rather than absorption by gasses. Thus, in contrast to common tomography, in our problem, analysis does not rely on direct illumination, but on sunlight scattered into the LOS. The model turns out to be {\em nonlinear, yet tractable}.
+
+In remote sensing~\cite{diner,kokhan}, imaging through air is associated with {\em atmospheric correction}, based on {\em aerosol retrieval}. In that discipline, the atmosphere is often assumed to be plane-parallel, for simplicity. To meet this assumption, state-of-the-art aerosol retrieval is done in distinct large lateral blocks~\cite{matronchik}, with very limited height resolution~\cite{kalashnikova}. We seek high resolution 3D recovery. Lines of thought from the computational vision and photography community may offer a fresh way to study this medium and the sensing process. In addition to active lightfield descattering~\cite{fuchs,levoy,kim} and recovery of refractive transparent objects~\cite{ihrke}, passive dehazing of ground objects was studied in horizontal, fixed views~\cite{fattal,he,kopf,kratz,narasimhan2,oakley,Hschechner2,tan}. In this paper, however, the medium itself, at all relevant altitudes is the object of interest.
+
+3D recovery of this medium has direct implications to various scientific communities that either rely on remotely-sensed imagery, study the atmosphere, or overcome the medium to see beyond. These include meteorology, atmospheric sciences, volcanology, climatology and planetary sciences. For example, retrieval of aerosols %and clouds
+is important for modeling the Earth's radiation transfer, and thus understanding climate factors and evolution~\cite{chud,dayan,kalashnikova}. Aerosol retrieval is also important for monitoring air quality. An example science that focuses of remote observations beyond the medium is oceanic biology: it relies on satellite tracking of chlorophyll distributions~\cite{chang,johnsen,levy,moses}. In such cases, accurate recovery of the atmosphere helps in {\em atmospheric correction}. Beyond Earth, several other bodies in the solar system that have atmospheres (e.g., Sun, Mars, Titan). These objects can be viewed from multiple directions by probes that orbit in solitude, orbit in synchrony with other probes, or flyby. The approach described here may be helpful there.
+
+The results are significant to {\em aviation safety}, which is tightly related to forecasting and real time sensing of the environment around flight
+paths. To keep safe, today's coarse sensing limits flight capacity. An extreme example is the 2010 volcanic eruption of Iceland's
+Eyjafjallaj$\ddot {\rm o}$kull, whose ash (aerosols) covered much of Europe's airspace, grounding $\approx 100,000$ flights during a week, affecting millions of people. Knowledge of the 3D distribution of the aerosol density might have indicated safe 3D corridors to safely pass through.
+The ability to know the conditions in 3D can thus enhance use of flight airspace, while maintaining safety.
+
+
+This work models passive optical tomographic imaging of the 3D atmospheric scatterer distribution. Then, we solve this tomography problem, to recover the distribution. Recovery is formulated as an optimization that minimizes a cost function. We derive the gradient of this cost function, to enable efficient optimization. Obtaining data for this problem is an interesting task.
+
+Sampling Earth both spatially and angularly is done by the Multiangle Imaging SpectroRadiometer (MISR)~\cite{diner,matronchik} from space (Fig.~\ref{fig:orbit}), the Airborne Multiangle SpectroPolarimetric Imager (AirMSPI)~\cite{dinerDavis07,dinerDavis10}, and other spaceborne and airborne instruments, as POLDER~\cite{baxter,breon,vanMol}. However, the spatial and angular resolution of these instruments is very coarse. We thus believe that high resolution recovery can be achieved if the sky is imaged {\em from below} by large network of ground-based cameras.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\vspace{-0.25cm}
+\section{Theoretical Background}
+\label{sec:back}
+ \vspace{-0.2cm}
+
+\noindent {\bf Extinction}:
+Let sun rays (SR) irradiate a small volume that includes particles of a certain type.
+Each particle has a {\em cross section} $\sigma$ (units ${\rm m}^2$)
+for interacting with the irradiance (extinction).  The volume includes
+many particles of this type. The denser the small volume, the stronger is the extinction.
+Let $A$ be the density of the particles (units $1/{\rm m}^3$). Per unit volume, the {\em extinction coefficient} $\beta$ (units $1/{\rm m}$)
+is thus given by
+\begin{align}
+  \beta= \sigma A
+  \;.
+  \label{eq:extinctc}
+\end{align}
+Suppose the volume has infinitesimal length $dl$. Then, the relative portion of extinct SR irradiance is
+the unitless differential {\em optical depth}
+\begin{align}
+  d\tau= \beta dl=\sigma A dl
+  \;.
+  \label{eq:extinct}
+\end{align}
+If the SR propagates in an extended volume, the optical depth aggregates:
+\begin{align}
+  \tau= \int d\tau=\int \sigma A dl
+  \;.
+  \label{eq:tau}
+\end{align}
+Through an attenuating volume, the {\em transmittance} exponentially decays with the optical depth:
+\begin{align}
+  t=\exp^{-\tau}
+  \label{eq:beer-lambert}
+\end{align}
+
+
+\noindent {\bf Scattering}: The interaction (extinction) of a single particle with the irradiance
+can be in the form of either absorption or scattering. The weight of scattering (to all directions), relative to the total extinction is given the unitless {\em single scattering albedo} $\varpi$ of the particle.
+Per unit volume, the {\em scattering coefficient} $\alpha$ (units $1/{\rm m}$)
+is thus given by
+\begin{align}
+  \alpha= \varpi\beta=\varpi \sigma A
+  \;.
+  \label{eq:alph}
+\end{align}
+Scattering is generally anisotropic. The angular distribution of scattering is determined by
+a {\em phase function} $P$. Part of the light scatters towards a camera's line of sight (LOS), as illustrated in
+Fig.~\ref{fig:settings}. The angle between the SR and LOS is the scattering angle $\Phi^{\rm scatter}$. The phase function
+$P(\Phi^{\rm scatter})$ is normalized: its integral over all solid angles is unit. The {\em angular scattering coefficient}
+$\tilde\alpha$ has (units $1/({\rm m}\cdot{{\rm strad}}$), and it is given by
+\begin{align}
+  \tilde\alpha(\Phi^{\rm scatter}) = \varpi\beta P(\Phi^{\rm scatter}) = \varpi \sigma A P(\Phi^{\rm scatter}).  \label{eq:alphabasic}
+\end{align}
+
+The phase function is often approximated by a parametric approximation. A common approximation is
+the Henyey-Greenstein function,
+\begin{align}
+  P(\Phi^{\rm scatter})\approx
+   \frac{3} {8\pi}
+   \frac{(1 - g^2)(1+\mu^2)}
+        {(2+g^2)(1 + g^2 - 2g\mu)^\frac{3}{2}}
+  \label{eq:aerosol_scatter}
+\end{align}
+where $g$ is the {\em anisotropy parameter} and
+\begin{align}
+  \mu\equiv \cos \Phi^{\rm scatter}.
+\end{align}
+
+\noindent {\bf Air molecules}: Molecules are much smaller than the light wavelength $\lambda$. Then, scattering is modeled by the {\em Rayleigh} model: the phase function is
+\begin{align}
+  P^{\rm air}\left[\mu(k)\right] &= \frac{3}{16\pi}(1+\mu^2)
+  \label{eq:rayleighP}
+\end{align}
+and $\varpi^{\rm air}$=1. Air molecular density $A^{\rm air}$ falls off approximately exponentially with altitude, with
+a characteristic~\cite{Levi1980} falloff height $H^\mathrm{air}=8\ km$. Consequently~\cite{Levi1980},
+the coefficients for extinction and scattering by air molecules are modeled by
+\begin{align}
+  \alpha^{\rm air}(h, \lambda)=\beta^{\rm air}(h, \lambda) 
+  \approxeq 1.09 \times 10^{-3}
+  \frac{1}{\lambda^4}\exp^{-\frac{h}{H^\mathrm{air}}}.
+  \label{eq:rayleighbeta}
+\end{align}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\vspace{-0.25cm}
+\section{Forward Model}
+\label{sec:skymodel} \vspace{-0.2cm}
+
+Consider Fig.~\ref{fig:groundgrid}. In addition to air molecules, the atmosphere has a non-uniform distribution of scattering aerosols. We seek to recover this 3D volumetric distribution. To solve this problem, we formulate a process analogous to tomographic reconstruction. The scene is projected to multiple directions. Thus, a system captures integrated radiance as a function of direction and 2D projected location. Any voxel in the atmosphere contributes to the integrated radiance in multiple directional measurements. The measurements then provide a large number of constraints, to recover the distribution: the density and type of aerosols, per voxel. In the following, we first describe models for image formation. Then, we describe how the image formation is inverted to recover the 3D sky structure.
+
+Fig.~\ref{fig:groundgrid} shows another possible source for multi-angular imaging through this medium: a set of ground-based wide-angle sky-cameras, looking upwards and capturing the sky lightfield. The location on the surface is ${\bf x}=(x,y)$. Per viewpoint, the view azimuth and elevation angles (relative to the zenith and north) are encapsulated in the vector ${\bf{\Theta}}$.  A raw image is $i_{\bf x}({\bf{\Theta}})$: the ground location is fixed per frame, while any pixel in a frame represents an angle ${\bf{\Theta}}$.
+
+Sunlight is scattered in the medium along the LOS, creating {\em airlight}~\cite{fattal,narasimhan2,Hschechner2,tan}. For each view ${\bf{\Theta}}$ and ground location ${\bf x}$, the airlight is generally different, depending on the distribution of aerosols both along the LOS, and the along the sun-rays (SRs) that hit the LOS.
+As Fig.~\ref{fig:groundgrid} shows, for different ${\bf x}$ and ${\bf{\Theta}}$, the LOS cuts through a different set of voxels in the atmosphere. Thus, for each view, the radiance scattered from a voxel is attenuated differently, depending on the distribution of aerosols along the LOS~\cite{hansen}.
+
+Given a scene, the measured radiance for all locations ${\bf x}$ and angles ${\bf{\Theta}}$ is a four dimensional {\em lightfield} $I({\bf x},{\bf{\Theta}})$. Individual images are slices of the lightfield. A typical raw image is $i_{\bf x}({\bf{\Theta}})$: the ground location is fixed per frame, while any pixel in a frame represents an angle ${\bf{\Theta}}$.
+The cameras may be static in a network of fixed nodes.
+ %Alternatively, several ground-based cameras can be mounted on moving vehicles, assuming that the aerosol distribution does not change much during the time-lapse of the camera trajectory.
+\begin{figure*}[b!]
+   \begin{center}
+\vspace{-0.4cm}
+    \includegraphics[width=0.99\linewidth]{groundtomog6.eps}
+    \end{center}\vspace{-1.5cm}
+    \caption{\small
+    Lightfield imaging through a volumetric distribution in
+    the atmosphere, using ground-based cameras. Our tomographic reconstruction
+    follows the acquisition. Irrespective of imaging from space or land, this figure represents the atmosphere in a non-parametric structure, yet the voxel grid gets coarser with altitude, expressing a prior about natural regularity.}
+   \label{fig:groundgrid}
+\end{figure*}
+
+A forward model calculates the image captured by each camera.
+Its input is the aerosol distribution, and it calculates radiative
+transfer. Under single-scattering approximation, this transfer has three steps (Fig.~\ref{fig:settings}):
+\begin{enumerate}
+\item Sun ray (SR) attenuation, as it propagates from the top of the atmosphere
+  (TOA) to voxel $k$.
+\item Light scattering at voxel $k$, towards a camera.
+\item LOS attenuation, as light propagaes from voxel $k$ to the camera.
+\end{enumerate}
+Steps 1 and 3 calculates the optical depth
+along the light path to and from voxel $k$. This is described in Sec.~\ref{sec:optical-depth}.
+Step 2 calculates the scattering coefficient at voxel $k$,
+as described in Sec.~\ref{sec:scattering}.
+
+The light transfer, $\mathrm{t}(k)$, is calculated per scattering at
+each voxel $k$.  Let the Sun irradiance at the TOA be $\mathrm{L}^{\rm
+  TOA}$.  The overall transmittance multiplied by $\mathrm{L}^{\rm
+  TOA}$ yields the radiance sensed by the camera. The sum of
+contributions from all voxels is the image captured by the camera,
+\begin{align}
+  \mathrm{I}_{\rm camera}=\mathrm{L}^{\rm TOA} \sum_k \mathrm{t}(k).
+  \label{eq:transatsensor}
+\end{align}
+
+\begin{figure}
+  \centering \def\svgwidth{0.8\columnwidth}
+  \input{images/atmo_settings.pdf_tex}
+  \caption[Settings of the atmosphere simulation]{Settings for the
+    atmosphere simulation.}
+  \label{fig:settings}
+\end{figure}
+
+
 
 
 \begin{figure}
@@ -144,109 +314,8 @@ measuring $\mathrm{t}$ from multiple viewpoints.
   \label{fig:beer_lambert}
 \end{figure}
 
-\section{Forward Model}
-\label{sec:forward-model}
 
-The forward model calculates the image captured by the camera sensor.
-It takes as input the aerosol distribution in the atmosphere and
-calculates the transfer of light from the Sun to the camera.  The
-image formation model is implemented using operators. This
-implementation simplifies solutions for the inverse problem
-(Sec.~\ref{sec:inverse-problem}).
 
-\subsection{Settings}
-\label{sec:settings}
-
-Light transfer can be factored into three steps
-(Fig.~\ref{fig:settings}):
-\begin{enumerate}
-\item Attenuation of light from the top of the atmosphere (TOA) to
-  voxel $k$.
-\item Scattering of light at voxel $k$ in the direction of the camera.
-\item Attenuation of light from voxel $k$ to the camera.
-\end{enumerate}
-The first and last steps involve calculation of the optical depth
-along the light path to and from voxel $k$. The calculation of the
-optical depth is described in Sec.~\ref{sec:optical-depth}. The second
-step involves calculation of the scattering coefficient at voxel $k$,
-as described in Sec.~\ref{sec:scattering}.
-
-The light transfer, $\mathrm{t}(k)$, is calculated per scattering at
-each voxel $k$.  Let the Sun irradiance at the TOA be $\mathrm{L}^{\rm
-  TOA}$.  The overall transmittance multiplied by $\mathrm{L}^{\rm
-  TOA}$ yields the radiance sensed by the camera. The sum of
-contributions from all voxels is the image captured by the camera,
-\begin{align}
-  \mathrm{I}_{\rm camera}=\mathrm{L}^{\rm TOA} \sum_k \mathrm{t}(k).
-  \label{eq:transatsensor}
-\end{align}
-
-\begin{figure}
-  \centering \def\svgwidth{0.8\columnwidth}
-  \input{images/atmo_settings.pdf_tex}
-  \caption[Settings of the atmosphere simulation]{Settings for the
-    atmosphere simulation.}
-  \label{fig:settings}
-\end{figure}
-
-\subsection{Scattering}
-\label{sec:scattering}
-
-Let $\Phi^{\rm scatter}$ be the angle between the Sun ray and the
-camera's line of sight (LOS), as illustrated in
-Fig.~\ref{fig:settings}. For simplicity we use,
-\begin{align}
-  \mu=\cos \Phi^{\rm scatter}.
-\end{align}
-
-At each voxel, the amount of scattered light depends on the scattering
-coefficient $\beta$ and a phase function $P(\mu)$. Let $h$ be the
-altitude and $\lambda$ the wavelength. For air molecules we use the
-\textit{Rayleigh} scattering model. Thus, the phase function and the
-scattering coefficient are respectively,
-\begin{align}
-  P^{\rm air}\left[\mu(k)\right] &= \frac{3}{16\pi}\left[1+\mu^2(k)\right] \nonumber \\
-  \beta^{\rm air}(h, \lambda) &=
-  \frac{8\pi^3(n^2-1)^2}{3\mat{A}^{\rm air}_{h=0}\lambda^4}\exp^{-\frac{h}{H^\mathrm{air}}} \nonumber \\
-  &\approxeq 1.09 \times 10^{-3}
-  \frac{1}{\lambda^4}\exp^{-\frac{h}{H^\mathrm{air}}},
-  \label{eq:rayleigh}
-\end{align}
-here $n$ is the refractive index of the particles in the air, $\mat{A}^{\rm air}_{h=0}$ the molecular density of air at sea level, and
-$H^\mathrm{air}=8\ km$ is the characteristic thickness of the
-atmosphere~\cite{Levi1980}.  .
-
-For scattering caused by aerosols, the phase function is approximated
-by the Henyey-Greenstein equation,
-\begin{align}
-  P^{\rm aerosol}\left[\mu(k)\right] &= \frac{3}{8\pi}\frac{(1 -
-    g^2)\left[1+\mu^2(k)\right]}{(2+g^2)\left[1 + g^2 -
-      2g\mu(k)\right]^\frac{3}{2}}
-  \label{eq:aerosol_scatter}
-\end{align}
-where $g$ parameterizes the radial asymmetry of the scattering.  Let
-$\sigma^{\rm aerosol}$ be an aerosol's cross section and $\varpi$ its
-single scattering albedo, i.e. the relative part of scattering in the
-extinction coefficient. Let $A^{\rm aerosol}(k)$ be the density of
-aerosols at voxel $k$. The scattering coefficient of the aerosol is
-given by
-\begin{align}
-  \beta^{\rm aerosol}(k) &= \varpi \sigma^{\rm aerosol} A^{\rm
-    aerosol}(k)
-  \label{eq:aerosol_extinct}
-\end{align}
-
-Given (\ref{eq:rayleigh},~\ref{eq:aerosol_scatter}) and
-(\ref{eq:aerosol_extinct}) it is possible to calculate the ratio
-between the irradiance at voxel $k$ and the radiance scattering in the
-direction of the camera. The ratios for aerosols and air,
-respectively, are given by,
-\begin{align}
-  \alpha^{\rm aerosol}(k) &= \beta^{\rm aerosol}(k) P^{\rm aerosol}\left[\mu(k)\right] \nonumber \\
-  \alpha^{\rm air}(k) &= \beta^{\rm air}\left[h(k), \lambda \right]
-  P^{\rm air}\left[\mu(k)\right].
-  \label{eq:alpha}
-\end{align}
 
 \noindent Using vector notation, Eq.~(\ref{eq:alpha}) becomes,
 \begin{align}
