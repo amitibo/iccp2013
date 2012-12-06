@@ -4,13 +4,39 @@
 \usepackage{times}
 \usepackage{epsfig}
 \usepackage{graphicx}
+\graphicspath{{./images/}}
+\usepackage{caption}
+\usepackage{subcaption}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{url}
+\usepackage{bm}
+\usepackage{enumerate}
+
+%
+% Some new commands I use in this text
+%
+\newcommand{\OpSphere}{\bm{\mathcal{S}}}
+\newcommand{\OpRot}{\bm{\mathcal{R}}}
+\newcommand{\OpDistance}{\bm{\mathcal{D}}}
+\newcommand{\OpCumsum}{\bm{\mathcal{C}}}
+\newcommand{\OpInt}{\bm{\mathcal{I}}}
+\newcommand{\OpCamera}{\bm{\mathcal{P}}}
+\newcommand{\OpDiag}[1]{\mathrm{diag}\left\{#1\right\}}
+\newcommand{\Grad}[1]{\bm{\triangledown_{#1}}}
+\newcommand{\argmin}{\mathrm{arg}\min}
+\newcommand{\curly}[1]{\left\{#1\right\}}
+\newcommand{\roundy}[1]{\left(#1\right)}
+\newcommand{\recty}[1]{\left[#1\right]}
+\newcommand{\PartDeriv}[2]{\frac{\partial{#1}}{\partial{#2}}}
+\newcommand{\vect}[1]{\bm{#1}}
+\newcommand{\mat}[1]{\bm{#1}}
+\newcommand{\transpose}[1]{{#1}^\intercal}
+\newcommand{\derivsym}[1]{\,d{#1}}
 
 %\iccpfinalcopy % *** Uncomment this line for the final submission
 
-\def\iccpPaperID{****} % *** Enter the ICCP Paper ID here
+\def\iccpPaperID{19} % *** Enter the ICCP Paper ID here
 \def\httilde{\mbox{\tt\raisebox{-.5ex}{\symbol{126}}}}
 
 % Pages are numbered in submission mode, and unnumbered in camera-ready
@@ -18,22 +44,31 @@
 \begin{document}
 
 %%%%%%%%% TITLE
-\title{\LaTeX\ Author Guidelines for ICCP Proceedings}
+\title{Recovery of aerosol 3D distribution based on multiangular imaging: a single-scattering baseline}
 
-\author{First Author\\
-Institution1\\
-Institution1 address\\
-{\tt\small firstauthor@i1.org}
-% For a paper whose authors are all at the same institution,
-% omit the following lines up until the closing ``}''.
-% Additional authors and addresses can be added with ``\and'',
-% just like the second author.
-% To save space, use either the email address or home page, not both
-\and
-Second Author\\
-Institution2\\
-First line of institution2 address\\
-{\small\url{http://www.author.org/~second}}
+\author{Amit~Aides\\
+Electrical Engineering Dept.\\
+Technion - Israel Inst. Tech.\\
+Haifa 32000, Israel\\
+{\tt\small amitibo@tx.technion.ac.il}
+\and 
+Yoav~Y.~Schechner\\
+Electrical Engineering Dept.\\
+Technion - Israel Inst. Tech.\\
+Haifa 32000, Israel\\
+{\tt\small yoav@ee.technion.ac.il}
+\and 
+Michael~J.~Garay\\
+Jet Propulsion Laboratory\\
+California Inst. Tech.\\
+CA 91011, United States\\
+{\tt\small Michael.J.Garay@jpl.nasa.gov}
+\and 
+Vadim~Holodovsky\\
+Electrical Engineering Dept.\\
+Technion - Israel Inst. Tech.\\
+Haifa 32000, Israel\\
+{\tt\small vholod@tx.technion.ac.il}
 }
 
 \maketitle
@@ -41,374 +76,611 @@ First line of institution2 address\\
 
 %%%%%%%%% ABSTRACT
 \begin{abstract}
-   The ABSTRACT is to be in fully-justified italicized text, at the top
-   of the left-hand column, below the author and affiliation
-   information. Use the word ``Abstract'' as the title, in 12-point
-   Times, boldface type, centered relative to the column, initially
-   capitalized. The abstract is to be in 10-point, single-spaced type.
-   Leave two blank lines after the Abstract, then begin the main text.
-   Look at previous ICCP abstracts to get a feel for style and length.
+  Aerosols, have an important effect on the earth's climate and the
+  health of its inhabitants. Nowadays, measurements of atmospheric
+  aerosols concentrations is mainly based on spaceborne multi-angular
+  hardware as MISR. These methods are usually limited to a layered
+  distribution model. We propose a method that has the following
+  benefits: it is low cost, and enables 3D recovery of a general
+  aerosol distribution over a large area.  To achieve this in a robust
+  manner, we use a dense, redundant set of multi-angle images. The
+  images are obtained using simple cameras having a wide field of
+  view.
+
+  In this work part we first develop an image formation model which
+  assumes single-scattering transfer.  Our model enables simulation of
+  generally distributed concentrations of aerosols.  We assess the
+  validity of the model by also simulating multiple scattering. This
+  is done using Monte-Carlo runs.  This reveals the theoretical
+  justification and possible limitations to the suggested assumptions.
+  Then we show how to use this model to solve the inverse problem:
+  given a set of multiangular images, calculate the volumetric aerosol
+  distribution.  This is done using optimization methods, exploiting a
+  closed-form gradient of a model-fit cost function.
 \end{abstract}
 
 %%%%%%%%% BODY TEXT
 \section{Introduction}
 
-Please follow the steps outlined below when submitting your manuscript to
-the IEEE Computer Society Press.  This style guide now has several
-important modifications (for example, you are no longer warned against the
-use of sticky tape to attach your artwork to the paper), so all authors
-should read this new version.
 
-%-------------------------------------------------------------------------
-\subsection{Language}
+\begin{figure}
+  \centering 
+    \includegraphics[width=\columnwidth]{images/front.png}
+    \caption{Reconstruction of a synthetic aerosol distibution.}
+  \label{fig:front}
+\end{figure}
+In this work part we simulate light transfer through the atmosphere,
+according to the single scattering model, as described
+in~\cite{Levi1980}. In the single scattering model, light that travels
+from the Sun to the viewer scatters only once either by air molecules
+or by aerosols. We also assume that light travelling through the
+atmosphere is attenuated according to the {\em Beer-Lambert} law
+(Fig.~\ref{fig:beer_lambert}),
+\begin{align}
+  \mathrm{t}(l)=\exp^{-\sigma \int_{0}^l
+    A(\acute{l})\derivsym{\acute{l}}}
+  \label{eq:beer-lambert}
+\end{align}
+where $\mathrm{t}$ is the transmittance of the atmosphere and $\sigma$
+is the cross section of light exctinction by a single particle. Here
+$l$ is the path along which the light travels and $A(l)$ is the
+density (number per unit volume) of attenuating particles. The optical
+depth is,
+\begin{align}
+  \tau = \sigma \int_{0}^l A(\acute{l})\derivsym{\acute{l}}
+  \label{eq:tau_definition}
+\end{align}
 
-All manuscripts must be in English.
+A forward model (Sec.~\ref{sec:forward-model}) calculates $\mathrm{t}$
+based on known $\sigma$ and $A$. The inverse problem
+(Sec.~\ref{sec:inverse-problem}) seeks $\sigma$ and $A$ based on
+measuring $\mathrm{t}$ from multiple viewpoints.
 
-\subsection{Dual submission}
-
-By submitting this manuscript to ICCP, the authors assert that it is not currently under review, published, or accepted to be published, in a substantially similar form. It is possible to submit a manuscript which contains a subset of material from a journal paper if during the review period of ICCP, two conditions are satisfied: (1)~the journal paper is unpublished and (2)~author anonymity is conserved.
-If you are in doubt about the amount of overlap with another submission (or any other paper), cite the dual submission (as described below), and argue in the body of your paper why this is a nontrivial advance.
-
-The program committee may cancel submission of any paper which is found to violate these conditions. You may contact the Program Chairs with a question about your particular case, ahead of submission.
-
-There may be papers under review or pre-publication that may appear to ICCP reviewers to be a dual submission and thus in violation of the policy above. It is the responsibility of the authors to alleviate the concerns of the Program Committee by being open about this and taking the following steps: (1)~cite the papers, while preserving anonymity as described in Section
- ~\ref{sec:blindreview} below, (2)~argue in the body of your paper why your ICCP paper is non-trivially different from these concurrent submissions, as you would argue in relation to any other paper which is not written by you, and (3)~include in the supplemental material anonymized versions of those unpublished documents.
-
-We clarify that work that appears (past or future) merely as an abstract in a conference proceeding or a seminar is {\em not} considered a dual submission, since it is not a fully reviewed publication in those forums.
-
-\subsection{Paper length}
-
-A typical paper length in ICCP has been 6-8 pages (double column). This is a rough guideline for papers submitted to ICCP 2013. However, there is no arbitrary strict maximum length imposed on ICCP 2013 papers. Reviewers will be instructed to weigh the contribution of a paper relative to its length.
-
-Please be considerate of the reviewers' time when your paper draft is long. As in the past, we recommend the use of supplementary material in the submission. The supplementary material can include an auxiliary document that shows additional derivations, figures and details, that are not essential to understanding the paper, and that the reviewer is not committed to read. This division will focus the reviewer on the main message in your paper, while allowing the reviewer to look at further details and  clarifications in the supplementary material (cited from the main paper), should he or she want to.
-
-%-------------------------------------------------------------------------
-\subsection{The ruler}
-The \LaTeX\ style defines a printed ruler which should be present in the
-version submitted for review.  The ruler is provided in order that
-reviewers may comment on particular lines in the paper without
-circumlocution.  If you are preparing a document using a non-\LaTeX\
-document preparation system, please arrange for an equivalent ruler to
-appear on the final output pages.  The presence or absence of the ruler
-should not change the appearance of any other content on the page.  The
-camera ready copy should not contain a ruler. (\LaTeX\ users may uncomment
-the \verb'\iccpfinalcopy' command in the document preamble.)  Reviewers:
-note that the ruler measurements do not align well with lines in the paper
---- this turns out to be very difficult to do well when the paper contains
-many figures and equations, and, when done, looks ugly.  Just use fractional
-references (e.g.\ this line is $095.5$), although in most cases one would
-expect that the approximate location will be adequate.
-
-\subsection{Mathematics}
-
-Please number all of your sections and displayed equations.  It is
-important for readers to be able to refer to any particular equation.  Just
-because you didn't refer to it in the text doesn't mean some future reader
-might not need to refer to it.  It is cumbersome to have to use
-circumlocutions like ``the equation second from the top of page 3 column
-1''.  (Note that the ruler will not be present in the final copy, so is not
-an alternative to equation numbers).  All authors will benefit from reading
-Mermin's description of how to write mathematics: \url{http://www.cvpr.org/doc/mermin.pdf}.
-
-
-\subsection{Blind review}
-\label{sec:blindreview}
-Many authors misunderstand the concept of anonymizing for blind
-review.  Blind review does not mean that one must remove
-citations to one's own work---in fact it is often impossible to
-review a paper unless the previous citations are known and
-available.
-
-Blind review means that you do not use the words ``my'' or ``our''
-when citing previous work.  That is all.  (But see below for
-techreports)
-
-Saying ``this builds on the work of Lucy Smith [1]'' does not say
-that you are Lucy Smith, it says that you are building on her
-work.  If you are Smith and Jones, do not say ``as we show in
-[7]'', say ``as Smith and Jones show in [7]'' and at the end of the
-paper, include reference 7 as you would any other cited work.
-
-An example of a bad paper:
-\begin{quote}
-\begin{center}
-    An analysis of the frobnicatable foo filter.
-\end{center}
-
-   In this paper we present a performance analysis of our
-   previous paper [1], and show it to be inferior to all
-   previously known methods.  Why the previous paper was
-   accepted without this analysis is beyond me.
-
-   [1] Removed for blind review
-\end{quote}
-
-
-An example of an excellent paper:
-
-\begin{quote}
-\begin{center}
-     An analysis of the frobnicatable foo filter.
-\end{center}
-
-   In this paper we present a performance analysis of the
-   paper of Smith \etal [1], and show it to be inferior to
-   all previously known methods.  Why the previous paper
-   was accepted without this analysis is beyond me.
-
-   [1] Smith, L and Jones, C. ``The frobnicatable foo
-   filter, a fundamental contribution to human knowledge''.
-   Nature 381(12), 1-213.
-\end{quote}
-
-If you are making a submission to another conference at the same time,
-which covers similar or overlapping material, you may need to refer to that
-submission in order to explain the differences, just as you would if you
-had previously published related work.  In such cases, include the
-anonymized parallel submission~\cite{Authors06} as additional material and
-cite it as
-\begin{quote}
-[1] Authors. ``The frobnicatable foo filter'', ECCV 2006 Submission ID 324,
-Supplied as additional material {\tt eccv06.pdf}.
-\end{quote}
-
-Finally, you may feel you need to tell the reader that more details can be
-found elsewhere, and refer them to a technical report.  For conference
-submissions, the paper must stand on its own, and not {\em require} the
-reviewer to go to a techreport for further details.  Thus, you may say in
-the body of the paper ``further details may be found
-in~\cite{Authors06b}''.  Then submit the techreport as additional material.
-Again, you may not assume the reviewers will read this material.
-
-Sometimes your paper is about a problem which you tested using a tool which
-is widely known to be restricted to a single institution.  For example,
-let's say it's 1969, you have solved a key problem on the Apollo lander,
-and you believe that the ICCP70 audience would like to hear about your
-solution.  The work is a development of your celebrated 1968 paper entitled
-``Zero-g frobnication: How being the only people in the world with access to
-the Apollo lander source code makes us a wow at parties'', by Zeus \etal.
-
-You can handle this paper like any other.  Don't write ``We show how to
-improve our previous work [Anonymous, 1968].  This time we tested the
-algorithm on a lunar lander [name of lander removed for blind review]''.
-That would be silly, and would immediately identify the authors. Instead
-write the following:
-\begin{quotation}
-\noindent
-   We describe a system for zero-g frobnication.  This
-   system is new because it handles the following cases:
-   A, B.  Previous systems [Zeus et al. 1968] didn't
-   handle case B properly.  Ours handles it by including
-   a foo term in the bar integral.
-
-   ...
-
-   The proposed system was integrated with the Apollo
-   lunar lander, and went all the way to the moon, don't
-   you know.  It displayed the following behaviours
-   which show how well we solved cases A and B: ...
-\end{quotation}
-As you can see, the above text follows standard scientific convention,
-reads better than the first version, and does not explicitly name you as
-the authors.  A reviewer might think it likely that the new paper was
-written by Zeus \etal, but cannot make any decision based on that guess.
-He or she would have to be sure that no other authors could have been
-contracted to solve problem B.
-
-FAQ: Are acknowledgements OK?  No.  Leave them for the final copy.
-
-
-\begin{figure}[t]
-\begin{center}
-\fbox{\rule{0pt}{2in} \rule{0.9\linewidth}{0pt}}
-   %\includegraphics[width=0.8\linewidth]{egfigure.eps}
-\end{center}
-   \caption{Example of caption.  It is set in Roman so that mathematics
-   (always set in Roman: $B \sin A = A \sin B$) may be included without an
-   ugly clash.}
-\label{fig:long}
-\label{fig:onecol}
+\begin{figure}
+  \centering \def\svgwidth{0.4\columnwidth}
+  \input{images/beer_lambert.pdf_tex}
+  \caption{\emph{Beer-Lambert} law for a homogeneous medium made of
+    particles with exctinction cross section $sigma$ and density $N$.}
+  \label{fig:beer_lambert}
 \end{figure}
 
-\subsection{Miscellaneous}
+\section{Forward Model}
+\label{sec:forward-model}
 
-\noindent
-Compare the following:\\
-\begin{tabular}{ll}
- \verb'$conf_a$' &  $conf_a$ \\
- \verb'$\mathit{conf}_a$' & $\mathit{conf}_a$
-\end{tabular}\\
-See The \TeX book, p165.
+The forward model calculates the image captured by the camera sensor.
+It takes as input the aerosol distribution in the atmosphere and
+calculates the transfer of light from the Sun to the camera.  The
+image formation model is implemented using operators. This
+implementation simplifies solutions for the inverse problem
+(Sec.~\ref{sec:inverse-problem}).
 
-The space after \eg, meaning ``for example'', should not be a
-sentence-ending space. So \eg is correct, {\em e.g.} is not.  The provided
-\verb'\eg' macro takes care of this.
+\subsection{Settings}
+\label{sec:settings}
 
-When citing a multi-author paper, you may save space by using ``et alia'',
-shortened to ``\etal'' (not ``{\em et.\ al.}'' as ``{\em et}'' is a complete word.)
-However, use it only when there are three or more authors.  Thus, the
-following is correct: ``
-   Frobnication has been trendy lately.
-   It was introduced by Alpher~\cite{Alpher02}, and subsequently developed by
-   Alpher and Fotheringham-Smythe~\cite{Alpher03}, and Alpher \etal~\cite{Alpher04}.''
+Light transfer can be factored into three steps
+(Fig.~\ref{fig:settings}):
+\begin{enumerate}
+\item Attenuation of light from the top of the atmosphere (TOA) to
+  voxel $k$.
+\item Scattering of light at voxel $k$ in the direction of the camera.
+\item Attenuation of light from voxel $k$ to the camera.
+\end{enumerate}
+The first and last steps involve calculation of the optical depth
+along the light path to and from voxel $k$. The calculation of the
+optical depth is described in Sec.~\ref{sec:optical-depth}. The second
+step involves calculation of the scattering coefficient at voxel $k$,
+as described in Sec.~\ref{sec:scattering}.
 
-This is incorrect: ``... subsequently developed by Alpher \etal~\cite{Alpher03} ...''
-because reference~\cite{Alpher03} has just two authors.  If you use the
-\verb'\etal' macro provided, then you need not worry about double periods
-when used at the end of a sentence as in Alpher \etal.
+The light transfer, $\mathrm{t}(k)$, is calculated per scattering at
+each voxel $k$.  Let the Sun irradiance at the TOA be $\mathrm{L}^{\rm
+  TOA}$.  The overall transmittance multiplied by $\mathrm{L}^{\rm
+  TOA}$ yields the radiance sensed by the camera. The sum of
+contributions from all voxels is the image captured by the camera,
+\begin{align}
+  \mathrm{I}_{\rm camera}=\mathrm{L}^{\rm TOA} \sum_k \mathrm{t}(k).
+  \label{eq:transatsensor}
+\end{align}
 
-For this citation style, keep multiple citations in numerical (not
-chronological) order, so prefer \cite{Alpher03,Alpher02,Authors06} to
-\cite{Alpher02,Alpher03,Authors06}.
+\begin{figure}
+  \centering \def\svgwidth{0.8\columnwidth}
+  \input{images/atmo_settings.pdf_tex}
+  \caption[Settings of the atmosphere simulation]{Settings for the
+    atmosphere simulation.}
+  \label{fig:settings}
+\end{figure}
+
+\subsection{Scattering}
+\label{sec:scattering}
+
+Let $\Phi^{\rm scatter}$ be the angle between the Sun ray and the
+camera's line of sight (LOS), as illustrated in
+Fig.~\ref{fig:settings}. For simplicity we use,
+\begin{align}
+  \mu=\cos \Phi^{\rm scatter}.
+\end{align}
+
+At each voxel, the amount of scattered light depends on the scattering
+coefficient $\beta$ and a phase function $P(\mu)$. Let $h$ be the
+altitude and $\lambda$ the wavelength. For air molecules we use the
+\textit{Rayleigh} scattering model. Thus, the phase function and the
+scattering coefficient are respectively,
+\begin{align}
+  P^{\rm air}\left[\mu(k)\right] &= \frac{3}{16\pi}\left[1+\mu^2(k)\right] \nonumber \\
+  \beta^{\rm air}(h, \lambda) &=
+  \frac{8\pi^3(n^2-1)^2}{3\mat{A}^{\rm air}_{h=0}\lambda^4}\exp^{-\frac{h}{H^\mathrm{air}}} \nonumber \\
+  &\approxeq 1.09 \times 10^{-3}
+  \frac{1}{\lambda^4}\exp^{-\frac{h}{H^\mathrm{air}}},
+  \label{eq:rayleigh}
+\end{align}
+here $n$ is the refractive index of the particles in the air, $\mat{A}^{\rm air}_{h=0}$ the molecular density of air at sea level, and
+$H^\mathrm{air}=8\ km$ is the characteristic thickness of the
+atmosphere~\cite{Levi1980}.  .
+
+For scattering caused by aerosols, the phase function is approximated
+by the Henyey-Greenstein equation,
+\begin{align}
+  P^{\rm aerosol}\left[\mu(k)\right] &= \frac{3}{8\pi}\frac{(1 -
+    g^2)\left[1+\mu^2(k)\right]}{(2+g^2)\left[1 + g^2 -
+      2g\mu(k)\right]^\frac{3}{2}}
+  \label{eq:aerosol_scatter}
+\end{align}
+where $g$ parameterizes the radial asymmetry of the scattering.  Let
+$\sigma^{\rm aerosol}$ be an aerosol's cross section and $\varpi$ its
+single scattering albedo, i.e. the relative part of scattering in the
+extinction coefficient. Let $A^{\rm aerosol}(k)$ be the density of
+aerosols at voxel $k$. The scattering coefficient of the aerosol is
+given by
+\begin{align}
+  \beta^{\rm aerosol}(k) &= \varpi \sigma^{\rm aerosol} A^{\rm
+    aerosol}(k)
+  \label{eq:aerosol_extinct}
+\end{align}
+
+Given (\ref{eq:rayleigh},~\ref{eq:aerosol_scatter}) and
+(\ref{eq:aerosol_extinct}) it is possible to calculate the ratio
+between the irradiance at voxel $k$ and the radiance scattering in the
+direction of the camera. The ratios for aerosols and air,
+respectively, are given by,
+\begin{align}
+  \alpha^{\rm aerosol}(k) &= \beta^{\rm aerosol}(k) P^{\rm aerosol}\left[\mu(k)\right] \nonumber \\
+  \alpha^{\rm air}(k) &= \beta^{\rm air}\left[h(k), \lambda \right]
+  P^{\rm air}\left[\mu(k)\right].
+  \label{eq:alpha}
+\end{align}
+
+\noindent Using vector notation, Eq.~(\ref{eq:alpha}) becomes,
+\begin{align}
+  \vect{\alpha}^{\rm aerosol} &= \varpi \sigma^{\rm aerosol}
+  \mat{A}^{\rm
+    aerosol} \odot P^{\rm aerosol}(\vect{\mu}) \nonumber \\
+  \vect{\alpha}^{\rm air} &= \vect{\beta}^{\rm air}_{\lambda} \odot
+  P^{\rm air}(\vect{\mu}),
+  \label{eq:alpha_matrix}
+\end{align}
+where the operator $\odot$ denotes the Hadamard (element-wise)
+product.
+
+\subsection{Optical Depth}
+\label{sec:optical-depth}
+
+We calculate the atmosphere transmittance that affects the radiance
+scattered by voxel $k$.  The first step in this calculation is
+derivation of the optical depth from the TOA to voxel $k$ \emph{and}
+from the voxel to the camera (See Fig.~\ref{fig:settings}). The
+optical depth is given by,
+\begin{align}
+  \vect{\tau}_{k} &= \sigma \left( \int_{\rm
+      TOA}^{k}\!\!\!A(l)\derivsym{l} + \int_{k}^{\rm cam}\!\!\!A(l)
+    \derivsym{l} \right).
+  \label{eq:optical_depth}
+\end{align}
+
+To calculate the optical depth up to voxel $k$, we need to integrate
+the particle density at all voxels along the light path until voxel
+$k$ (Eq.~\ref{eq:beer-lambert}).  Over a discrete grid, this operation
+can be described as cumulative sum (Cumsum) along the light path.  We
+denote this operator $\OpCumsum$ (See Fig.~\ref{fig:cumsum_op}).
+\begin{figure}
+  \centering 
+    \includegraphics[width=\columnwidth]{images/optical_distance.pdf}
+    \caption{Optical depth calculation.}
+  \label{fig:cumsum_op}
+\end{figure}
+By default, in our notation the integration is along the first
+coordinate of the input array. To integrate along an oblique light
+path, we rotate the density field to a coordinate system aligned with
+the Sun rays.  The rotation direction $\Phi$ refers to a scalar angle
+in 2D case (See Fig.~\ref{fig:rotation_op}) or a vector of roations in
+3D scenes. Denote the rotation operation by the operator
+$\OpRot^{\Phi}$.\footnote{To implement $\OpRot^{\Phi}$ and
+  $\OpSphere_c$ the destination grid is projected into the source
+  grid. The value of the scalar field in each point on the destination
+  grid is calculated by interpolating the values of the scalar field
+  on its neighbouring points in the source grid. In this work we use
+  bilinear interpolation}
+
+Calculating the optical depth that light traverses between the Sun and
+all voxels depends on the Sun angle, $\Phi^{\mathrm{SR}}$,
+\begin{align}
+  \vect{\tau}&=\sigma \, \OpRot^{{\Phi^{\mathrm{SR}}}} \, \OpCumsum \,
+  \OpRot^{-\Phi^{\mathrm{SR}}} \,
+  \curly{\mat{A}}=\OpDistance^{\mathrm{Sun \rightarrow voxel}} \,
+  \curly{\mat{A}}
+  \label{eq:optical_upto}
+\end{align}
+where,
+\begin{align}
+  \OpDistance^{\mathrm{Sun \rightarrow voxel}}\triangleq\sigma \,
+  \OpRot^{{\Phi^{\mathrm{SR}}}} \, \OpCumsum \,
+  \OpRot^{-\Phi^{\mathrm{SR}}}.
+  \label{eq:distance_sun_voxel}
+\end{align}
+
+The optical depth along the path from voxel $k$ to the camera sensor
+is what we seek now.  Again, we use the Cumsum operator for
+integrating the particle density.  To align the density field with the
+path from each voxel to the camera, we transform the field from a
+Cartesian coordinate system to a spherical coordinate system centered
+at camera $c$ (See Fig.~\ref{fig:spherical_op}). Let $\OpSphere_c$ be
+the transform from Cartesian coordinates to the corresponding
+spherical coordinates (See Fig.~\ref{fig:spherical_op}).
+
+The optical depth between all voxels and the camera sensor can be
+calculated using
+% \footnote{When the cumsum operation is applied in spherical
+% coordinates, a mask should be applied to account for voxels that are
+% outside the atmosphere.}
+\begin{align}
+  \vect{\tau}_c &= \sigma \, \OpCumsum \, \OpSphere_c \,
+  \curly{\mat{A}} = \OpDistance^{\mathrm{voxel \rightarrow sensor}}_c
+  \, \curly{\mat{A}},
+  \label{eq:optical_from}
+\end{align}
+here,
+\begin{align}
+  \OpDistance^{\mathrm{voxel \rightarrow sensor}}_c \triangleq \sigma
+  \, \OpCumsum \, \OpSphere_c.
+  \label{eq:distance_voxel_sensor}
+\end{align}
+
+Given~(\ref{eq:optical_upto}) and~(\ref{eq:optical_from}) the operator
+for calculating the optical depths affecting all voxels can be
+expressed (in spherical coordinates) as,
+\begin{align}
+  \OpDistance_c &= \OpDistance^{\mathrm{Sun \rightarrow sensor}}_c =
+  \sigma \, \OpCumsum \, \OpSphere + \sigma \, \OpSphere \,
+  \OpRot^{\Phi^{\mathrm{SR}}} \, \OpCumsum \,
+  \OpRot^{-\Phi^{\mathrm{SR}}}.
+  \label{eq:optical_operation}
+\end{align}
+
+Let $\mat{A}^{\rm aerosol}$ and $\mat{A}^{\rm air}$ be the aerosol and
+air molecules density fields, respectively.  Let $\sigma^{\rm
+  aerosol}$ and $ \sigma^{\rm air}$ correspond to the extinction cross
+sections of the aerosol and air molecule, respectively.  The optical
+depths of aerosols and air molecules, respectively, over the path from
+the Sun to the camera via each atmosphere voxel, are given by,
+\begin{align}
+  \vect{\tau}^{\rm aerosol}_c &= \OpDistance_c \curly{ \mat{A}^{\rm
+      aerosol}} \nonumber \\
+  \vect{\tau}^{\rm air}_c &= \OpDistance_c \curly{ \mat{A}^{\rm air}}.
+  \label{eq:tau}
+\end{align}
+
+\subsection{Captured Image}
+\label{sec:captured-image}
+
+The camera lens projects the light coming from all voxels on to the
+camera sensor. The imaging process can be split in two:
+\begin{enumerate}[i.]
+\item \label{item:1} Integrating the radiance contribution of all
+  voxels along each LOS.
+\item \label{item:2} Projecting the radiance of each LOS onto the
+  corresponding sensor pixel.
+\end{enumerate}
+Let $\mat{V}$ be an arbitrary scalar field. The integration operator
+$\OpInt$ is defined as the summation along the first coordinate of the
+scalar field
+\begin{align}
+  \OpInt\{\mat{V}\} \triangleq \sum_m \mat{V}(m,...),
+  \label{eq:operator_integral}
+\end{align}
+see Fig.~\ref{fig:integration}. In our case, the integration,
+item~``\ref{item:1}'' above, is performed over the radiance field
+posed in spherical coordinates. The integration is performed by
+summing the radial dimension.\footnote{The need to multiply the
+  integrand by $r^2$, due to the integration in spherical
+  coordinates along the radial dimension, is canceled out by the
+  fact that the light intensity is inversely proportional to the
+  square distance ($\propto\frac{1}{r^2}$) from the scattering voxel.}
+
+The integration operation projects the radiance contribution of all
+voxels onto the upper hemisphere of the camera. The camera projection
+matrix $\OpCamera$ projects the upper hemisphere onto the camera
+sensor. The projection is calculated according to the following
+relation,
+\begin{align}
+  x = d \tan(\Phi^{\rm LOS}),
+\end{align}
+see Fig.~\ref{fig:projection}.
+
+Using~(\ref{eq:beer-lambert},~\ref{eq:transatsensor},~\ref{eq:alpha})
+and~(\ref{eq:tau}) the image irradiance at camera $c$, $\mathrm{I}_c$,
+can be expressed as
+\begin{align}
+  \mathrm{I}_c=({\rm NA})^2\mathrm{L}^{\rm TOA} \, \OpCamera \, \OpInt
+  \curly{\recty{\OpSphere_c \curly{\vect{\alpha}^{\rm aerosol} +
+        \vect{\alpha}^{\rm air}}} \odot \exp^{-(\vect{\tau}_c^{\rm
+        aerosol} + \vect{\tau}_c^{\rm air})}},
+  \label{eq:atsensor}
+\end{align}
+where $\rm{NA}$ denotes the numerical aperture of the camera lens.
+
+\begin{figure}
+
+  \centering
+    \includegraphics[width=\columnwidth]{images/sensor.pdf}
+  \caption{Camera projection operation}
+  \label{fig:projection}
+\end{figure}
+
+\subsection{Simulation Results}
+\label{sec:simulation-results}
+
+Figures~\ref{fig:simulation-results1}
+and~\ref{fig:simulation-results2} show simulated images for different
+aerosol distributions and Sun angles.  The aerosol distribution
+follows the expression below,
+\begin{align}
+  \mat{A}^{\rm aerosol}(h) = \frac{1}{\sigma \times \rm{visibility}}
+  \exp^{-\frac{h}{H^\mathrm{aerosol}}},
+\end{align}
+where $H^\mathrm{aerosol}=1.2\ km$ is a typical characteristic
+thickness of the aerosol layer~\cite{Levi1980}. The `visibility'
+parameter is related to the mean free path (MFP) of the aerosol layer
+at sea level,
+\begin{align}
+  \mathrm{visibility} \triangleq \mathrm{MFP^{sea
+      level}}=\frac{1}{\sigma \mat{A}^{\rm aerosol}_{h=0}},
+\end{align}
+where $\sigma$ is the cross section of the aerosol and $\mat{A}^{\rm
+  aerosol}_{h=0}$ its density at sea level.
+
+In these simulations we use a single type of aerosol (``spherical nonabsorbing 0.06'') across the
+atmosphere. The aerosol properties are taken
+from~\cite{Martonchik2009}.
+
+\begin{figure}
+ \includegraphics[width=\columnwidth]{images/ref_img34.png}
+  \caption{Results of the simulation where the Sun is at top of
+    zenith, for different aerosol visibility values. A red dot marks
+    the Sun location.}
+  \label{fig:simulation-results1}
+\end{figure}
+
+\begin{figure}
+ \includegraphics[width=\columnwidth]{images/ref_img37.png}
+  \caption{Results of the simulation where the Sun is near the horizon
+    for different aerosol visibility values. A red dot marks the Sun
+    location.}
+  \label{fig:simulation-results2}
+\end{figure}
+
+\section{Inverse Problem}
+\label{sec:inverse-problem}
+
+Suppose we have a set of sky images, $\{{\mathrm{I}_c}\}_1^{N_{\rm
+    cams}}$, taken from $N_{\rm cams}$ viewpoints.  In the inverse
+problem, we seek to recover the aerosol distribution in the
+atmosphere, $\mat{A}^{\rm aerosol}$.
+
+\subsection{Objective function}
+\label{sec:objective-function}
+
+The inverse problem can be stated as the optimization of the following
+objective:
+\begin{align}
+  \label{eq:objective}
+  f &= \sum_{c=1}^{N_{\rm cams}} |\mathrm{I}_c-\hat{\mathrm{I}}_c(\mat{A})|_p^p \\
+  \hat{\mat{A}}^{\rm aerosol} &= \argmin_{\mat{A}} f \nonumber
+\end{align}
+where $\hat{\mathrm{I}}_c(\mat{A})$ is calculated
+by~(\ref{eq:atsensor}) for distribution $\mat{A}$ and camera $c$. Here
+$p$ is the norm used for calculating the distance between the measured
+and synthesised images. In our work, we use the Euclidean norm, $p=2$.
+
+\subsection{Optimization of the objective function}
+\label{sec:optim-object-funct}
+
+The objective function can be optimized using standard optimization
+tools. The size of the problem, i.e. the size of $\mat{A}$, depends on
+the size of the atmosphere grid.  Most optimization tools use
+gradient descent methods and therefore require the gradient of the
+objective function.  The use of operator
+notation simplifies the calculation of the gradient. Specifically,
+this is enabled by expressing the operators as matrix operations. We
+use lower case notation for column stack ordering , i.e $\vect{a}$
+instead of $\mat{A}$ and $\vect{i}$ instead of $\mat{I}$. For
+simplicity we denote $\hat{\vect{i}}_c$ instead of
+$\hat{\vect{i}}_c(\vect{a})$. Let $\intercal$ denote the transpose
+operator, for $p=2$, the gradient of
+Eq.~(\ref{eq:objective}) is
+\begin{align}
+  \Grad{\vect{a}} f = -2\sum_{c=1}^{N_{\rm cams}}
+  \transpose{\left[\mat{J}_{\hat{\vect{i}}_c}(\vect{a})\right]}(\vect{i}_c-\hat{\vect{i}}_c)
+  \label{eq:gradient1}
+\end{align}
+where $\mat{J}_{\hat{\vect{i}}_c}(\vect{a})$ denotes the Jacobian of
+the vector function $\hat{\vect{i}}_c$ with respect to $\vect{a}$,
+\begin{align}
+  \mat{J}_{\hat{\vect{i}}_c}(\vect{a}) =
+  \begin{pmatrix}
+    \PartDeriv{\hat{\vect{i}}_{c}(1)}{a_1} & \PartDeriv{\hat{\vect{i}}_{c}(2)}{a_2} & \cdots \\
+    \PartDeriv{\hat{\vect{i}}_{c}(1)}{a_1} & \PartDeriv{\hat{\vect{i}}_{c}(2)}{a_2} & \cdots \\
+    \vdots & \vdots & \ddots
+  \end{pmatrix}
+\end{align}
+
+Let $\OpDiag{\vect{\vect{v}}}$ denote conversion of a vector of length
+$q$ into a $q \times q$ diagonal matrix,
+\begin{equation*}
+  \OpDiag{\vect{v}} =
+  \begin{bmatrix}
+    v_1 & & & \\
+    & v_2 & & \text{\huge{0}} \\
+    \text{\huge{0}} & & v_3 & \\
+    & & & \ddots
+  \end{bmatrix}
+\end{equation*}
+
+\noindent From~(\ref{eq:atsensor}), we have
+\begin{align}
+  \mat{J}_{\hat{\vect{i}}_c}(\vect{a}) &= (\rm{NA})^2 \mathrm{L}^{\rm TOA}\,
+  \Big( \sigma^{\rm aerosol} \, \varpi \, \OpDiag{P^{\rm
+        aerosol}(\vect{\mu}_c)} \transpose{\OpSphere}_c - \nonumber \\
+    &\quad \transpose{\OpDistance} \OpDiag{\OpSphere_c (\vect{\alpha}^{\rm
+        aerosol}_c +
+      \vect{\alpha}^{\rm air}_c )} \Big)
+  \OpDiag{\exp^{-(\vect{\tau}^{\rm aerosol}_c + \vect{\tau}^{\rm
+        air}_c)}} \transpose{\OpInt} \, \transpose{\OpCamera},
+  \label{eq:gradient2}
+\end{align}
+for detailed derivation of Eq.~(\ref{eq:gradient2}) we refer the
+reader to App.~\ref{sec:gradient-derivation}.
+
+\subsection{Optimization Results}
+\label{sec:optimization-results}
+
+We applied our inverse problem algorithm to a set of synthesized 2D
+aerosol distributions. Fig.~\ref{fig:synth-atmo} shows an example of
+one of these distributions. Nine cameras were used in the
+reconstruction. Fig.~\ref{fig:synth-result} shows the result of
+reconstructing the aerosol distribution using our method above. The
+reconstruction result is noisy, as no regularization was used in the
+objective function,~(\ref{eq:objective}).  Regularization should
+improve the robustness of the reconstruction algorithm.  We plan to
+test different regularization schemes in the next stage of our
+research.
+
+\begin{figure}
+  \centering
+    \includegraphics[width=\columnwidth]{images/original}
+  \caption{Synthetic 3D aerosol distribution. Colour values mark
+    aerosol density.}
+  \label{fig:synth-atmo}
+\end{figure}
+
+\begin{figure}
+  \centering
+    \includegraphics[width=\columnwidth]{images/reconstructed}
+  \caption{Reconstructed aerosol distribution.}
+  \label{fig:synth-result}
+\end{figure}
+
+\appendix
+
+\section{Gradient Derivation}
+\label{sec:gradient-derivation}
+
+Here we detail the derivation of~(\ref{eq:gradient2}).  We use
+matrices to implement the different operators. Using matrices
+simplifies the calculation of derivatives and the use of optimization
+tools. Note that~(\ref{eq:atsensor}) in column stack notation is
+\begin{align}
+  \vect{i}_c=(\rm{NA})^2\mathrm{L}^{\rm TOA} \OpCamera \, \OpInt \,
+  \roundy{ \roundy {\OpSphere_c \, \roundy{\vect{\alpha}^{\rm
+          aerosol}_c + \vect{\alpha}^{\rm air}_c} } \odot
+    \exp^{-(\vect{\tau}^{\rm aerosol}_c + \vect{\tau}^{\rm air}_c)}}.
+  \label{eq:atsensor-matrix}
+\end{align}
+First we show some results relating to differentiation. Let $\vect{a}$
+be a vector of length $q$. Let $\vect{g}(\vect{a})$ be a vector
+function: it outputs a vector of length $r$. Let $\mat{B}$ be a $q
+\times r$ matrix and
+\begin{align}
+  \vect{g}(\vect{a}) = \exp^{-\transpose{\mat{B}}\vect{a}}.
+  \label{eq:example1}
+\end{align}
+In Eq.~(\ref{eq:example1}), the exponential is element-wise (not
+raising an operator to some power). Then
+\begin{align}
+  \label{eq:partial2}
+  \PartDeriv{\vect{g}}{\vect{a}} &= - \mat{B} \,
+  \OpDiag{\exp^{-\transpose{\mat{B}}\vect{a}}}
+\end{align}
+Using~(\ref{eq:partial2}) and~(\ref{eq:tau})
+\begin{align}
+  \label{eq:partial4}
+  \PartDeriv{\exp^{-(\vect{\tau}^{\rm aerosol}_c + \vect{\tau}^{\rm
+        air}_c)}}{\vect{a}} &= - \transpose{\OpDistance_c} \,
+  \OpDiag{\exp^{-(\vect{\tau}^{\rm aerosol}_c + \vect{\tau}^{\rm
+        air}_c)}}
+\end{align}
+
+To calculate the derivative of the Hadamard product
+in~(\ref{eq:atsensor-matrix}) we first note the following: Let
+$\vect{u}(\vect{a})$ be a vector function that outputs a vector of
+length $r$. Let $\mat{B}$ be a $r \times q$ matrix. Then,
+\begin{align}
+  \label{eq:partial1}
+  \PartDeriv{\transpose{\mat{B}} (\vect{g} \odot \vect{u})}{\vect{a}}
+  = \left[ \PartDeriv{\vect{g}}{\vect{a}} \OpDiag{\vect{u}} +
+    \PartDeriv{\vect{u}}{\vect{a}} \OpDiag{\vect{g}} \right]
+  \mat{B}.
+\end{align}
+%
+% TODO: Understand if Af \odot Ag = A(f \odot g) and in what terms (on
+% A) this is important as in the docs I use the left case and in the
+% code I use the right case. It seems to me that it is correct but I
+% don't have a proof.
+%
+
+Suppose the air distribution is known. Therefore, $\vect{\alpha}^{\rm
+  air}_c$ and $\vect{\tau}^{\rm air}_c$ are constant vectors. Then,
+\begin{align}
+  \label{eq:partial3}
+  \PartDeriv{\OpSphere_c \, \vect{\alpha}^{\rm aerosol}_c}{\vect{a}}
+  &= \varpi \, \sigma^{\rm aerosol} \, \OpDiag{P^{\rm
+      aerosol}(\vect{\mu_c})} \, \transpose{\OpSphere_c}
+\end{align}
+
+Based on~(\ref{eq:partial4},~\ref{eq:partial1})
+and~(\ref{eq:partial3}) we can calculate the gradient
+of~(\ref{eq:atsensor-matrix}):
+\begin{align}
+  \PartDeriv{\vect{i}_{\rm c}}{\vect{a}} &=
+  \mat{J}_{\hat{\vect{i}}_c}(\vect{a})= \nonumber \\
+  &= (\rm{NA})^2 \mathrm{L}^{\rm TOA} \, \biggl( \varpi \, \sigma^{\rm
+    aerosol} \, \OpDiag{P^{\rm aerosol}(\vect{\mu}_c)} \,
+  \transpose{\OpSphere}_c \OpDiag{\exp^{-(\vect{\tau}^{\rm aerosol}_c
+      + \vect{\tau}^{\rm
+        air}_c)}} \nonumber \\
+  &\quad - \transpose{\OpDistance_c} \, \OpDiag{\exp^{-(\vect{\tau}^{\rm
+        aerosol}_c + \vect{\tau}^{\rm air}_c)}}\OpDiag{\OpSphere_c \,
+    (\vect{\alpha}^{\rm aerosol}_c + \vect{\alpha}^{\rm air}_c)}
+  \biggr)
+  \, \transpose{\OpInt} \, \transpose{\OpCamera} \nonumber \\
+  &= (\rm{NA})^2\mathrm{L}^{\rm TOA} \, \biggl( \sigma^{\rm aerosol}
+  \, \varpi \,
+  \OpDiag{P^{\rm aerosol}(\vect{\mu}_c)} \, \transpose{\OpSphere_c} - \nonumber \\
+  &\quad \transpose{\OpDistance_c} \, \OpDiag{\OpSphere_c \,
+    (\vect{\alpha}^{\rm aerosol}_c + \vect{\alpha}^{\rm air}_c )}
+  \biggr) \OpDiag{\exp^{-(\vect{\tau}^{\rm aerosol}_c +
+      \vect{\tau}^{\rm air}_c)}} \, \transpose{\OpInt} \,
+  \transpose{\OpCamera}
+\end{align}
 
 
-\begin{figure*}
-\begin{center}
-\fbox{\rule{0pt}{2in} \rule{.9\linewidth}{0pt}}
-\end{center}
-   \caption{Example of a short caption, which should be centered.}
-\label{fig:short}
-\end{figure*}
+\section{Data Sources}
 
-%------------------------------------------------------------------------
-\section{Formatting your paper}
-
-All text must be in a two-column format. The total allowable width of the
-text area is $6\frac78$ inches (17.5 cm) wide by $8\frac78$ inches (22.54
-cm) high. Columns are to be $3\frac14$ inches (8.25 cm) wide, with a
-$\frac{5}{16}$ inch (0.8 cm) space between them. The main title (on the
-first page) should begin 1.0 inch (2.54 cm) from the top edge of the
-page. The second and following pages should begin 1.0 inch (2.54 cm) from
-the top edge. On all pages, the bottom margin should be 1-1/8 inches (2.86
-cm) from the bottom edge of the page for $8.5 \times 11$-inch paper; for A4
-paper, approximately 1-5/8 inches (4.13 cm) from the bottom edge of the
-page.
-
-%-------------------------------------------------------------------------
-\subsection{Margins and page numbering}
-
-All printed material, including text, illustrations, and charts, must be
-kept within a print area 6-7/8 inches (17.5 cm) wide by 8-7/8 inches
-(22.54 cm) high.
-
-
-%-------------------------------------------------------------------------
-\subsection{Type-style and fonts}
-
-Wherever Times is specified, Times Roman may also be used. If neither is
-available on your word processor, please use the font closest in
-appearance to Times to which you have access.
-
-MAIN TITLE. Center the title 1-3/8 inches (3.49 cm) from the top edge of
-the first page. The title should be in Times 14-point, boldface type.
-Capitalize the first letter of nouns, pronouns, verbs, adjectives, and
-adverbs; do not capitalize articles, coordinate conjunctions, or
-prepositions (unless the title begins with such a word). Leave two blank
-lines after the title.
-
-AUTHOR NAME(s) and AFFILIATION(s) are to be centered beneath the title
-and printed in Times 12-point, non-boldface type. This information is to
-be followed by two blank lines.
-
-The ABSTRACT and MAIN TEXT are to be in a two-column format.
-
-MAIN TEXT. Type main text in 10-point Times, single-spaced. Do NOT use
-double-spacing. All paragraphs should be indented 1 pica (approx. 1/6
-inch or 0.422 cm). Make sure your text is fully justified---that is,
-flush left and flush right. Please do not place any additional blank
-lines between paragraphs.
-
-Figure and table captions should be 9-point Roman type as in
-Figures~\ref{fig:onecol} and~\ref{fig:short}.  Short captions should be centred.
-
-\noindent Callouts should be 9-point Helvetica, non-boldface type.
-Initially capitalize only the first word of section titles and first-,
-second-, and third-order headings.
-
-FIRST-ORDER HEADINGS. (For example, {\large \bf 1. Introduction})
-should be Times 12-point boldface, initially capitalized, flush left,
-with one blank line before, and one blank line after.
-
-SECOND-ORDER HEADINGS. (For example, { \bf 1.1. Database elements})
-should be Times 11-point boldface, initially capitalized, flush left,
-with one blank line before, and one after. If you require a third-order
-heading (we discourage it), use 10-point Times, boldface, initially
-capitalized, flush left, preceded by one blank line, followed by a period
-and your text on the same line.
-
-%-------------------------------------------------------------------------
-\subsection{Footnotes}
-
-Please use footnotes\footnote {This is what a footnote looks like.  It
-often distracts the reader from the main flow of the argument.} sparingly.
-Indeed, try to avoid footnotes altogether and include necessary peripheral
-observations in
-the text (within parentheses, if you prefer, as in this sentence).  If you
-wish to use a footnote, place it at the bottom of the column on the page on
-which it is referenced. Use Times 8-point type, single-spaced.
-
-
-%-------------------------------------------------------------------------
-\subsection{References}
-
-List and number all bibliographical references in 9-point Times,
-single-spaced, at the end of your paper. When referenced in the text,
-enclose the citation number in square brackets, for
-example~\cite{Authors06}.  Where appropriate, include the name(s) of
-editors of referenced books.
-
-\begin{table}
-\begin{center}
-\begin{tabular}{|l|c|}
-\hline
-Method & Frobnability \\
-\hline\hline
-Theirs & Frumpy \\
-Yours & Frobbly \\
-Ours & Makes one's heart Frob\\
-\hline
-\end{tabular}
-\end{center}
-\caption{Results.   Ours is better.}
-\end{table}
-
-%-------------------------------------------------------------------------
-\subsection{Illustrations, graphs, and photographs}
-
-All graphics should be centered.  Please ensure that any point you wish to
-make is resolvable in a printed copy of the paper.  Resize fonts in figures
-to match the font in the body text, and choose line widths which render
-effectively in print.  Many readers (and reviewers), even of an electronic
-copy, will choose to print your paper in order to read it.  You cannot
-insist that they do otherwise, and therefore must not assume that they can
-zoom in to see tiny details on a graphic.
-
-When placing figures in \LaTeX, it's almost always best to use
-, and to specify the  figure width as a multiple of
-the line width as in the example below
-
-
-%-------------------------------------------------------------------------
-\subsection{Color}
-
-Color is valuable, and will be visible to readers of the electronic copy.
-However ensure that, when printed on a monochrome printer, no important
-information is lost by the conversion to grayscale.
-
-%------------------------------------------------------------------------
-\section{Final copy}
-
-You must include your signed IEEE copyright release form when you submit
-your finished paper. We MUST have this form before your paper can be
-published in the proceedings.
-
-Please direct any questions to the production editor in charge of these
-proceedings at the IEEE Computer Society Press: Phone (714) 821-8380, or
-Fax (714) 761-1784.
+The radiation values of the Sun are taken
+from~\cite{sun_composition}. The RGB values for a black body radiation
+are taken from~\cite{BBradiance}. Aerosol properties and corresponding
+wave lengths of the RGB colors are taken from~\cite{Martonchik2009}.
 
 {\small
 \bibliographystyle{ieee}
-\bibliography{egbib}
+\bibliography{atmosphere}
 }
 
 \end{document}
