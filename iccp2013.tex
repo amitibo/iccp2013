@@ -51,19 +51,19 @@ Electrical Engineering Dept.\\
 Technion - Israel Inst. Tech.\\
 Haifa 32000, Israel\\
 {\tt\small amitibo@tx.technion.ac.il}
-\and 
+\and
 Yoav~Y.~Schechner\\
 Electrical Engineering Dept.\\
 Technion - Israel Inst. Tech.\\
 Haifa 32000, Israel\\
 {\tt\small yoav@ee.technion.ac.il}
-\and 
+\and
 Michael~J.~Garay\\
 Jet Propulsion Laboratory\\
 California Inst. Tech.\\
 CA 91011, United States\\
 {\tt\small Michael.J.Garay@jpl.nasa.gov}
-\and 
+\and
 Vadim~Holodovsky\\
 Electrical Engineering Dept.\\
 Technion - Israel Inst. Tech.\\
@@ -104,7 +104,7 @@ Haifa 32000, Israel\\
 
 
 \begin{figure}
-  \centering 
+  \centering
     \includegraphics[width=\columnwidth]{images/front.png}
     \caption{Reconstruction of a synthetic aerosol distibution.}
   \label{fig:front}
@@ -281,7 +281,7 @@ $k$ (Eq.~\ref{eq:beer-lambert}).  Over a discrete grid, this operation
 can be described as cumulative sum (Cumsum) along the light path.  We
 denote this operator $\OpCumsum$ (See Fig.~\ref{fig:cumsum_op}).
 \begin{figure}
-  \centering 
+  \centering
     \includegraphics[width=\columnwidth]{images/optical_distance.pdf}
     \caption{Optical depth calculation.}
   \label{fig:cumsum_op}
@@ -424,31 +424,31 @@ where $\rm{NA}$ denotes the numerical aperture of the camera lens.
   \label{fig:projection}
 \end{figure}
 
-\subsection{Simulation Results}
-\label{sec:simulation-results}
-
-Figures~\ref{fig:simulation-results1}
-and~\ref{fig:simulation-results2} show simulated images for different
-aerosol distributions and Sun angles.  The aerosol distribution
-follows the expression below,
-\begin{align}
-  \mat{A}^{\rm aerosol}(h) = \frac{1}{\sigma \times \rm{visibility}}
-  \exp^{-\frac{h}{H^\mathrm{aerosol}}},
-\end{align}
-where $H^\mathrm{aerosol}=1.2\ km$ is a typical characteristic
-thickness of the aerosol layer~\cite{Levi1980}. The `visibility'
-parameter is related to the mean free path (MFP) of the aerosol layer
-at sea level,
-\begin{align}
-  \mathrm{visibility} \triangleq \mathrm{MFP^{sea
-      level}}=\frac{1}{\sigma \mat{A}^{\rm aerosol}_{h=0}},
-\end{align}
-where $\sigma$ is the cross section of the aerosol and $\mat{A}^{\rm
-  aerosol}_{h=0}$ its density at sea level.
-
-In these simulations we use a single type of aerosol (``spherical nonabsorbing 0.06'') across the
-atmosphere. The aerosol properties are taken
-from~\cite{Martonchik2009}.
+%\subsection{Simulation Results}
+%\label{sec:simulation-results}
+%
+%Figures~\ref{fig:simulation-results1}
+%and~\ref{fig:simulation-results2} show simulated images for different
+%aerosol distributions and Sun angles.  The aerosol distribution
+%follows the expression below,
+%\begin{align}
+%  \mat{A}^{\rm aerosol}(h) = \frac{1}{\sigma \times \rm{visibility}}
+%  \exp^{-\frac{h}{H^\mathrm{aerosol}}},
+%\end{align}
+%where $H^\mathrm{aerosol}=1.2\ km$ is a typical characteristic
+%thickness of the aerosol layer~\cite{Levi1980}. The `visibility'
+%parameter is related to the mean free path (MFP) of the aerosol layer
+%at sea level,
+%\begin{align}
+%  \mathrm{visibility} \triangleq \mathrm{MFP^{sea
+%      level}}=\frac{1}{\sigma \mat{A}^{\rm aerosol}_{h=0}},
+%\end{align}
+%where $\sigma$ is the cross section of the aerosol and $\mat{A}^{\rm
+%  aerosol}_{h=0}$ its density at sea level.
+%
+%In these simulations we use a single type of aerosol (``spherical nonabsorbing 0.06'') across the
+%atmosphere. The aerosol properties are taken
+%from~\cite{Martonchik2009}.
 
 \begin{figure}
  \includegraphics[width=\columnwidth]{images/ref_img34.png}
@@ -548,19 +548,61 @@ $q$ into a $q \times q$ diagonal matrix,
 for detailed derivation of Eq.~(\ref{eq:gradient2}) we refer the
 reader to App.~\ref{sec:gradient-derivation}.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Simulations}
+\label{sec:simul}
+
+To test the model, we made simulations based on atmospheric models in the literature. Here are the details.\\
+
+\noindent{\bf Sun}: The sun is at zenith angle $\Phi^{\rm SR}=45^o$. Its
+$L^{\rm TOA}$ is obtained from~\cite{sun_composition,BBradiance}, with respective red-green-blue rations of
+ $L^{\rm TOA}_{\rm R}:L^{\rm TOA}_{\rm G}:L^{\rm TOA}_{\rm B}=255:236:224$.\\
+
+\noindent{\bf Aerosol}: We used particle-type 4 from the aerosol list in
+Ref.~\cite{Martonchik2009}. This is a spherical non-absorbing sulfate/sea-sal/organic particle, whose anisotropy parameter per color channel is $[g_{\rm R},g_{\rm G},g_{\rm B}]=[0.718,0.722,0.725]$. Its single-scattering albedo is $\varpi=1$ at all channels. Its extinction cross section per color is
+  $[\sigma^{\rm aerosol}_{\rm R},
+    \sigma^{\rm aerosol}_{\rm G},
+    \sigma^{\rm aerosol}_{\rm B}]=[1.02,1.04,1.03]$.
+We set the spatial distribution as a product of two functions. The first function is an exponential decay~\cite{Levi1980} with altitude $h(k)$ of voxel $k$,
+\begin{align}
+ f_1[h(k)] = \frac{1}
+ {\sigma^{\rm aerosol}_{\rm G} \mathrm{MFP^{sea level}}}
+  \exp^{-\frac{h(k)}{H^\mathrm{aerosol}}},
+\end{align}
+where $H^\mathrm{aerosol}=8\ km$. This expresses a general trend of reduced atmospheric density with height. Here
+The mean free path (MFP) of the aerosols layer at sea level is
+$\mathrm{MFP^{sea level}}=1/50 {\rm[1/km]}$.
+% is a typical characteristic thickness of the aerosol layer~\cite{Levi1980}.
+
+The second function, $f_2$, expresses a clustered nature of a aerosol ``clouds''. We define two ellipsoids: the first is centered at altitude
+$3.3km$, and has horizontal width of $32km$ and vertical thickness of $2.8km$. The second ellipsoid is centered at altitude $6.6km$, and has lateral width of $24km$ and vertical thickness of $2.1km$. Then
+\begin{align}
+ f_2(k) = 1 {\rm ~~~if~} k\in {\rm ~any ellipsoid}\\
+ f_2(k) = 1 {\rm otherewise},
+\end{align}
+The aerosol distribution is thus
+\begin{align}
+  \mat{A}^{\rm aerosol}=f_1(h)f_2.
+\end{align}
+Note that the horizontal widths are much larger than the vertical ones. This is consistent with scales of atmospheric aerosol distributions.\\
+
+\noindent{\bf Dimensions}: The domain of sky we simulate and recover has area of $50\times 50$km, and it extends from the ground up to altitude of 10km. This volume is divided to a $50\times50\times100$ grid, where each voxel has area of $1\times1$km and vertical thickness of 100 meters. The dimension of the problem is thus ${\cal O}(250,000)$ variables.\\
+
+\noindent{\bf Cameras}: Each ground-based camera has a hemispherical field of view, capturing the entire sky from its viewpoint. We used 95 viewpoints on a grid, each view $\approx 4.4$km from its neighbors.
+The resolution of each camera is low: $128\times 128$ pixels, expressing the fact that cloudless (yet hazy) sky images are rather smooth, hence there is no need for high image resolution. Each pixel has full-well depth of 40000 electrons, which corresponds to the brightest pixel value. Each measurement has photon noise, which is Poissonian distributed, according to image value $I_c$ and the full-well depth.\\
+
+\noindent{\bf Computer}: We had access to an SGI-TNN cluster computer that has 88 computer nodes consisting of two 2.40 GHz six-Core Xeon with 8GB
+DDR3 memory per core. Out of it, we used 8 nodes, corresponding to 96 cores. Each core was dedicates to render a modeled image (in each interaction) as if captured by a one of the 95 cameras. Each iteration (varying the model according the gradient-based algorithm and varying the all rendered images) took $\approx 7$sec.\\
+
+\noindent{\bf Optimization}: We used a L-BFGS-B algorithm~\cite{BFGS}.
+Satisfactory convergence occurred at $\approx 6500$ iterations, taking $\approx 12.5$ hours to complete in total.
+
+
+
+
 \subsection{Optimization Results}
 \label{sec:optimization-results}
 
-We applied our inverse problem algorithm to a set of synthesized 2D
-aerosol distributions. Fig.~\ref{fig:synth-atmo} shows an example of
-one of these distributions. Nine cameras were used in the
-reconstruction. Fig.~\ref{fig:synth-result} shows the result of
-reconstructing the aerosol distribution using our method above. The
-reconstruction result is noisy, as no regularization was used in the
-objective function,~(\ref{eq:objective}).  Regularization should
-improve the robustness of the reconstruction algorithm.  We plan to
-test different regularization schemes in the next stage of our
-research.
 
 \begin{figure}
   \centering
@@ -671,12 +713,6 @@ of~(\ref{eq:atsensor-matrix}):
 \end{align}
 
 
-\section{Data Sources}
-
-The radiation values of the Sun are taken
-from~\cite{sun_composition}. The RGB values for a black body radiation
-are taken from~\cite{BBradiance}. Aerosol properties and corresponding
-wave lengths of the RGB colors are taken from~\cite{Martonchik2009}.
 
 {\small
 \bibliographystyle{ieee}
