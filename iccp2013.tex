@@ -220,7 +220,7 @@ Consider Fig.~\ref{fig:groundgrid}. In addition to air molecules, the atmosphere
 
 Fig.~\ref{fig:groundgrid} shows another possible source for multi-angular imaging through this medium: a set of ground-based wide-angle sky-cameras, looking upwards and capturing the sky lightfield. The location on the surface is ${\bf x}=(x,y)$. Per viewpoint, the view azimuth and elevation angles (relative to the zenith and north) are encapsulated in the vector ${\bf{\Theta}}$.  A raw image is $i_{\bf x}({\bf{\Theta}})$: the ground location is fixed per frame, while any pixel in a frame represents an angle ${\bf{\Theta}}$.
 
-Sunlight is scattered in the medium along the LOS, creating {\em airlight}~\cite{fattal,narasimhan2,Hschechner2,tan}. For each view ${\bf{\Theta}}$ and ground location ${\bf x}$, the airlight is generally different, depending on the distribution of aerosols both along the LOS, and the along the sun-rays (SRs) that hit the LOS.
+Sunlight is scattered in the medium along the LOS, creating {\em airlight}~\cite{fattal,narasimhan2,Hschechner2,tan}. For each view ${\bf{\Theta}}$ and ground location ${\bf x}$, the airlight is generally different, depending on the distribution of aerosols both along the LOS, and the along the SRs that hit the LOS.
 As Fig.~\ref{fig:groundgrid} shows, for different ${\bf x}$ and ${\bf{\Theta}}$, the LOS cuts through a different set of voxels in the atmosphere. Thus, for each view, the radiance scattered from a voxel is attenuated differently, depending on the distribution of aerosols along the LOS~\cite{hansen}.
 
 Given a scene, the measured radiance for all locations ${\bf x}$ and angles ${\bf{\Theta}}$ is a four dimensional {\em lightfield} $I({\bf x},{\bf{\Theta}})$. Individual images are slices of the lightfield. A typical raw image is $i_{\bf x}({\bf{\Theta}})$: the ground location is fixed per frame, while any pixel in a frame represents an angle ${\bf{\Theta}}$.
@@ -240,27 +240,29 @@ The cameras may be static in a network of fixed nodes.
 
 A forward model calculates the image captured by each camera.
 Its input is the aerosol distribution, and it calculates radiative
-transfer. Under single-scattering approximation, this transfer has three steps (Fig.~\ref{fig:settings}):
+transfer. We use a single scattering model, in which any SR changes direction (scatters) 
+only once on the way to the camera. 
+Under single-scattering approximation, this transfer has three steps (Fig.~\ref{fig:settings}):
 \begin{enumerate}
-\item Sun ray (SR) attenuation, as it propagates from the top of the atmosphere
+\item SR attenuation, as it propagates from the top of the atmosphere
   (TOA) to voxel $k$.
 \item Light scattering at voxel $k$, towards a camera.
-\item LOS attenuation, as light propagaes from voxel $k$ to the camera.
+\item LOS attenuation, as light propagates from voxel $k$ to the camera.
 \end{enumerate}
 Steps 1 and 3 calculates the optical depth
 along the light path to and from voxel $k$. This is described in Sec.~\ref{sec:optical-depth}.
 Step 2 calculates the scattering coefficient at voxel $k$,
 as described in Sec.~\ref{sec:scattering}.
 
-The light transfer, $\mathrm{t}(k)$, is calculated per scattering at
-each voxel $k$.  Let the Sun irradiance at the TOA be $\mathrm{L}^{\rm
-  TOA}$.  The overall transmittance multiplied by $\mathrm{L}^{\rm
-  TOA}$ yields the radiance sensed by the camera. The sum of
-contributions from all voxels is the image captured by the camera,
-\begin{align}
-  \mathrm{I}_{\rm camera}=\mathrm{L}^{\rm TOA} \sum_k \mathrm{t}(k).
-  \label{eq:transatsensor}
-\end{align}
+%The light transfer, $\mathrm{t}(k)$, is calculated per scattering at
+%each voxel $k$.  Let the Sun irradiance at the TOA be $\mathrm{L}^{\rm
+%  TOA}$.  The overall transmittance multiplied by $\mathrm{L}^{\rm
+%  TOA}$ yields the radiance sensed by the camera. The sum of
+%contributions from all voxels is the image captured by the camera,
+%\begin{align}
+%  \mathrm{I}_{\rm camera}=\mathrm{L}^{\rm TOA} \sum_k \mathrm{t}(k).
+%  \label{eq:transatsensor}
+%\end{align}
 
 \begin{figure}
   \centering \def\svgwidth{0.8\columnwidth}
@@ -279,58 +281,80 @@ contributions from all voxels is the image captured by the camera,
     \caption{Reconstruction of a synthetic aerosol distibution.}
   \label{fig:front}
 \end{figure}
-In this work part we simulate light transfer through the atmosphere,
-according to the single scattering model, as described
-in~\cite{Levi1980}. In the single scattering model, light that travels
-from the Sun to the viewer scatters only once either by air molecules
-or by aerosols. We also assume that light travelling through the
-atmosphere is attenuated according to the {\em Beer-Lambert} law
-(Fig.~\ref{fig:beer_lambert}),
-\begin{align}
-  \mathrm{t}(l)=\exp^{-\sigma \int_{0}^l
-    A(\acute{l})\derivsym{\acute{l}}}
-  \label{eq:beer-lambert}
-\end{align}
-where $\mathrm{t}$ is the transmittance of the atmosphere and $\sigma$
-is the cross section of light exctinction by a single particle. Here
-$l$ is the path along which the light travels and $A(l)$ is the
-density (number per unit volume) of attenuating particles. The optical
-depth is,
-\begin{align}
-  \tau = \sigma \int_{0}^l A(\acute{l})\derivsym{\acute{l}}
-  \label{eq:tau_definition}
-\end{align}
 
-A forward model (Sec.~\ref{sec:forward-model}) calculates $\mathrm{t}$
-based on known $\sigma$ and $A$. The inverse problem
-(Sec.~\ref{sec:inverse-problem}) seeks $\sigma$ and $A$ based on
-measuring $\mathrm{t}$ from multiple viewpoints.
-
-\begin{figure}
-  \centering \def\svgwidth{0.4\columnwidth}
-  \input{images/beer_lambert.pdf_tex}
-  \caption{\emph{Beer-Lambert} law for a homogeneous medium made of
-    particles with exctinction cross section $sigma$ and density $N$.}
-  \label{fig:beer_lambert}
-\end{figure}
+%The optical
+%depth is,
+%\begin{align}
+%  \tau = \sigma \int_{0}^l A(\acute{l})\derivsym{\acute{l}}
+%  \label{eq:tau_definition}
+%\end{align}
+%A forward model (Sec.~\ref{sec:forward-model}) calculates $\mathrm{t}$
+%based on known $\sigma$ and $A$. The inverse problem
+%(Sec.~\ref{sec:inverse-problem}) seeks $\sigma$ and $A$ based on
+%measuring $\mathrm{t}$ from multiple viewpoints.
 
 
-
-
-\noindent Using vector notation, Eq.~(\ref{eq:alpha}) becomes,
-\begin{align}
-  \vect{\alpha}^{\rm aerosol} &= \varpi \sigma^{\rm aerosol}
-  \mat{A}^{\rm
-    aerosol} \odot P^{\rm aerosol}(\vect{\mu}) \nonumber \\
-  \vect{\alpha}^{\rm air} &= \vect{\beta}^{\rm air}_{\lambda} \odot
-  P^{\rm air}(\vect{\mu}),
-  \label{eq:alpha_matrix}
-\end{align}
-where the operator $\odot$ denotes the Hadamard (element-wise)
-product.
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Optical Depth}
 \label{sec:optical-depth}
+
+Let an infinitesimal volume contain aerosols. The extinction and scattering coefficients 
+due to aerosols in this small volume are, respectively
+\begin{equation}
+  \beta^{\rm aerosol}=\sigma^{\rm aerosol} A^{\rm aerosol}
+  \;\;,\;\;  
+  \alpha^{\rm aerosol}=\varpi^{\rm aerosol} \beta^{\rm aerosol}
+  \;.
+  \label{eq:betaer}
+\end{equation}
+In addition, the infinitesimal volume contain also air molecules. Hence, the overall 
+extinction and scattering coefficients in this small volume are, respectively
+\begin{equation}
+  \beta=\beta^{\rm air}+\beta^{\rm aerosol}
+  \;\;,\;\;
+  \alpha=\alpha^{\rm air}+\alpha^{\rm aerosol}
+  \;.
+  \label{eq:betaer}
+\end{equation}
+
+Any voxel generally contains both air molecules and aerosols. Voxels are indexed by $k$ or $q$. 
+As approximation, assume that within any voxel, the molecular parameters
+$\{ \beta^{\rm air}(k),\alpha^{\rm air}(k)\}$ and the aerosol parameters 
+$\{ \sigma^{\rm aerosol}(k),\varpi^{\rm aerosol}(k), A^{\rm aerosol}(k),g(k)\}$ 
+are constants, e.g., corresponding to the value at each voxel center. These parameters generally change 
+between voxels. 
+
+
+
+A voxel's vertical geometric thickness is $\Delta z$.  The Sun zenith
+angle is $\Phi^{\rm SR}$. A line segment between the Sun and
+voxel $k$ on a sun ray (SR) is denoted by $[{\rm SR},k]$. The optical path
+length along a SR to $k$ is
+\begin{equation}
+  \tau_{\rm SR}(k)=(1/|\cos\Phi^{\rm SR}|)
+     \sum_{q \in[{\rm SR},k]}
+     \beta(q)
+     \Delta z  f_{\rm SR}(q).
+  \label{eq:lSRn}
+\end{equation}
+Here $f_{\rm SR}(q)\in [0,1]$ is a factor that expresses how much of
+a cell height is crossed by a SR pointed at a center of a ground
+patch ${\bf x}$ (See Fig.~\ref{fig:groundgrid}). Similarly, a line segment
+between the camera and voxel $k$ on a LOS is denoted by $[{\rm
+LOS},k]$. The camera inclination angle is $\theta_{\rm LOS}$, relative to the nadir.
+The optical path length along a LOS to $k$ is
+\begin{equation}
+  l_{\rm LOS}(k)=(1/|\cos\theta_{\rm LOS}|)
+     \sum_{q\in[{\rm LOS},k]}
+     \beta(q)
+     \Delta z
+     f_{\rm LOS}(q),
+  \label{eq:lLOSb}
+\end{equation}
+where $f_{\rm LOS}(q)\in [0,1]$ is a factor that expresses how much of a cell
+height is crossed by the LOS.
+
+
 
 We calculate the atmosphere transmittance that affects the radiance
 scattered by voxel $k$.  The first step in this calculation is
@@ -435,6 +459,25 @@ the Sun to the camera via each atmosphere voxel, are given by,
   \vect{\tau}^{\rm air}_c &= \OpDistance_c \curly{ \mat{A}^{\rm air}}.
   \label{eq:tau}
 \end{align}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Scattering}
+\label{sec:scattering}
+
+
+\noindent Using vector notation, Eq.~(\ref{eq:alpha}) becomes,
+\begin{align}
+  \vect{\alpha}^{\rm aerosol} &= \varpi \sigma^{\rm aerosol}
+  \mat{A}^{\rm
+    aerosol} \odot P^{\rm aerosol}(\vect{\mu}) \nonumber \\
+  \vect{\alpha}^{\rm air} &= \vect{\beta}^{\rm air}_{\lambda} \odot
+  P^{\rm air}(\vect{\mu}),
+  \label{eq:alpha_matrix}
+\end{align}
+where the operator $\odot$ denotes the Hadamard (element-wise)
+product.
+
+
 
 \subsection{Captured Image}
 \label{sec:captured-image}
