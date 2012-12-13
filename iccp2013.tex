@@ -127,25 +127,23 @@ Sampling Earth both spatially and angularly is done by the Multiangle Imaging Sp
  \vspace{-0.2cm}
 
 \noindent {\bf Extinction}:
-Let sun rays (SR) irradiate a small volume that includes particles of a certain type.
-Each particle has a {\em cross section} $\sigma$ (units ${\rm m}^2$)
-for interacting with the irradiance (extinction).  The volume includes
-many particles of this type. The denser the small volume, the stronger is the extinction.
-Let $n$ be the density of the particles (units $1/{\rm m}^3$). Per unit volume, the {\em extinction coefficient} $\beta$ (units $1/{\rm m}$)
-is thus given by
+Sun rays (SR) irradiate a small volume that includes particles of a certain type.
+Each particle has an {\em extinction cross section} $\sigma$ (units ${\rm m}^2$)
+for interacting with the irradiance. The volume includes
+many particles of this type. The denser the volume, the stronger is the extinction.
+The density of the particles is $n$ (units $1/{\rm m}^3$). Per unit volume, the {\em extinction coefficient} $\beta$ (units $1/{\rm m}$) is
 \begin{align}
   \beta= \sigma n
   \;.
   \label{eq:extinctc}
 \end{align}
-Suppose the volume has infinitesimal length $dl$. Then, the relative portion of extinct SR irradiance is
-the unitless differential {\em optical depth}
+The volume has infinitesimal length $dl$. Then, the relative portion of extinct SR irradiance is the unitless differential {\em optical depth}
 \begin{align}
   d\tau= \beta dl=\sigma n dl
   \;.
   \label{eq:extinct}
 \end{align}
-If the SR propagates in an extended volume, the optical depth aggregates:
+The optical depth aggregates in extended propagation: 
 \begin{align}
   \tau= \int d\tau=\int \beta dl=\int \sigma n dl
   \;.
@@ -158,28 +156,26 @@ Through an attenuating volume, the {\em transmittance} exponentially decays with
 \end{align}
 
 
-\noindent {\bf Scattering}: The interaction (extinction) of a single particle with the irradiance
-can be in the form of either absorption or scattering. The weight of scattering (to all directions), relative to the total extinction is given the unitless {\em single scattering albedo} $\varpi$ of the particle.
-Per unit volume, the {\em scattering coefficient} $\alpha$ (units $1/{\rm m}$)
-is thus given by
+\noindent {\bf Scattering}: Interaction of a single particle with the irradiance
+is by absorption and scattering. The weight of scattering (to all directions), relative to the total extinction is given by the unitless {\em single scattering albedo} $\varpi$ of the particle. The {\em scattering coefficient} $\alpha$ (units $1/{\rm m}$) is 
 \begin{align}
   \alpha= \varpi\beta=\varpi \sigma n
   \;.
   \label{eq:alph}
 \end{align}
-Scattering is generally anisotropic. The angular distribution of scattering is determined by
+Scattering is generally anisotropic. Its angular distribution is determined by
 a {\em phase function} $P$. Part of the light scatters towards a camera's line of sight (LOS), as illustrated in
 Fig.~\ref{fig:settings}. The angle between the SR and LOS is the scattering angle $\Phi^{\rm scatter}$. The phase function
 $P(\Phi^{\rm scatter})$ is normalized: its integral over all solid angles is unit. The {\em angular scattering coefficient}
-$\tilde\alpha$ has (units $1/({\rm m}\cdot{{\rm strad}}$), and it is given by
+$\tilde\alpha$ (units $1/({\rm m}\cdot{{\rm strad}}$) is
 \begin{align}
-  \tilde\alpha(\Phi^{\rm scatter}) 
-  = \varpi\beta P(\Phi^{\rm scatter}) 
+  \tilde\alpha(\Phi^{\rm scatter})
+  = \varpi\beta P(\Phi^{\rm scatter})
   = \varpi \sigma n P(\Phi^{\rm scatter}).
   \label{eq:alphabasic}
 \end{align}
 
-The phase function is often approximated by a parametric approximation. A common approximation is the Henyey-Greenstein function,
+The phase function is often approximated by a parametric expression, as the Henyey-Greenstein function,
 \begin{align}
   P_g(\Phi^{\rm scatter})\approx
    \frac{3} {8\pi}
@@ -193,7 +189,7 @@ where $g$ is the {\em anisotropy parameter} and
    \label{eq:mu}
 \end{align}
 
-\noindent {\bf Air molecules}: Molecules are much smaller than the light wavelength $\lambda$. Then, scattering is modeled by the {\em Rayleigh} model: the phase function is
+\noindent {\bf Air molecules}: Scattering by air molecules follows the {\em Rayleigh} model: for wavelength $\lambda$ the phase function is
 \begin{align}
   P^{\rm air}\left[\mu(k)\right] &= \frac{3}{16\pi}(1+\mu^2)
   \label{eq:rayleighP}
@@ -201,8 +197,9 @@ where $g$ is the {\em anisotropy parameter} and
 and $\varpi^{\rm air}$=1. Air molecular density $n^{\rm air}$ falls off approximately exponentially with altitude, with a characteristic~\cite{Levi1980} falloff height $H^\mathrm{air}=8\ km$. Consequently~\cite{Levi1980}, the coefficients for extinction and scattering by air molecules are modeled by
 \begin{align}
   \alpha^{\rm air}(h, \lambda)=\beta^{\rm air}(h, \lambda)
-  \approxeq 1.09 \times 10^{-3}
-  \frac{1}{\lambda^4}\exp^{-\frac{h}{H^\mathrm{air}}}.
+  \approxeq 
+  \frac{1.09 \times 10^{-3}}{\lambda^4}
+  \exp(-h/H^\mathrm{air})  %\left[-\frac{h}{H^\mathrm{air}}\right].
   \label{eq:rayleighbeta}
 \end{align}
 
@@ -339,7 +336,7 @@ Eq.~(\ref{eq:lSRn}) can be written as
 \end{equation}
 where
 \begin{equation}
-  \tau_{\rm SR}^{\rm air}=\frac{\Delta z}{\cos\Phi^{\rm SR}}
+  \tau_{\rm SR}^{\rm air}(k)=\frac{\Delta z}{\cos\Phi^{\rm SR}}
      \sum_{q \in[{\rm SR},k]}
      \beta^{\rm air}(q)  f_{\rm SR}(q)
   \label{eq:lSRair}
@@ -353,7 +350,7 @@ and
 \end{equation}
 
 
-We concatenate all voxels into a columns stack vector. Thus 
+We concatenate all voxels into a columns stack vector. Thus
 aerosol densities and cross sections in all voxels are stored in the respective vectors
 ${\bf n}$ and $\vect{\sigma}$.
 Eq.~(\ref{eq:lSRaeros}) leads to a vector of SR optical depths due to aerosols:
@@ -394,17 +391,17 @@ where
 \end{equation}
 and
 \begin{align}
+  \label{eq:lLOSaeros}
   \tau_{{\rm LOS}_c}^{\rm aerosol}(k)=
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ~~~~~~~~~~~~~~~~~~%\nonumber
   ~~~~~
   \\
-  %~~~~ 
+  %~~~~
    \frac{\Delta z}{\cos\Phi^{\rm LOS}_c}
      \sum_{q \in[{\rm LOS}_c,k]}
      \sigma^{\rm aerosol}(q) n^{\rm aerosol}(q) f_{\rm LOS_c}(q)
-     \nonumber 
-  \label{eq:lLOSaeros}
+     \nonumber
 \end{align}
 Eq.~(\ref{eq:lLOSaeros}) leads to a vector of LOS optical depths due to aerosols:
 \begin{equation}
@@ -525,16 +522,10 @@ where ${\rm NA}$ is the numerical aperture of the camera lens. The distance $R({
 Combining Eqs.~(\ref{eq:tautotal},\ref{eq:pc},\ref{eq:IcP}), the captured image is thus
 \begin{align}
  {\bf I}_c= L^{\rm TOA}
-%  \;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;
-%  \;\;\;\;\;\;\;\;\;\;\;\;\;
-%  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-%   \nonumber \\ %\nonumber
-%    \cdot
     {\vect{\Pi}}_c
           \left\{
           (\tilde{\vect{\alpha}}^{\rm air}_c + \tilde{\vect{\alpha}}^{\rm aerosol}_c)
            \odot
-%           e^{-\vect{\tau}_c}
             e^{-[\vect{\tau}_c^{\rm air}
                + {\bf D}_c (\vect{\sigma} \odot {\bf n})]}
            \right\}
@@ -552,7 +543,7 @@ vector $[{\sigma}^{\rm aerosol},\varpi^{\rm aerosol},g]$ is uniform across the s
   \;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;
      \nonumber \\
            [\tilde{\vect{\alpha}}^{\rm air}_c + %\right.
-           \varpi^{\rm aerosol}\sigma^{\rm aerosol} 
+           \varpi^{\rm aerosol}\sigma^{\rm aerosol}
            P^{\rm aerosol}_g(\vect{\Phi}^{\rm scatter}_c)
            \odot{\bf n}
            ]
@@ -560,55 +551,7 @@ vector $[{\sigma}^{\rm aerosol},\varpi^{\rm aerosol},g]$ is uniform across the s
            .
   \label{eq:bigIA}
 \end{align}
-%\begin{align}
-% {\bf I}_c= L^{\rm TOA}
-%    {\vect{\Pi}}_c
-%          \Big(
-%            \left\{ \exp
-%                 \left[-(\vect{\tau}_c^{\rm air}
-%                     + {\sigma}^{\rm aerosol} {\bf D}_c {\bf A}^{\rm aerosol})
-%                 \right]
-%            \right\}
-%%  \;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;
-%     ~~~~~
-%      \nonumber \\ ~~~~~~~~~~~~
-%         \odot
-%           [\tilde{\vect{\alpha}}^{\rm air}_c + %\right.
-%           \tilde\sigma^{\rm aerosol} P^{\rm aerosol}_g(\vect{\Phi}^{\rm scatter}_c)
-%           \odot{\bf A}^{\rm aerosol}
-%           ]
-%           \Big)
-%           ,
-%  \label{eq:bigIA}
-%\end{align}
 
-
-
-%\subsection{Simulation Results}
-%\label{sec:simulation-results}
-%
-%Figures~\ref{fig:simulation-results1}
-%and~\ref{fig:simulation-results2} show simulated images for different
-%aerosol distributions and Sun angles.  The aerosol distribution
-%follows the expression below,
-%\begin{align}
-%  \mat{A}^{\rm aerosol}(h) = \frac{1}{\sigma \times \rm{visibility}}
-%  \exp^{-\frac{h}{H^\mathrm{aerosol}}},
-%\end{align}
-%where $H^\mathrm{aerosol}=1.2\ km$ is a typical characteristic
-%thickness of the aerosol layer~\cite{Levi1980}. The `visibility'
-%parameter is related to the mean free path (MFP) of the aerosol layer
-%at sea level,
-%\begin{align}
-%  \mathrm{visibility} \triangleq \mathrm{MFP^{sea
-%      level}}=\frac{1}{\sigma \mat{A}^{\rm aerosol}_{h=0}},
-%\end{align}
-%where $\sigma$ is the cross section of the aerosol and $\mat{A}^{\rm
-%  aerosol}_{h=0}$ its density at sea level.
-%
-%In these simulations we use a single type of aerosol (``spherical nonabsorbing 0.06'') across the
-%atmosphere. The aerosol properties are taken
-%from~\cite{Martonchik2009}.
 
 
 
@@ -634,8 +577,7 @@ The number of voxels is  $N_{\rm voxels}$.  In general terms, the variables are 
   \;\;,
   \label{eq:calV}
 \end{equation}
-where $\lambda$ denotes the spectral channel. Thus, the number of unknown variables is in principle
-\mbox{$|{\cal V}|=N_{\rm voxels}(1+3N_{\rm spectral})$}.
+where $\lambda$ denotes the spectral channel. Thus, the number of unknown variables is in principle \mbox{$|{\cal V}|=N_{\rm voxels}(1+3N_{\rm spectral})$}.
 
 
 Prior knowledge reduces the unknowns. Sec.~\ref{sec:captured-image} mentions a prior:
@@ -659,8 +601,7 @@ set $\left\{
 is not arbitrary, since all these characteristics have physical origins. This
 set is constrained to comply with what nature allows (aerosol classes).
 This significantly constrains the unknown characteristics. State-of-the-art aerosol retrieval,
-as used by NASA's MISR products indeed employ an aerosol-class prior. Types of aerosol mixtures are
-discretized to $N_{\rm models}=74$ classes~\cite{martonchikBook}, called {\em models}.
+as used by NASA's MISR products indeed employ an aerosol-class prior. Types of aerosol mixtures are discretized to $N_{\rm models}=74$ classes~\cite{martonchikBook}, called {\em models}.
 Each class $m$ represents aerosols having a distinct characteristics set.
 State of the art retrieval is 1D (only vertical radiative transfer per large areas). We use
 this prior in our 3D problem. Then, the set of unknowns reduces to
@@ -705,45 +646,24 @@ where
   \| {\bf I}^{\rm measured}_c - {\bf I}_c({\bf n})\|^2_2
 \end{equation}
 This is solved using standard optimization tools. Fast optimization that leads to
-to local minima ($f$ is not convex) exploits the gradient of $f$. 
+to local minima ($f$ is not convex) exploits the gradient of $f$.
 
 Since our model uses close-form expressions, $f$ is differentiable. The gradient of $f$ with respect to ${\bf n}$ is
 \begin{align}
   \Grad{\vect{n}} f = -2\sum_{c=1}^{N_{\rm views}}
-  \transpose{\left[\mat{J}_{\hat{\vect{i}}_c}(\vect{n})\right]}(\vect{I}_c-\hat{\vect{I}}_c)
+  \transpose{\left[\mat{J}_{{\bf I}_c}(\vect{n})\right]}
+  [{\bf I}^{\rm measured}_c - {\bf I}_c({\bf n})]
   \;.
   \label{eq:gradient1}
 \end{align}
-Here the matric $\mat{J}_{\hat{\vect{I}}_c}(\vect{a})$ is the Jacobian  of
+Here the matrix $\mat{J}_{\hat{\vect{I}}_c}(\vect{n})$ is the Jacobian  of
 the vector $\hat{\vect{I}}_c$ with respect to $\vect{n}$. Element $(\Theta,k)$ of this matrix
 differentiates the intensity in pixel ${\bf \Theta}$ (in viewpoint $c$) with variation of the density at voxel $k$, i.e.,
   $\partial \hat{\vect{I}}_{c}({\bf \Theta})/\partial{n^{\rm aerosol}(k)}$.
-%
-%
-%
-%
-%\begin{align}
-%  \mat{J}_{\hat{\vect{i}}_c}(\vect{a}) =
-%  \begin{pmatrix}
-%    \PartDeriv{\hat{\vect{i}}_{c}(1)}{a_1} & \PartDeriv{\hat{\vect{i}}_{c}(2)}{a_2} & \cdots \\
-%    \PartDeriv{\hat{\vect{i}}_{c}(1)}{a_1} & \PartDeriv{\hat{\vect{i}}_{c}(2)}{a_2} & \cdots \\
-%    \vdots & \vdots & \ddots
-%  \end{pmatrix}
-%\end{align}
 
-Let $\OpDiag{\vect{\vect{v}}}$ denote conversion of a vector of length
-$q$ into a $q \times q$ diagonal matrix,
-\begin{equation*}
-  \OpDiag{\vect{v}} =
-  \begin{bmatrix}
-    v_1 & & & \\
-    & v_2 & & \text{\huge{0}} \\
-    \text{\huge{0}} & & v_3 & \\
-    & & & \ddots
-  \end{bmatrix}
-\end{equation*}
-
-\noindent From~(\ref{eq:atsensor}), we have
+Let $\OpDiag{\vect{v}}$ denote conversion of vector $\vect{v}$ into a diagonal matrix, 
+whose main diagonal elements correspond to the elements of $\vect{v}$. 
+From~(\ref{eq:atsensor})
 \begin{align}
   \mat{J}_{\hat{\vect{i}}_c}(\vect{a}) &= (\rm{NA})^2 \mathrm{L}^{\rm TOA}\,
   \Big( \sigma^{\rm aerosol} \, \varpi \, \OpDiag{P^{\rm
@@ -769,34 +689,40 @@ $L^{\rm TOA}$ is obtained from~\cite{sun_composition,BBradiance}, with respectiv
  $L^{\rm TOA}_{\rm R}:L^{\rm TOA}_{\rm G}:L^{\rm TOA}_{\rm B}=255:236:224$.\\
 
 \noindent{\bf Aerosol}: We used particle-type 4 from the aerosol list in
-Ref.~\cite{Martonchik2009}. This is a spherical non-absorbing sulfate/sea-sal/organic particle, whose anisotropy parameter per color channel is $[g_{\rm R},g_{\rm G},g_{\rm B}]=[0.718,0.722,0.725]$. Its single-scattering albedo is $\varpi=1$ at all channels. Its extinction cross section per color is
+Ref.~\cite{Martonchik2009}. This is a spherical non-absorbing sulfate/sea-sal/organic particle, whose anisotropy parameter per color channel is $[g_{\rm R},g_{\rm G},g_{\rm B}]=[0.718,0.722,0.725]$. Its corresponding extinction cross sections are
   $[\sigma^{\rm aerosol}_{\rm R},
     \sigma^{\rm aerosol}_{\rm G},
     \sigma^{\rm aerosol}_{\rm B}]=[1.02,1.04,1.03]$.
+Its single-scattering albedo is $\varpi^{\rm aerosol}=1$ at all channels.
 We set the spatial distribution as a product of two functions. The first function is an exponential decay~\cite{Levi1980} with altitude $h(k)$ of voxel $k$,
 \begin{align}
  f_1[h(k)] = \frac{1}
  {\sigma^{\rm aerosol}_{\rm G} \mathrm{MFP^{sea level}}}
-  \exp^{-\frac{h(k)}{H^\mathrm{aerosol}}},
+  \exp\left[-\frac{h(k)}{H^\mathrm{aerosol}}\right],
 \end{align}
 where $H^\mathrm{aerosol}=8\ km$. This expresses a general trend of reduced atmospheric density with height. Here
 The mean free path (MFP) of the aerosols layer at sea level is
-$\mathrm{MFP^{sea level}}=1/50 {\rm[1/km]}$.
+$\mathrm{MFP^{sea level}}=1/50~{\rm[1/km]}$.
 % is a typical characteristic thickness of the aerosol layer~\cite{Levi1980}.
 
 The second function, $f_2$, expresses a clustered nature of a aerosol ``clouds''. We define two ellipsoids: the first is centered at altitude
 $3.3km$, and has horizontal width of $32km$ and vertical thickness of $2.8km$. The second ellipsoid is centered at altitude $6.6km$, and has lateral width of $24km$ and vertical thickness of $2.1km$. Then
-\begin{align}
- f_2(k) = 1 {\rm ~~~if~} k\in {\rm ~any ellipsoid}\\
- f_2(k) = 1 {\rm otherewise},
-\end{align}
-The aerosol distribution is thus
-\begin{align}
-  \mat{A}^{\rm aerosol}=f_1(h)f_2.
-\end{align}
+\begin{equation}
+  f_2(k) = 
+  \left\{
+      \begin{array}{ll}
+          1  & \mbox{ if $k\in$ any ellipsoid} \\
+          0  & \mbox{ otherwise}
+    \label{eq:f2}
+       \end{array} 
+  \right. 
+  .
+  \hspace{-0.05cm}
+\end{equation}
+The aerosol distribution is then ${\bf n}=f_1\odot f_2$.
 Note that the horizontal widths are much larger than the vertical ones. This is consistent with scales of atmospheric aerosol distributions.\\
 
-\noindent{\bf Dimensions}: The domain of sky we simulate and recover has area of $50\times 50$km, and it extends from the ground up to altitude of 10km. This volume is divided to a $50\times50\times100$ grid, where each voxel has area of $1\times1$km and vertical thickness of 100 meters. The dimension of the problem is thus ${\cal O}(250,000)$ variables.\\
+\noindent{\bf Dimensions}: The domain of sky we simulate and recover has area of $50\times 50$km, and it extends from the ground up to altitude of 10km. This volume is divided to a $50\times50\times100$ grid, where each voxel has area of $1\times1$km and vertical thickness of 100 meters. The dimension of the problem is thus $250,000$ variables.\\
 
 \noindent{\bf Cameras}: Each ground-based camera has a hemispherical field of view, capturing the entire sky from its viewpoint. We used 95 viewpoints on a grid, each view $\approx 4.4$km from its neighbors.
 The resolution of each camera is low: $128\times 128$ pixels, expressing the fact that cloudless (yet hazy) sky images are rather smooth, hence there is no need for high image resolution. Each pixel has full-well depth of 40000 electrons, which corresponds to the brightest pixel value. Each measurement has photon noise, which is Poissonian distributed, according to image value $I_c$ and the full-well depth.\\
@@ -804,8 +730,7 @@ The resolution of each camera is low: $128\times 128$ pixels, expressing the fac
 \noindent{\bf Computer}: We had access to an SGI-TNN cluster computer that has 88 computer nodes consisting of two 2.40 GHz six-Core Xeon with 8GB
 DDR3 memory per core. Out of it, we used 8 nodes, corresponding to 96 cores. Each core was dedicates to render a modeled image (in each interaction) as if captured by a one of the 95 cameras. Each iteration (varying the model according the gradient-based algorithm and varying the all rendered images) took $\approx 7$sec.\\
 
-\noindent{\bf Optimization}: We used a L-BFGS-B algorithm~\cite{BFGS}.
-Satisfactory convergence occurred at $\approx 6500$ iterations, taking $\approx 12.5$ hours to complete in total.
+\noindent{\bf Optimization}: We used a L-BFGS-B algorithm~\cite{BFGS}. The algorithm was initialized by ${\bf n}=0$. Satisfactory convergence occurred in several thousand iterations, taking a couple of hours to complete in total.
 
 
 
