@@ -119,6 +119,12 @@ The ability to know the conditions in 3D can thus enhance use of flight airspace
 This work models passive optical tomographic imaging of the 3D atmospheric scatterer distribution. Then, we solve this tomography problem, to recover the distribution. Recovery is formulated as an optimization that minimizes a cost function. We derive the gradient of this cost function, to enable efficient optimization. Obtaining data for this problem is an interesting task.
 
 Sampling Earth both spatially and angularly is done by the Multiangle Imaging SpectroRadiometer (MISR)~\cite{diner,matronchik} from space (Fig.~\ref{fig:orbit}), the Airborne Multiangle SpectroPolarimetric Imager (AirMSPI)~\cite{dinerDavis07,dinerDavis10}, and other spaceborne and airborne instruments, as POLDER~\cite{baxter,breon,vanMol}. However, the spatial and angular resolution of these instruments is very coarse. We thus believe that high resolution recovery can be achieved if the sky is imaged {\em from below} by large network of ground-based cameras.
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\columnwidth]{images/misrvw11.jpg}
+  \caption{The Multi-angle Imaging SpectroRadiometer (MISR). Image credit: http://www-misr.jpl.nasa.gov/}
+  \label{fig:orbit}
+\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\vspace{-0.25cm}
@@ -767,6 +773,21 @@ DDR3 memory per core. Out of it, we used 8 nodes, corresponding to 96 cores. Eac
     \includegraphics[width=\columnwidth]{images/reconstructed}
   \caption{Reconstructed aerosol distribution.}
   \label{fig:synth-result}
+\end{figure}
+
+\begin{figure}
+  \centering
+    \includegraphics[width=\columnwidth]{images/orig1}
+  \caption{Synthetic 3D aerosol distribution. Colour values mark
+    aerosol density.}
+  \label{fig:synth-atmo2}
+\end{figure}
+
+\begin{figure}
+  \centering
+    \includegraphics[width=\columnwidth]{images/recon1}
+  \caption{Reconstructed aerosol distribution.}
+  \label{fig:synth-result2}
 \end{figure}
 
 \appendix
