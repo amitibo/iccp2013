@@ -108,7 +108,7 @@ Notably, the atmosphere we live in allows light to pass through in multiple loca
 In remote sensing~\cite{diner,kokhan}, imaging through air is associated with {\em atmospheric correction}, based on {\em aerosol retrieval}. In that discipline, the atmosphere is often assumed to be plane-parallel, for simplicity. To meet this assumption, state-of-the-art aerosol retrieval is done in distinct large lateral blocks~\cite{matronchik}, with very limited height resolution~\cite{kalashnikova}. We seek high resolution 3D recovery. Lines of thought from the computational vision and photography community may offer a fresh way to study this medium and the sensing process. In addition to active lightfield descattering~\cite{fuchs,levoy,kim} and recovery of refractive transparent objects~\cite{ihrke}, passive dehazing of ground objects was studied in horizontal, fixed views~\cite{fattal,he,kopf,kratz,narasimhan2,oakley,Hschechner2,tan}. In this paper, however, the medium itself, at all relevant altitudes is the object of interest.
 
 3D recovery of this medium has direct implications to various scientific communities that either rely on remotely-sensed imagery, study the atmosphere, or overcome the medium to see beyond. These include meteorology, atmospheric sciences, volcanology, climatology and planetary sciences. For example, retrieval of aerosols %and clouds
-is important for modeling the Earth's radiation transfer, and thus understanding climate factors and evolution~\cite{chud,dayan,kalashnikova}. Aerosol retrieval is also important for monitoring air quality. An example science that focuses of remote observations beyond the medium is oceanic biology: it relies on satellite tracking of chlorophyll distributions~\cite{chang,johnsen,levy,moses}. In such cases, accurate recovery of the atmosphere helps in {\em atmospheric correction}. Beyond Earth, several other bodies in the solar system that have atmospheres (e.g., Sun, Mars, Titan). These objects can be viewed from multiple directions by probes that orbit in solitude, orbit in synchrony with other probes, or flyby. The approach described here may be helpful there.
+is important for modeling the Earth's radiation transfer, and thus understanding climate factors and evolution~\cite{chud,dayan,kalashnikova}. Aerosol retrieval is also important for monitoring air quality. An example science that focuses on remote observations beyond the medium is oceanic biology: it relies on satellite tracking of chlorophyll distributions~\cite{chang,johnsen,levy,moses}. In such cases, accurate recovery of the atmosphere helps in {\em atmospheric correction}. Beyond Earth, several other bodies in the solar system have atmospheres (e.g., Sun, Mars, Titan). These objects can be viewed from multiple directions by probes that orbit in solitude, orbit in synchrony with other probes, or flyby. The approach described here may be helpful there.
 
 The results are significant to {\em aviation safety}, which is tightly related to forecasting and real time sensing of the environment around flight
 paths. To keep safe, today's coarse sensing limits flight capacity. An extreme example is the 2010 volcanic eruption of Iceland's
@@ -167,7 +167,7 @@ Scattering is generally anisotropic. Its angular distribution is determined by
 a {\em phase function} $P$. Part of the light scatters towards a camera's line of sight (LOS), as illustrated in
 Fig.~\ref{fig:settings}. The angle between the SR and LOS is the scattering angle $\Phi^{\rm scatter}$. The phase function
 $P(\Phi^{\rm scatter})$ is normalized: its integral over all solid angles is unit. The {\em angular scattering coefficient}
-$\tilde\alpha$ (units $1/({\rm m}\cdot{{\rm strad}}$) is
+$\tilde\alpha$ (units $1/({\rm m}\cdot{{\rm strad}})$) is
 \begin{align}
   \tilde\alpha(\Phi^{\rm scatter})
   = \varpi\beta P(\Phi^{\rm scatter})
@@ -614,7 +614,7 @@ and \mbox{$|{\cal V}|=N_{\rm voxels}+N_{\rm models}$}.
 
 The inverse problem (tomography) seeks recovery of the 3D aerosol distribution in the
 atmosphere. From Eqs.~(\ref{eq:alpha_matrix},\ref{eq:bigIc},\ref{eq:bigIA},\ref{eq:calV}),
-the images $\{ {\bf I}_c\}_{c=1}^{N_{\rm views}}$ depend on the variables set ${\cal V}$, particularly on the unknown field ${\bf n}$. The recovery task is phrased as optimization of a an objective function, that fits the image-formation model~(\ref{eq:bigIc},\ref{eq:bigIA}) to
+the images $\{ {\bf I}_c\}_{c=1}^{N_{\rm views}}$ depend on the variables set ${\cal V}$, particularly on the unknown field ${\bf n}$. The recovery task is phrased as optimization of an objective function, that fits the image-formation model~(\ref{eq:bigIc},\ref{eq:bigIA}) to
 measured photographs $\{ {\bf I}^{\rm measured}_c\}_{c=1}^{N_{\rm views}}$:
 \begin{equation}
   \label{eq:mingenobjective}
@@ -629,7 +629,7 @@ where
 \end{equation}
 Here ${\cal C}$ is a constraints set, which encapsulates part of the prior knowledge,
 as well as nonnegativity bounds, while $\| \|$ is some error-distance measure.
-Here term ${\rm Regularization}({\cal V})$ describes spatial regularization terms of the variables, such as smoothness, a blobby or a layered structure.
+Here the term ${\rm Regularization}({\cal V})$ describes spatial regularization terms of the variables, such as smoothness, a blobby or a layered structure.
 
 Spatial regularization can help overcome lack of data, if $N_{\rm views}$ is too small, and it is definitely helpful. In this work, however, we formulate and demonstrate the basic principle of our tomography task, hence
 we proceed without regularization. Relying on prior knowledge described in Sec.~\ref{sec:prior}, the problem complexity is by far dominated by the $N_{\rm voxels}$-large array ${\bf n}$, which is continuously valued. Hence, we focus here on retrieving ${\bf n}$ through continuous optimization. Relying on the mean-squared error measure, we seek:
@@ -689,7 +689,7 @@ $L^{\rm TOA}$ is obtained from~\cite{sun_composition,BBradiance}, with respectiv
  $L^{\rm TOA}_{\rm R}:L^{\rm TOA}_{\rm G}:L^{\rm TOA}_{\rm B}=255:236:224$.\\
 
 \noindent{\bf Aerosol}: We used particle-type 4 from the aerosol list in
-Ref.~\cite{Martonchik2009}. This is a spherical non-absorbing sulfate/sea-sal/organic particle, whose anisotropy parameter per color channel is $[g_{\rm R},g_{\rm G},g_{\rm B}]=[0.718,0.722,0.725]$. Its corresponding extinction cross sections are
+Ref.~\cite{Martonchik2009}. This is a spherical non-absorbing sulfate/sea-salt/organic particle, whose anisotropy parameter per color channel is $[g_{\rm R},g_{\rm G},g_{\rm B}]=[0.718,0.722,0.725]$. Its corresponding extinction cross sections are
   $[\sigma^{\rm aerosol}_{\rm R},
     \sigma^{\rm aerosol}_{\rm G},
     \sigma^{\rm aerosol}_{\rm B}]=[1.02,1.04,1.03]$.
@@ -705,7 +705,7 @@ The mean free path (MFP) of the aerosols layer at sea level is
 $\mathrm{MFP^{sea level}}=1/50~{\rm[1/km]}$.
 % is a typical characteristic thickness of the aerosol layer~\cite{Levi1980}.
 
-The second function, $f_2$, expresses a clustered nature of a aerosol ``clouds''. We define two ellipsoids: the first is centered at altitude
+The second function, $f_2$, expresses a clustered nature of aerosol ``clouds''. We define two ellipsoids: the first is centered at altitude
 $3.3km$, and has horizontal width of $32km$ and vertical thickness of $2.8km$. The second ellipsoid is centered at altitude $6.6km$, and has lateral width of $24km$ and vertical thickness of $2.1km$. Then
 \begin{equation}
   f_2(k) = 
@@ -728,9 +728,9 @@ Note that the horizontal widths are much larger than the vertical ones. This is 
 The resolution of each camera is low: $128\times 128$ pixels, expressing the fact that cloudless (yet hazy) sky images are rather smooth, hence there is no need for high image resolution. Each pixel has full-well depth of 40000 electrons, which corresponds to the brightest pixel value. Each measurement has photon noise, which is Poissonian distributed, according to image value $I_c$ and the full-well depth.\\
 
 \noindent{\bf Computer}: We had access to an SGI-TNN cluster computer that has 88 computer nodes consisting of two 2.40 GHz six-Core Xeon with 8GB
-DDR3 memory per core. Out of it, we used 8 nodes, corresponding to 96 cores. Each core was dedicates to render a modeled image (in each interaction) as if captured by a one of the 95 cameras. Each iteration (varying the model according the gradient-based algorithm and varying the all rendered images) took $\approx 7$sec.\\
+DDR3 memory per core. Out of it, we used 8 nodes, corresponding to 96 cores. Each core was dedicated to rendering a modeled image (in each interaction) as if captured by one of the 95 cameras. Each iteration (varying the model according to the gradient-based algorithm and varying all the rendered images) took $\approx 7$sec.\\
 
-\noindent{\bf Optimization}: We used a L-BFGS-B algorithm~\cite{BFGS}. The algorithm was initialized by ${\bf n}=0$. Satisfactory convergence occurred in several thousand iterations, taking a couple of hours to complete in total.
+\noindent{\bf Optimization}: We used the L-BFGS-B algorithm~\cite{BFGS}. The algorithm was initialized by ${\bf n}=0$. Satisfactory convergence occurred in several thousand iterations, taking a couple of hours to complete in total.
 
 
 
