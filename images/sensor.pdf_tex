@@ -1,0 +1,74 @@
+%% Creator: Inkscape 0.48.2, www.inkscape.org
+%% PDF/EPS/PS + LaTeX output extension by Johan Engelen, 2010
+%% Accompanies image file 'sensor.pdf' (pdf, eps, ps)
+%%
+%% To include the image in your LaTeX document, write
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics{<filename>.pdf}
+%% To scale the image, write
+%%   \def\svgwidth{<desired width>}
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics[width=<desired width>]{<filename>.pdf}
+%%
+%% Images with a different path to the parent latex file can
+%% be accessed with the `import' package (which may need to be
+%% installed) using
+%%   \usepackage{import}
+%% in the preamble, and then including the image with
+%%   \import{<path to file>}{<filename>.pdf_tex}
+%% Alternatively, one can specify
+%%   \graphicspath{{<path to file>/}}
+%% 
+%% For more information, please see info/svg-inkscape on CTAN:
+%%   http://tug.ctan.org/tex-archive/info/svg-inkscape
+%%
+\begingroup%
+  \makeatletter%
+  \providecommand\color[2][]{%
+    \errmessage{(Inkscape) Color is used for the text in Inkscape, but the package 'color.sty' is not loaded}%
+    \renewcommand\color[2][]{}%
+  }%
+  \providecommand\transparent[1]{%
+    \errmessage{(Inkscape) Transparency is used (non-zero) for the text in Inkscape, but the package 'transparent.sty' is not loaded}%
+    \renewcommand\transparent[1]{}%
+  }%
+  \providecommand\rotatebox[2]{#2}%
+  \ifx\svgwidth\undefined%
+    \setlength{\unitlength}{362.29758301bp}%
+    \ifx\svgscale\undefined%
+      \relax%
+    \else%
+      \setlength{\unitlength}{\unitlength * \real{\svgscale}}%
+    \fi%
+  \else%
+    \setlength{\unitlength}{\svgwidth}%
+  \fi%
+  \global\let\svgwidth\undefined%
+  \global\let\svgscale\undefined%
+  \makeatother%
+  \begin{picture}(1,1.45056133)%
+    \put(0,0){\includegraphics[width=\unitlength]{sensor.pdf}}%
+    \put(0.38269212,1.45333541){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.3091283\unitlength}\raggedright Radiance Map\end{minipage}}}%
+    \put(0.49202688,0.84389167){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.20818523\unitlength}\centering camera c\end{minipage}}}%
+    \put(0.14124485,0.74897166){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.26929511\unitlength}\raggedright camera sensor\end{minipage}}}%
+    \put(0.24478295,0.83869871){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.25677392\unitlength}\raggedright pixel ${\bf \Theta}$\end{minipage}}}%
+    \put(0.66867728,1.10445094){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.27222099\unitlength}\centering contribution of\\ voxel k\end{minipage}}}%
+    \put(0.69075857,1.29214195){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.27442912\unitlength}\centering contribution of\\ voxel k+1\end{minipage}}}%
+    \put(0.26349109,1.21445633){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.25676408\unitlength}\centering contribution of\\ voxel k+2\end{minipage}}}%
+    \put(0.29550338,1.38267526){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.26118034\unitlength}\centering contribution of\\ voxel k+3\end{minipage}}}%
+    \put(0.81759655,0.63980872){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.15611273\unitlength}\centering Radiance\\ Values\end{minipage}}}%
+    \put(0.38829873,0.64503146){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.3091283\unitlength}\raggedright Projection Matrix\end{minipage}}}%
+    \put(0.07425906,0.64503146){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.11863953\unitlength}\centering Sensor\\ Reading\end{minipage}}}%
+    \put(0.95363698,0.4212039){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.3091283\unitlength}\raggedright k\end{minipage}}}%
+    \put(0.37731523,0.58681361){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.3091283\unitlength}\raggedright k\end{minipage}}}%
+    \put(0.46122415,0.58681361){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.3091283\unitlength}\raggedright k+1\end{minipage}}}%
+    \put(0.95363698,0.33287871){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.3091283\unitlength}\raggedright k+1\end{minipage}}}%
+    \put(0.54292495,0.58681361){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.3091283\unitlength}\raggedright k+2\end{minipage}}}%
+    \put(0.95363698,0.24455353){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.3091283\unitlength}\raggedright k+2\end{minipage}}}%
+    \put(0.6344046,0.58681361){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.3091283\unitlength}\raggedright k+3\end{minipage}}}%
+    \put(0.95363698,0.15622835){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.3091283\unitlength}\raggedright k+3\end{minipage}}}%
+    \put(-0.02037007,0.51787179){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.12635452\unitlength}\centering pixel\\ ${\bf \Theta}$\end{minipage}}}%
+  \end{picture}%
+\endgroup%
