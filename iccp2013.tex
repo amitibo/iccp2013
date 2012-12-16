@@ -559,8 +559,6 @@ vector $[{\sigma}^{\rm aerosol},\varpi^{\rm aerosol},g]$ is uniform across the s
 \end{align}
 
 
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Inverse Problem}
 \label{sec:inverse-problem}
@@ -669,20 +667,23 @@ differentiates the intensity in pixel ${\bf \Theta}$ (in viewpoint $c$) with var
 
 Let $\OpDiag{\vect{v}}$ denote conversion of vector $\vect{v}$ into a diagonal matrix, 
 whose main diagonal elements correspond to the elements of $\vect{v}$. 
-From~(\ref{eq:atsensor})
+A close-form expression of the Jacobian is
 \begin{align}
-  \mat{J}_{\hat{\vect{i}}_c}(\vect{a}) &= (\rm{NA})^2 \mathrm{L}^{\rm TOA}\,
-  \Big( \sigma^{\rm aerosol} \, \varpi \, \OpDiag{P^{\rm
-        aerosol}(\vect{\mu}_c)} \transpose{\OpSphere}_c - \nonumber \\
-    &\quad \transpose{\OpDistance} \OpDiag{\OpSphere_c (\vect{\alpha}^{\rm
-        aerosol}_c +
-      \vect{\alpha}^{\rm air}_c )} \Big)
-  \OpDiag{\exp^{-(\vect{\tau}^{\rm aerosol}_c + \vect{\tau}^{\rm
-        air}_c)}} \transpose{\OpInt} \, \transpose{\OpCamera},
+  \mat{J}_{\hat{\vect{i}}_c}(\vect{a}) &= \mathrm{L}^{\rm TOA}\,
+  \Big(\mathbb{A} - \mathbb{B} \Big) \, \mathbb{C} ,
   \label{eq:gradient2}
 \end{align}
-for detailed derivation of Eq.~(\ref{eq:gradient2}) we refer the
-reader to App.~\ref{sec:gradient-derivation}.
+where
+\begin{align}
+  \label{eq:gradient3}
+  \mathbb{A} &= \varpi\sigma\OpDiag{ P_g(\vect{\Phi}^{\rm scatter}_c)} \nonumber \\
+  \mathbb{B} &= {\sigma}\transpose{\OpDistance_c} \OpDiag{[\tilde{\vect{\alpha}}^{\rm air}_c + \varpi\sigma P_g(\vect{\Phi}^{\rm scatter}_c) \odot{\bf n} ]} \nonumber \\
+  \mathbb{C} &= \OpDiag{\exp^{-(\vect{\tau}_c^{\rm air} + {\sigma} {\bf D}_c {\bf n})}} \transpose{{\vect{\Pi}}_c}
+\end{align}
+for readability we used $\varpi$, $\sigma$ and $P_g$ instead of
+$\varpi^{\rm aerosol}$, $\sigma^{\rm aerosol}$ and $P^{\rm aerosol}_g$.
+For detailed derivation of Eq.~(\ref{eq:gradient2}) and~(\ref{eq:gradient3})
+we refer the reader to App.~\ref{sec:gradient-derivation}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Simulations}
@@ -798,7 +799,7 @@ DDR3 memory per core. Out of it, we used 8 nodes, corresponding to 96 cores. Eac
 Here we detail the derivation of~(\ref{eq:gradient2}).  We use
 matrices to implement the different operators. Using matrices
 simplifies the calculation of derivatives and the use of optimization
-tools. Note that~(\ref{eq:atsensor}) in column stack notation is
+tools. Note that~(\ref{eq:bigIA}) in column stack notation is
 \begin{align}
   \vect{i}_c=(\rm{NA})^2\mathrm{L}^{\rm TOA} \OpCamera \, \OpInt \,
   \roundy{ \roundy {\OpSphere_c \, \roundy{\vect{\alpha}^{\rm
