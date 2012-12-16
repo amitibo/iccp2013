@@ -102,6 +102,13 @@ in our problem, analysis does not rely on direct illumination, but on sunlight s
 
 In remote sensing~\cite{diner,kokhan}, imaging through air is associated with {\em atmospheric correction}, based on {\em aerosol retrieval}. In this discipline, the atmosphere is often assumed to be plane-parallel, for simplicity, using only 1D vertical radiative transfer. Consequently state-of-the-art aerosol retrieval is done in distinct large lateral blocks~\cite{matronchik} with limited height resolution~\cite{kalashnikova}. We, however, seek high resolution 3D recovery. Lines of thought from the computational photography community may offer a fresh way to study this medium. In addition to active lightfield descattering~\cite{fuchs,levoy,kim} and recovery of refractive transparent objects~\cite{ihrke}, passive dehazing of ground objects was studied in horizontal, fixed views~\cite{fattal,he,kopf,kratz,narasimhan2,oakley,Hschechner2,tan}. In this paper, however, the medium itself, at all relevant altitudes is the object of interest.
 
+\begin{figure}[t!]
+  \centering
+  \yoavcomment{\includegraphics[width=\columnwidth]{images/front_img.pdf}}
+    \caption{Multi-view images of a synthetic aerosol distibution and its three dimensional reconstruction.}
+  \label{fig:front}
+\end{figure}
+
 3D recovery of this medium has direct implications to various scientific communities that either rely on remotely-sensed imagery, study the atmosphere, or overcome the medium to see beyond. These include meteorology, atmospheric sciences, volcanology, and climatology.
 % and planetary sciences.
 Aerosol retrieval %and clouds
@@ -200,6 +207,7 @@ and $\varpi^{\rm air}$=1. Air molecular density $n^{\rm air}$ falls off approxim
   \label{eq:rayleighbeta}
 \end{align}
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\vspace{-0.25cm}
 \section{Image Acquisition Principle}
@@ -284,16 +292,6 @@ described in Sec.~\ref{sec:scattering}.
   \caption[Settings of the atmosphere simulation]{Settings for the
     atmosphere simulation.}
   \label{fig:settings}
-\end{figure}
-
-
-
-
-\begin{figure}
-  \centering
-  \yoavcomment{\includegraphics[width=\columnwidth]{images/front.png}}
-    \caption{Reconstruction of a synthetic aerosol distibution.}
-  \label{fig:front}
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -832,6 +830,18 @@ DDR3 memory per core. Out of it, we used 8 nodes, corresponding to 96 cores. Eac
   \caption{Reconstructed aerosol distribution.}
   \label{fig:synth-result2}
 \end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\columnwidth]{images/objective.eps}
+  \caption{The log of the objective as function of the iteration.}
+  \label{fig:objective}
+\end{figure}
+
+eps
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Conclusions}
+\label{sec:conclusions}
 
 {\small
 %\bibliographystyle{ieee}
