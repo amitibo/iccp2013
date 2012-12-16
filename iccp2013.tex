@@ -94,20 +94,21 @@ CA 91011, United States\\
 %%%%%%%%% BODY TEXT
 \section{Introduction}
 
-Lightfield and integral imaging~\cite{bishop,horstmeyer,levoy,kim}  samples the optical radiance distribution in location and direction. This approach is mainly used in small-scale setups. This paper deals with a huge scale, up to Earth's size.
-The atmosphere allows light to pass through in multiple locations and directions. Light is affected by this medium. Therefore, in this paper we lay out a principle to recover this 3D medium using measured and modeled lightfields.
+Lightfield and integral imaging~\cite{bishop,horstmeyer,kim,levoy}  samples the optical radiance distribution in location and direction. This approach is mainly used in small-scale setups. This paper deals with a huge scale, up to Earth's size.
+The atmosphere allows light to pass through in multiple locations and directions. Light is affected by this medium. Therefore, in this paper we lay out a principle to recover this 3D medium using measured and modeled lightfields (Fig.~\ref{fig:front}).
+\begin{figure}[t!]
+  \centering
+  \yoavcomment{\includegraphics[width=\columnwidth]{images/front_img.pdf}}
+    \caption{\small The sky is photographed from multiple viewpoints using wide angle (hemispherical) cameras, in a very wide area. The three dimensional distribution of aerosols in the atmosphere affects the images. This distribution is then recovered by a dedicated tomography formulation.}
+  \label{fig:front}
+\end{figure}
 
 Projecting this large object to various directions is similar to tomography in other scientific domains. However, the formulation here is distinct. Most tomography setups have a controlled and/or multidirectional radiation source~\cite{gorbunov,messer}. In contrast, our source is the uncontrolled, unidirectional Sun. Moreover, typical tomography relies on a linear model~\cite{gregson}: the pixel value is a linear combination of components along a line of sight (LOS), or a multiplicative combination (linearized by a logarithm). Linear tomography can detect a gas in volcanic plumes~\cite{wright}, which absorbs UV. Other gases in the atmosphere absorb IR. However, in visible light, atmospheric attenuation is typically dominated by {\em scattering} by particles (aerosols), rather than absorption by gasses. Thus, %in contrast to common tomography,
 in our problem, analysis does not rely on direct illumination, but on sunlight scattered into the LOS. The model turns out to be {\em nonlinear, yet tractable}.
 
-In remote sensing~\cite{diner,kokhan}, imaging through air is associated with {\em atmospheric correction}, based on {\em aerosol retrieval}. In this discipline, the atmosphere is often assumed to be plane-parallel, for simplicity, using only 1D vertical radiative transfer. Consequently state-of-the-art aerosol retrieval is done in distinct large lateral blocks~\cite{matronchik} with limited height resolution~\cite{kalashnikova}. We, however, seek high resolution 3D recovery. Lines of thought from the computational photography community may offer a fresh way to study this medium. In addition to active lightfield descattering~\cite{fuchs,levoy,kim} and recovery of refractive transparent objects~\cite{ihrke}, passive dehazing of ground objects was studied in horizontal, fixed views~\cite{fattal,he,kopf,kratz,narasimhan2,oakley,Hschechner2,tan}. In this paper, however, the medium itself, at all relevant altitudes is the object of interest.
+In remote sensing~\cite{diner,kokhan}, imaging through air is associated with {\em atmospheric correction}, based on {\em aerosol retrieval}. In this discipline, the atmosphere is often assumed to be plane-parallel, for simplicity, using only 1D vertical radiative transfer. Consequently state-of-the-art aerosol retrieval is done in distinct large lateral blocks~\cite{matronchik} with limited height resolution~\cite{kalashnikova}. We, however, seek high resolution 3D recovery. Lines of thought from the computational photography community may offer a fresh way to study this medium. In addition to active lightfield descattering~\cite{fuchs,kim,levoy} and recovery of refractive transparent objects~\cite{ihrke}, passive dehazing of ground objects was studied in horizontal, fixed views~\cite{fattal,he,kopf,kratz,narasimhan2,oakley,Hschechner2,tan}. In this paper, however, the medium itself, at all relevant altitudes is the object of interest.
 
-\begin{figure}[t!]
-  \centering
-  \yoavcomment{\includegraphics[width=\columnwidth]{images/front_img.pdf}}
-    \caption{Multi-view images of a synthetic aerosol distibution and its three dimensional reconstruction.}
-  \label{fig:front}
-\end{figure}
+
 
 3D recovery of this medium has direct implications to various scientific communities that either rely on remotely-sensed imagery, study the atmosphere, or overcome the medium to see beyond. These include meteorology, atmospheric sciences, volcanology, and climatology.
 % and planetary sciences.
@@ -169,7 +170,7 @@ is by absorption and scattering. The weight of scattering (to all directions), r
 \end{align}
 Scattering is generally anisotropic. Its angular distribution is determined by
 a {\em phase function} $P$. Part of the light scatters towards a camera's line of sight (LOS), as illustrated in
-Fig.~\ref{fig:settings}. The angle between the SR and LOS is the scattering angle $\Phi^{\rm scatter}$. The phase function
+Fig.~\ref{fig:groundgrid}. The angle between the SR and LOS is the scattering angle $\Phi^{\rm scatter}$. The phase function
 $P(\Phi^{\rm scatter})$ is normalized: its integral over all solid angles is unit. The {\em angular scattering coefficient}
 $\tilde\alpha$ (units $1/({\rm m}\cdot{{\rm strad}})$) is
 \begin{align}
@@ -214,19 +215,24 @@ and $\varpi^{\rm air}$=1. Air molecular density $n^{\rm air}$ falls off approxim
 \label{sec:setup} \vspace{-0.2cm}
 
 The atmosphere has a non-uniform distribution of scattering aerosols. We seek to recover this 3D volumetric distribution. To solve this problem, we formulate a process analogous to tomographic reconstruction. The scene is projected to multiple directions. Thus, a system captures integrated radiance as a function of direction and 2D projected location. Any voxel in the atmosphere contributes to the integrated radiance in multiple directional measurements. The measurements then provide a large number of constraints, to recover the distribution: the density and type of aerosols, per voxel.
+\begin{figure*}[t!]
+   \begin{center}
+\vspace{-0.4cm}
+    \includegraphics[width=0.99\linewidth]{groundtomog6.eps}
+    \end{center}\vspace{-1.5cm}
+    \caption{\small
+    Lightfield imaging through a volumetric distribution in
+    the atmosphere, using ground-based cameras. Our tomographic reconstruction
+    follows the acquisition. The atmosphere is analyzed in a voxel grid.}
+   \label{fig:groundgrid}
+\end{figure*}
 
 Earth's radiation is sampled both spatially and angularly from space using instruments (MISR~\cite{diner,matronchik}, POLDER~\cite{breon}, CHRIS~\cite{vanMol}). However, current system have very coarse resolution. For example, aerosol retrieval in the most complex instrument, MISR, requires spatial blocks that are about $17\times 17$km wide, each observed from just 9 views along-track. This practically leads to vertical radiative transfer analysis, degenerating atmospheric analysis to 1D. Experimental airborne instruments under development~\cite{baxter,dinerDavis10} may provide better, if still coarse resolution once they are operational.
 
-We believe that high resolution atmospheric recovery can be achieved by a set of ground-based wide-angle sky-cameras, looking upwards and capturing the sky lightfield. Moreover, in contrast to satellites which image close to the orbit track (a 1D array of viewpoints), using land-based cameras form a 2D grid of viewpoints as easily or hard as 1D grid. However, before designing and setting up such a very large scale system requires assessment of many details that had not been explored. These include camera specifications needed to recover typical distributions. Hence, a major theoretic and numerical research phase is ahead.
+We believe that high resolution atmospheric recovery can be achieved by a set of ground-based wide-angle sky-cameras, looking upwards and capturing the sky lightfield.
+Moreover, in contrast to satellites which image close to the orbit track (a 1D array of viewpoints), using land-based cameras form a 2D grid of viewpoints as easily or hard as 1D grid. However, before designing and setting up such a very large scale system requires assessment of many details that had not been explored. These include camera specifications needed to recover typical distributions. Hence, a major theoretic and numerical research phase is ahead.
 
 This paper takes the first step, of formulating this principle and demonstrating feasibility using realistic simulations. The formulation of this paper can also apply to multiview images that are captured from satellites, for future spaceborne instruments of this capacity.
-%\begin{figure}[htbp]
-%  \centering
-%  \includegraphics[width=\columnwidth]{images/misrvw11.jpg}
-%  \caption{The Multi-angle Imaging SpectroRadiometer (MISR). Image credit: http://www-misr.jpl.nasa.gov/}
-%  \label{fig:orbit}
-%\end{figure}
-
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -236,17 +242,6 @@ This paper takes the first step, of formulating this principle and demonstrating
 
 This section describe models for image formation. In the consecutive section, we describe how the image formation is inverted to recover the 3D sky structure.
 Consider Fig.~\ref{fig:groundgrid}.
-\begin{figure*}[t!]
-   \begin{center}
-\vspace{-0.4cm}
-    \includegraphics[width=0.99\linewidth]{groundtomog6.eps}
-    \end{center}\vspace{-1.5cm}
-    \caption{\small
-    Lightfield imaging through a volumetric distribution in
-    the atmosphere, using ground-based cameras. Our tomographic reconstruction
-    follows the acquisition. Irrespective of imaging from space or land, this figure represents the atmosphere in a non-parametric structure, yet the voxel grid gets coarser with altitude, expressing a prior about natural regularity.}
-   \label{fig:groundgrid}
-\end{figure*}
 Ground-based wide-angle sky-cameras capture the sky lightfield from below. Per viewpoint, the view azimuth and elevation angles (relative to the zenith and north) are encapsulated in the vector ${\bf{\Theta}}$.  A raw image is $i_{\bf x}({\bf{\Theta}})$: a camera's location ${\bf x}$ is fixed, while any pixel in a frame represents an angle ${\bf{\Theta}}$.
 The measured radiance in all locations ${\bf x}$ and angles ${\bf{\Theta}}$ is the {\em lightfield} $I({\bf x},{\bf{\Theta}})$. Individual images are slices of the lightfield.
  %Alternatively, several ground-based cameras can be mounted on moving vehicles, assuming that the aerosol distribution does not change much during the time-lapse of the camera trajectory.
@@ -254,8 +249,7 @@ The measured radiance in all locations ${\bf x}$ and angles ${\bf{\Theta}}$ is t
 Sunlight is scattered in the medium along the LOS, creating {\em airlight}~\cite{fattal,narasimhan2,Hschechner2,tan}. For each view ${\bf{\Theta}}$ and ground location ${\bf x}$, the airlight is generally different, depending on the distribution of aerosols both along the LOS, and the along the SRs that hit the LOS.
 As Fig.~\ref{fig:groundgrid} shows, for different ${\bf x}$ and ${\bf{\Theta}}$, the LOS cuts through a different set of voxels in the atmosphere. Thus, for each view, the radiance scattered from a voxel is attenuated differently, depending on the distribution of aerosols along the LOS~\cite{hansen}.
 
-
-A forward model takes as input the aerosol distribution, and outputs image captured at different viewpoints. The model calculates radiative transfer, based on fixed parameters as the Sun's characteristics. We use a single scattering model, in which any SR changes direction (scatters) only once on the way to the camera. This model is valid in atmospheres that are not very dense: inside fog and clouds this model does not apply. Under single-scattering approximation, radiative transfer has three steps (Fig.~\ref{fig:settings}):\\
+A forward model takes as input the aerosol distribution, and outputs image captured at different viewpoints. The model calculates radiative transfer, based on fixed parameters as the Sun's characteristics. We use a single scattering model, in which any SR changes direction (scatters) only once on the way to the camera. This model is valid in atmospheres that are not very dense: inside fog and clouds this model does not apply. Under single-scattering approximation, radiative transfer has three steps (Fig.~\ref{fig:groundgrid}):\\
 
 \vspace{-0.35cm}
 \noindent
@@ -275,24 +269,14 @@ Steps 1 and 3 involve the optical depth
 along the light path to and from voxel $k$, analyzed in Sec.~\ref{sec:optical-depth}.
 Step 2 involves the scattering coefficient at voxel $k$,
 described in Sec.~\ref{sec:scattering}.
-
-%The light transfer, $\mathrm{t}(k)$, is calculated per scattering at
-%each voxel $k$.  Let the Sun irradiance at the TOA be $\mathrm{L}^{\rm
-%  TOA}$.  The overall transmittance multiplied by $\mathrm{L}^{\rm
-%  TOA}$ yields the radiance sensed by the camera. The sum of
-%contributions from all voxels is the image captured by the camera,
-%\begin{align}
-%  \mathrm{I}_{\rm camera}=\mathrm{L}^{\rm TOA} \sum_k \mathrm{t}(k).
-%  \label{eq:transatsensor}
-%\end{align}
-
-\begin{figure}
-  \centering \def\svgwidth{0.8\columnwidth}
-  \yoavcomment{\input{images/atmo_settings.pdf_tex}}
-  \caption[Settings of the atmosphere simulation]{Settings for the
-    atmosphere simulation.}
-  \label{fig:settings}
-\end{figure}
+%
+%\begin{figure}
+%  \centering \def\svgwidth{0.8\columnwidth}
+%  \yoavcomment{\input{images/atmo_settings.pdf_tex}}
+%  \caption[Settings of the atmosphere simulation]{Settings for the
+%    atmosphere simulation.}
+%  \label{fig:settings}
+%\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Optical Depth}
@@ -316,15 +300,12 @@ extinction and scattering coefficients in this small volume are, respectively
   \label{eq:betair}
 \end{equation}
 
-Any voxel generally contains both air molecules and aerosols. Voxels are indexed by $k$ or $q$.
-As approximation, assume that within any voxel, the molecular parameters
+Any voxel generally contains both air molecules and aerosols. Voxels are indexed by $k$ or $q$. As approximation, assume that within any voxel, the molecular parameters
 $\{ \beta^{\rm air}(k),\alpha^{\rm air}(k)\}$ and the aerosol parameters
 $\{ \sigma^{\rm aerosol}(k),\varpi^{\rm aerosol}(k), n^{\rm aerosol}(k),g(k)\}$
-are constants, e.g., corresponding to the value at each voxel center. These parameters generally change
-between voxels.
+are constants, e.g., corresponding to the value at each voxel center. These parameters generally change between voxels.
 
-A voxel's vertical geometric thickness is $\Delta z$.  The Sun zenith angle is $\Phi^{\rm SR}$. Denote a SR line segment between the TOA and the center of voxel $k$ by $[{\rm SR},k]$.
-This SR intersects voxel $q$. The geometric length of this intersection
+A voxel's vertical geometric thickness is $\Delta z$.  The Sun zenith angle is $\Phi^{\rm SR}$. Denote a SR line segment between the TOA and the center of voxel $k$ by $[{\rm SR},k]$. This SR intersects voxel $q$. The geometric length of this intersection
 line segment is $\Delta z f_{\rm SR}(q)/\cos\Phi^{\rm SR}$: the factor
 \mbox{$f_{\rm SR}(q)\in [0,1]$} expresses how much of the vertical thickness of $q$ is crossed by the SR. Following Eqs.~(\ref{eq:tau},\ref{eq:betair}), the optical depth between the TOA and voxel $k$ is
 \begin{equation}
@@ -334,12 +315,6 @@ line segment is $\Delta z f_{\rm SR}(q)/\cos\Phi^{\rm SR}$: the factor
   \;\;.
   \label{eq:lSRn}
 \end{equation}
-\begin{figure}
-  \centering
-  \yoavcomment{\includegraphics[width=\columnwidth]{images/optical_distance.pdf}}
-  \caption{Optical depth calculation}
-  \label{fig:optidepth}
-\end{figure}
 Based on Eqs.~(\ref{eq:betaer},\ref{eq:betair},\ref{eq:lSRn}),
 \begin{equation}
   \tau_{\rm SR}(k)=
@@ -363,7 +338,7 @@ and
 \end{equation}
 
 The number of voxels is  $N_{\rm voxels}$. All their associated
-variables are concatenated into columns stack vectors, each $N_{\rm voxels}$ long. Aerosol densities and cross sections in all voxels are stored in the respective vectors ${\bf n}$ and $\vect{\sigma}$. Define a $N_{\rm voxels}\times N_{\rm voxels}$ sparse matrix ${\bf D}^{\mathrm{Sun \rightarrow voxel}}$, whose 
+variables are concatenated into columns stack vectors, each $N_{\rm voxels}$ long. Aerosol densities and cross sections in all voxels are stored in the respective vectors ${\bf n}$ and $\vect{\sigma}$. Define a $N_{\rm voxels}\times N_{\rm voxels}$ sparse matrix ${\bf D}^{\mathrm{Sun \rightarrow voxel}}$, whose
 element $(k,q)$ is
 \begin{equation}
   D^{\mathrm{Sun \rightarrow voxel}}(k,q) =
@@ -385,8 +360,17 @@ Eqs.~(\ref{eq:lSRaeros},\ref{eq:Dsv}) lead to a vector of SR optical depths due 
      (\vect{\sigma} \odot {\bf n})
   \label{eq:tauSRvec1}
 \end{equation}
-where the operator $\odot$ denotes the Hadamard (element-wise)
-product. 
+where the operator $\odot$ denotes the Hadamard (element-wise) product. 
+\begin{figure}
+  \centering
+  \yoavcomment{\includegraphics[width=\columnwidth]{images/optical_distance.pdf}}
+  \caption{\small 
+  Irradiance of voxel $k$ is attenuated by voxels above it on a SR. The scattered radiance
+  from voxel $k$ is then attenuated by voxels below it on a LOS to camera $c$. The
+  overall attenuation of any voxel $k$ by all voxels $q$ is equivalent to an optical depth
+  affecting $k$. It is formalized in matrix-vector operations. }
+  \label{fig:optidepth}
+\end{figure}
 Similarly, Eq.~(\ref{eq:lSRair}) leads to a vector of SR optical depths due to air,
 $\vect{\tau}_{\rm SR}^{\rm air}$.
 
@@ -433,7 +417,7 @@ Eq.~(\ref{eq:lLOSaeros}) leads to a vector of LOS optical depths due to aerosols
      (\vect{\sigma} \odot {\bf n})
   \label{eq:tauLOSvec1}
 \end{equation}
-Here ${\bf D}^{\mathrm{voxel \rightarrow cam}}_c$ is a 
+Here ${\bf D}^{\mathrm{voxel \rightarrow cam}}_c$ is a
 $N_{\rm voxels}\times N_{\rm voxels}$ sparse matrix whose element $(k,q)$ is
 \begin{equation}
   D^{\mathrm{voxel \rightarrow cam}}_c(k,q) =
@@ -448,9 +432,6 @@ $N_{\rm voxels}\times N_{\rm voxels}$ sparse matrix whose element $(k,q)$ is
   .
   \hspace{-0.05cm}
 \end{equation}
-%The non-zero elements of the sparse matrix ${\bf D}^{\mathrm{voxel \rightarrow cam}}_c$
-%represent $[\Delta z/\cos\Phi^{\rm LOS}_c]f_{\rm LOS_c}(q)$,
-%\mbox{$\forall q \in[{\rm LOS}_c,k],$} $\forall k$.
 Similarly, Eq.~(\ref{eq:lSRair}) leads to a vector of LOS optical depths due to air,
 $\vect{\tau}_{{\rm LOS}_c}^{\rm air}$.
 
@@ -531,35 +512,38 @@ A column-stack vector of all voxel contributions is
   \label{eq:pc}
 \end{equation}
 
-A camera pixel collects light from a narrow cone in the atmosphere.
-The cone includes some voxels, intersects with some other voxels, and oblivious to all the rest.
-\begin{figure}
-  \centering
-  \yoavcomment{\includegraphics[width=\columnwidth]{images/sensor.pdf}}
-  \caption{Camera projection operation}
-  \label{fig:projection}
-\end{figure}
-Thus the measured radiance at a pixel is weighted sum of the power $p_c(k)$ from all voxels: most voxels have null weight, since they fall outside the pixels's conic field of view, while the rest of the voxels are aggregated.
+A camera pixel collects light from a narrow cone in the atmosphere. The cone includes some voxels, intersects with some other voxels, and oblivious to all the rest.
+Thus light power captured at a pixel is weighted sum of the power $p_c(k)$ from all voxels: most voxels have null weight, since they fall outside the pixels's conic field of view, while the rest of the voxels are aggregated.
 
-This linear sum is formulated by a matrix operation over ${\bf p}_c$. 
-The pixels in the measured image are column-stacked to a vector 
-$N_{\rm pix}$ long. It is given by
+This linear sum is formulated by a matrix operation over ${\bf p}_c$. The pixels in the measured image are column-stacked to a vector $N_{\rm pix}$ long. It is given by
 \begin{equation}
  {\bf i}_c= {\vect{\Pi}}_c{\bf p}_c
   \;\;.
   \label{eq:IcP}
 \end{equation}
-The $N_{\rm pix}\times N_{\rm voxels}$ sparse matrix ${\vect{\Pi}}_c$  
+The $N_{\rm pix}\times N_{\rm voxels}$ sparse matrix ${\vect{\Pi}}_c$
 expresses {\em projection} of light into camera $c$.
-For pixel $\Theta$ and voxel $k$, there is an {\em intersection} volume ${\bf V}_c(\Theta,k)$ between the cone volume of the pixel's field of view, and the voxel, as illustrated in Fig.~\ref{fig:projection}. The corresponding element in the matrix ${\vect{\Pi}}_c$ can be written as
+For pixel $\Theta$ and voxel $k$, there is an {\em intersection} volume ${\bf V}_c(\Theta,k)$ between the cone volume of the pixel's field of view, and the voxel, as illustrated in Fig.~\ref{fig:projection}. 
+\begin{figure}
+  \centering
+  \yoavcomment{\includegraphics[width=\columnwidth]{images/sensor.pdf}}
+  \caption{\small
+  An image pixel captures light emanating in a cone in space. Voxels that fully or 
+  partially fall in this cone are sensed by the pixel. Factoring out 
+  scattering and attenuation (which are dealt elsewhere in our analysis), the 
+  relative contribution of each voxel depends on its distance and intersection with the cone. This is formalized a matrix-vector operation.}
+  \label{fig:projection}
+\end{figure}
+The corresponding element in the matrix ${\vect{\Pi}}_c$ can be written as
 \begin{equation}
- \Pi_c(\Theta,k)=({\rm NA})^2
+ \Pi_c(\Theta,k)=\frac{a}{|{\bf V}(k)|}
      \iiint_{{\bf V}_c(\Theta,k)}
      \frac{1}{[R({\bf v})]^2} d{\bf v}
   \;\;,
   \label{eq:Pc}
 \end{equation}
-where ${\rm NA}$ is the numerical aperture of the camera lens. The distance $R({\bf v})$ is measured between the camera and an infinitesimal volume element at ${\bf v}\in {\bf V}_c(\Theta,k)$.
+where $a$ is the effective area of the camera lens and $|{\bf V}(k)|$ is the volume 
+of voxel $k$. The distance $R({\bf v})$ is measured between the camera and an infinitesimal volume element at ${\bf v}\in {\bf V}_c(\Theta,k)$.
 
 Combining Eqs.~(\ref{eq:tautotal},\ref{eq:pc},\ref{eq:IcP}), the captured image is thus
 \begin{align}
@@ -615,10 +599,9 @@ In general terms, the variables are the set
   \;\;,
   \label{eq:calV}
 \end{equation}
-where $\lambda$ denotes the spectral (color) channel. 
-There are $N_{\rm spectral}$ spectral channels. 
+where $\lambda$ denotes the spectral (color) channel.
+There are $N_{\rm spectral}$ spectral channels.
 Thus, the number of unknown variables is in principle \mbox{$|{\cal V}|=N_{\rm voxels}(1+3N_{\rm spectral})$}.
-
 
 Prior knowledge reduces the unknowns. Sec.~\ref{sec:captured-image} mentions a prior:
 in many cases a single aerosol type dominates a scene. Then, the three-element
@@ -649,7 +632,7 @@ $ {\cal V}= \left\{ {\bf n},m  \right\}$
 and \mbox{$|{\cal V}|=N_{\rm voxels}+N_{\rm models}$}.
 
 The atmosphere is photographed from $N_{\rm views}$ viewpoints. Each photograph provides $N_{\rm pix}$  measurements (pixels), {\em including} their possible division to color channels. Hence, the data at our disposal comprises $N_{\rm views}N_{\rm pix}$ measurements.
-For the recovery task to be well-posed, it is necessary that 
+For the recovery task to be well-posed, it is necessary that
 $N_{\rm views}N_{\rm pix}>|{\cal V}|$.
 
 
@@ -708,24 +691,24 @@ differentiates the intensity in pixel ${\bf \Theta}$ (in viewpoint $c$) with var
 Denote by $\OpDiag{\vect{v}}$ conversion of vector $\vect{v}$ into a diagonal matrix, whose main diagonal elements correspond to the elements of $\vect{v}$.
 A close-form expression of the Jacobian is
 \begin{align}
-  {\bf J}_{{\bf i}_c}({\bf n}) &= 
+  {\bf J}_{{\bf i}_c}({\bf n}) &=
     L^{\rm TOA}({\bf A}-{\bf B}){\bf C} ,
   \label{eq:gradient2}
 \end{align}
 where
 \begin{align}
   \label{eq:gradient3}
-  {\bf A} &= 
+  {\bf A} &=
     \varpi^{\rm aerosol}\sigma^{\rm aerosol}
          \OpDiag{ P_g^{\rm aerosol}(\vect{\Phi}^{\rm scatter}_c)} \nonumber\\
  {\bf B} &= {\sigma}^{\rm aerosol}\transpose{{\bf D}_c} \nonumber\\
        & \;\;\;
-       \OpDiag{[\tilde{\vect{\alpha}}^{\rm air}_c 
-                + \varpi^{\rm aerosol}\sigma^{\rm aerosol} 
+       \OpDiag{[\tilde{\vect{\alpha}}^{\rm air}_c
+                + \varpi^{\rm aerosol}\sigma^{\rm aerosol}
                 P^{\rm aerosol}_g(\vect{\Phi}^{\rm scatter}_c) \odot{\bf n}
                 ]} \nonumber \\
-  {\bf C} &= \OpDiag{\exp[-(\vect{\tau}_c^{\rm air} 
-          + {\sigma}^{\rm aerosol} {\bf D}_c {\bf n})]} 
+  {\bf C} &= \OpDiag{\exp[-(\vect{\tau}_c^{\rm air}
+          + {\sigma}^{\rm aerosol} {\bf D}_c {\bf n})]}
           \transpose{{\vect{\Pi}}_c}
 \end{align}
 For a detailed derivation of Eqs.~(\ref{eq:gradient2},\ref{eq:gradient3}),
@@ -799,8 +782,9 @@ created by the `spheres' simulation.
 \begin{figure}
   \centering
   \yoavcomment{\includegraphics[width=0.8\columnwidth]{images/ref_images.pdf}}
-  \caption{Synthesised images taken from different views. A yellow dot marks
-    the Sun location. Dashed white circles mark elevation.}
+  \caption{\small Rendered sky photographs (contrast enhanced) corresponding
+   to different viewpoints. A yellow dot marks
+    the Sun location. Dashed white circles mark elevation angels.}
   \label{fig:simulation-results1}
 \end{figure}
 
@@ -809,8 +793,8 @@ Fig.~\ref{fig:simulation1} shows an iso-surface visualization of the original
 \begin{figure}
   \centering
   \yoavcomment{\includegraphics[width=\columnwidth]{images/simulation1}}
-  \caption{Synthetic 3D aerosol distribution from the `spheres' simulation (a) and its reconstruction (b). Colour values mark
-    aerosol density.}
+  \caption{\small [a] Simulated 3D aerosol distribution composed of haze-blobs. [b] Its reconstruction. Color represents aerosol density. The density units are
+  $10^{16}~{\rm particles}/{\rm cm}^3.$}
   \label{fig:simulation1}
 \end{figure}
 
@@ -819,18 +803,18 @@ Fig.~\ref{fig:simulation2} shows an iso-surface visualization of the original
 \begin{figure}
   \centering
   \yoavcomment{\includegraphics[width=\columnwidth]{images/simulation2}}
-  \caption{Synthetic 3D aerosol distribution from the `front' simulation (a) and its reconstruction (b). Colour values mark
-    aerosol density.}
+  \caption{\small [a] Simulated 3D aerosol distribution composed of a haze-front. [b] Its reconstruction. Color represents aerosol density. The density units are
+  $10^{16}~{\rm particles}/{\rm cm}^3.$}
   \label{fig:simulation2}
 \end{figure}
 
 Fig.~\ref{fig:objective} shows the progression of the objective as a function
 of the iteration number. As can be seen by the graph, convergence occurs
-after several thousand iteration. 
-\begin{figure}[htbp]
+after several thousand iteration.
+\begin{figure}[t]
   \centering
   \includegraphics[width=\columnwidth]{images/objective.eps}
-  \caption{The log of the objective as function of the iteration.}
+  \caption{\small The decay of $\log f({\bf n})$ with the iteration index.}
   \label{fig:objective}
 \end{figure}
 
