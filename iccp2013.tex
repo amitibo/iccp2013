@@ -789,10 +789,13 @@ DDR3 memory per core. Out of it, we used 8 nodes, corresponding to 96 cores. Eac
 
 \noindent{\bf Optimization}: We used the L-BFGS-B algorithm~\cite{BFGS}. The algorithm was initialized by ${\bf n}=0$. Satisfactory convergence occurred in several thousand iterations, taking a couple of hours to complete in total.
 
-
+%26, 48, 1320, 590
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Optimization Results}
 \label{sec:optimization-results}
+
+Fig.~\ref{fig:simulation-results1} shows two modeled images out of 95 from
+created by the `spheres' simulation.
 \begin{figure}
   \centering
   \yoavcomment{\includegraphics[width=0.8\columnwidth]{images/ref_images.pdf}}
@@ -801,36 +804,29 @@ DDR3 memory per core. Out of it, we used 8 nodes, corresponding to 96 cores. Eac
   \label{fig:simulation-results1}
 \end{figure}
 
+Fig.~\ref{fig:simulation1} shows an iso-surface visualization of the original
+`spheres' distribution and its reconstruction.
 \begin{figure}
   \centering
-  \yoavcomment{\includegraphics[width=\columnwidth]{images/orig1}}
-  \caption{Synthetic 3D aerosol distribution. Colour values mark
+  \yoavcomment{\includegraphics[width=\columnwidth]{images/simulation1}}
+  \caption{Synthetic 3D aerosol distribution from the `spheres' simulation (a) and its reconstruction (b). Colour values mark
     aerosol density.}
-  \label{fig:synth-atmo}
+  \label{fig:simulation1}
 \end{figure}
 
+Fig.~\ref{fig:simulation2} shows an iso-surface visualization of the original
+`front' distribution and its reconstruction.
 \begin{figure}
   \centering
-  \yoavcomment{\includegraphics[width=\columnwidth]{images/recon1}}
-  \caption{Reconstructed aerosol distribution.}
-  \label{fig:synth-result}
-\end{figure}
-
-\begin{figure}
-  \centering
-  \yoavcomment{\includegraphics[width=\columnwidth]{images/orig2}}
-  \caption{Synthetic 3D aerosol distribution. Colour values mark
+  \yoavcomment{\includegraphics[width=\columnwidth]{images/simulation2}}
+  \caption{Synthetic 3D aerosol distribution from the `front' simulation (a) and its reconstruction (b). Colour values mark
     aerosol density.}
-  \label{fig:synth-atmo2}
+  \label{fig:simulation2}
 \end{figure}
 
-\begin{figure}
-  \centering
-  \yoavcomment{\includegraphics[width=\columnwidth]{images/recon2}}
-  \caption{Reconstructed aerosol distribution.}
-  \label{fig:synth-result2}
-\end{figure}
-
+Fig.~\ref{fig:objective} shows the progression of the objective as a function
+of the iteration number. As can be seen by the graph, convergence occurs
+after several thousand iteration. 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=\columnwidth]{images/objective.eps}
@@ -838,7 +834,6 @@ DDR3 memory per core. Out of it, we used 8 nodes, corresponding to 96 cores. Eac
   \label{fig:objective}
 \end{figure}
 
-eps
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Conclusions}
 \label{sec:conclusions}
