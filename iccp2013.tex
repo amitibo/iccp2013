@@ -831,6 +831,22 @@ haze-blobs simulation is 0.202 and for the haze-front simulation is 0.198.
 \subsection{Conclusions}
 \label{sec:conclusions}
 
+We presented a novel algorithm for reconstructing aerosol distributions
+in the atmosphere. We have shown that even without regularization the
+algorithm is able to reconstruct arbitrary density distributions.
+We believe that prior knowledge, e.g. spatial smoothness, in the form
+of constraints will improve the error values.
+
+The algorithm uses the single scattering model for
+approximation the radiative transfer. This approximation is valid only
+when the
+optical depth is small, which is the case for thin aerosol distributions.
+We would like to handle other components of the atmosphere like aerosol
+plumes and clouds. For that we need to take into account multi-scattering.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 {\small
 %\bibliographystyle{ieee}
 %\bibliography{atmosphere}
