@@ -36,7 +36,7 @@
   }%
   \providecommand\rotatebox[2]{#2}%
   \ifx\svgwidth\undefined%
-    \setlength{\unitlength}{362.29758301bp}%
+    \setlength{\unitlength}{365.47414551bp}%
     \ifx\svgscale\undefined%
       \relax%
     \else%
@@ -48,27 +48,27 @@
   \global\let\svgwidth\undefined%
   \global\let\svgscale\undefined%
   \makeatother%
-  \begin{picture}(1,1.45056133)%
+  \begin{picture}(1,1.3854191)%
     \put(0,0){\includegraphics[width=\unitlength]{sensor.pdf}}%
-    \put(0.38269212,1.45333541){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.3091283\unitlength}\raggedright Radiance Map\end{minipage}}}%
-    \put(0.49202688,0.84389167){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.20818523\unitlength}\centering camera c\end{minipage}}}%
-    \put(0.14124485,0.74897166){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.26929511\unitlength}\raggedright camera sensor\end{minipage}}}%
-    \put(0.24478295,0.83869871){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.25677392\unitlength}\raggedright pixel ${\bf \Theta}$\end{minipage}}}%
-    \put(0.66867728,1.10445094){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.27222099\unitlength}\centering contribution of\\ voxel k\end{minipage}}}%
-    \put(0.69075857,1.29214195){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.27442912\unitlength}\centering contribution of\\ voxel k+1\end{minipage}}}%
-    \put(0.26349109,1.21445633){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.25676408\unitlength}\centering contribution of\\ voxel k+2\end{minipage}}}%
-    \put(0.29550338,1.38267526){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.26118034\unitlength}\centering contribution of\\ voxel k+3\end{minipage}}}%
-    \put(0.81759655,0.63980872){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.15611273\unitlength}\centering Radiance\\ Values\end{minipage}}}%
-    \put(0.38829873,0.64503146){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.3091283\unitlength}\raggedright Projection Matrix\end{minipage}}}%
-    \put(0.07425906,0.64503146){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.11863953\unitlength}\centering Sensor\\ Reading\end{minipage}}}%
-    \put(0.95363698,0.4212039){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.3091283\unitlength}\raggedright k\end{minipage}}}%
-    \put(0.37731523,0.58681361){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.3091283\unitlength}\raggedright k\end{minipage}}}%
-    \put(0.46122415,0.58681361){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.3091283\unitlength}\raggedright k+1\end{minipage}}}%
-    \put(0.95363698,0.33287871){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.3091283\unitlength}\raggedright k+1\end{minipage}}}%
-    \put(0.54292495,0.58681361){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.3091283\unitlength}\raggedright k+2\end{minipage}}}%
-    \put(0.95363698,0.24455353){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.3091283\unitlength}\raggedright k+2\end{minipage}}}%
-    \put(0.6344046,0.58681361){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.3091283\unitlength}\raggedright k+3\end{minipage}}}%
-    \put(0.95363698,0.15622835){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.3091283\unitlength}\raggedright k+3\end{minipage}}}%
-    \put(-0.02037007,0.51787179){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.12635452\unitlength}\centering pixel\\ ${\bf \Theta}$\end{minipage}}}%
+    \put(0.39094759,1.38816907){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.30644147\unitlength}\raggedright Radiance Map\end{minipage}}}%
+    \put(0.49933206,0.79277814){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.20637576\unitlength}\centering camera c\end{minipage}}}%
+    \put(0.12095377,0.72932826){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.26695449\unitlength}\raggedright camera sensor\end{minipage}}}%
+    \put(0.2542371,0.78763031){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.25454214\unitlength}\raggedright pixel ${\bf \Theta}$\end{minipage}}}%
+    \put(0.67444709,1.05107272){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.26985495\unitlength}\centering contribution of\\ voxel k\end{minipage}}}%
+    \put(0.69633646,1.2371324){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.27204388\unitlength}\centering contribution of\\ voxel k+1\end{minipage}}}%
+    \put(0.27278263,1.16012199){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.25453239\unitlength}\centering contribution of\\ voxel k+2\end{minipage}}}%
+    \put(0.30451668,1.32687883){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.25891026\unitlength}\centering contribution of\\ voxel k+3\end{minipage}}}%
+    \put(0.822072,0.63424775){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.15475586\unitlength}\centering Radiance\\ Values\end{minipage}}}%
+    \put(0.39650548,0.63942509){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.30644147\unitlength}\raggedright Projection Matrix\end{minipage}}}%
+    \put(0.08519531,0.63942509){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.11760836\unitlength}\centering Sensor\\ Reading\end{minipage}}}%
+    \put(0.95693002,0.41754295){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.30644147\unitlength}\raggedright k\end{minipage}}}%
+    \put(0.38561744,0.58171325){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.30644147\unitlength}\raggedright k\end{minipage}}}%
+    \put(0.46879706,0.58171325){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.30644147\unitlength}\raggedright k+1\end{minipage}}}%
+    \put(0.95693002,0.32998546){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.30644147\unitlength}\raggedright k+1\end{minipage}}}%
+    \put(0.54978774,0.58171325){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.30644147\unitlength}\raggedright k+2\end{minipage}}}%
+    \put(0.95693002,0.24242797){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.30644147\unitlength}\raggedright k+2\end{minipage}}}%
+    \put(0.64047228,0.58171325){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.30644147\unitlength}\raggedright k+3\end{minipage}}}%
+    \put(0.95693002,0.15487047){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.30644147\unitlength}\raggedright k+3\end{minipage}}}%
+    \put(-0.00861133,0.51337065){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.1252563\unitlength}\centering pixel\\ ${\bf \Theta}$\end{minipage}}}%
   \end{picture}%
 \endgroup%

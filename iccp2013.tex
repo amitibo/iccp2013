@@ -218,7 +218,7 @@ The atmosphere has a non-uniform distribution of scattering aerosols. We seek to
 \begin{figure*}[t!]
    \begin{center}
 \vspace{-0.4cm}
-    \includegraphics[width=0.99\linewidth]{groundtomog6.eps}
+    \includegraphics[width=0.99\linewidth]{groundtomog24.eps}
     \end{center}\vspace{-1.5cm}
     \caption{\small
     Lightfield imaging through a volumetric distribution in
@@ -770,10 +770,10 @@ The true aerosol distribution is then
   \hspace{-0.05cm}
 \end{equation}
 As an example,
-we created a {\em Haze Blobs} scene (Fig.~\ref{fig:simulation1}a) using two ellipsoid blobs: \begin{figure}
+we created a {\em Haze Blobs} scene (Fig.~\ref{fig:simulation1}) using two ellipsoid blobs: \begin{figure}
   \centering
   \yoavcomment{\includegraphics[width=\columnwidth]{images/simulation1}}
-  \caption{\small [a] Simulated 3D aerosol distribution composed of {\em Haze Blobs}. [b] Its reconstruction. Color represents aerosol density. The density units are
+  \caption{\small Simulated 3D aerosol distribution composed of {\em Haze Blobs}. Its reconstruction is shown in Fig.~\ref{fig:front}. Color represents aerosol density. The density units are
   $10^{15}~{\rm particles}/{\rm cm}^3.$}
   \label{fig:simulation1}
 \end{figure}
@@ -784,13 +784,13 @@ the first is centered at altitude $3.3km$, and has horizontal width of $32km$ an
 The resolution of each camera is low: $128\times 128$ pixels, expressing the fact that cloudless (yet hazy) sky images are rather smooth, hence there is no need for high image resolution. Each pixel has full-well depth of 40000 electrons, which corresponds to the brightest pixel value. Each measurement has photon noise, which is Poissonian distributed, according to image value $i_c$ and the full-well depth. For example, Fig.~\ref{fig:simulation-results1} shows two modeled photographs 
 \begin{figure}
   \centering
-  \yoavcomment{\includegraphics[width=0.8\columnwidth]{images/ref_images.pdf}}
+  \yoavcomment{\includegraphics[width=\columnwidth]{images/ref_images.pdf}}
   \caption{\small Rendered photographs (contrast enhanced) corresponding
    to different viewpoints, of sky that includes {\em Haze Blobs}. A yellow dot marks
     the Sun location. Dashed white circles mark elevation angles.}
   \label{fig:simulation-results1}
 \end{figure}
-of the  {\em Haze Blobs} scene that corresponds to Fig.~\ref{fig:simulation1}a.\\
+of the  {\em Haze Blobs} scene that corresponds to Fig.~\ref{fig:simulation1}.\\
 
 
 
@@ -800,7 +800,7 @@ DDR3 memory per core. Out of it, we used 8 nodes, corresponding to 96 cores. Eac
 \noindent{\bf Optimization}: We used the L-BFGS-B algorithm~\cite{BFGS}. The algorithm was initialized by ${\bf n}=0$. Satisfactory convergence occurred in several thousand iterations, taking a couple of hours to complete in total. For example, Fig.~\ref{fig:objective} shows
 \begin{figure}[t]
   \centering
-  \includegraphics[width=\columnwidth]{images/objective.eps}
+  \includegraphics[width=\columnwidth]{images/objective.pdf}
   \caption{\small The decay of $\log f({\bf n})$ with the iteration index.}
   \label{fig:objective}
 \end{figure}
@@ -813,8 +813,8 @@ the progression of the objective as a function of the iteration number, when rec
 \label{sec:optimization-results}
 
 An iso-surface visualization of the original {\em Haze Blobs} distribution is shown in
-Fig.~\ref{fig:simulation1}a, while the recovered 3D distribution is similarly visualized in
-Fig.~\ref{fig:simulation1}b. The distributions appear consistent, though there are errors that stem from the random noise in the images. To quantify the results, we use a relative  error measure based on the $\ell_1$ norm
+Fig.~\ref{fig:simulation1}, while the recovered 3D distribution is visualized in
+Fig.~\ref{fig:front}. The distributions appear consistent, though there are errors that stem from the random noise in the images. To quantify the results, we use a relative  error measure based on the $\ell_1$ norm
 \begin{equation}
   \label{eq:ndiff}
   \epsilon=\frac{\| \hat{\bf n}  - {\bf n}^{\rm true} \|_1}
@@ -837,7 +837,7 @@ Fig.~\ref{fig:simulation2}b visualizes the recovered 3D distribution of this sce
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Conclusions}
+\section{Conclusions}
 \label{sec:conclusions}
 
 We presented a novel algorithm for reconstructing aerosol distributions

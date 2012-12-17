@@ -36,7 +36,7 @@
   }%
   \providecommand\rotatebox[2]{#2}%
   \ifx\svgwidth\undefined%
-    \setlength{\unitlength}{345.04975586bp}%
+    \setlength{\unitlength}{363.15703125bp}%
     \ifx\svgscale\undefined%
       \relax%
     \else%
@@ -48,28 +48,28 @@
   \global\let\svgwidth\undefined%
   \global\let\svgscale\undefined%
   \makeatother%
-  \begin{picture}(1,1.66032568)%
+  \begin{picture}(1,1.39615374)%
     \put(0,0){\includegraphics[width=\unitlength]{optical_distance.pdf}}%
-    \put(0.43044122,0.84104153){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.32458054\unitlength}\raggedright camera c\end{minipage}}}%
-    \put(0.74343955,1.14244734){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.32458054\unitlength}\raggedright voxel k\end{minipage}}}%
-    \put(0.43971916,1.65222423){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.18382442\unitlength}\raggedright Sun\end{minipage}}}%
-    \put(0.2874647,1.12855027){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.2782208\unitlength}\centering contribution\\ of voxel k\end{minipage}}}%
-    \put(0.68118021,1.30010565){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.30699104\unitlength}\centering contribution\\ of voxel k+1\end{minipage}}}%
-    \put(0.24112464,1.25199337){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.27822073\unitlength}\centering contribution\\ of voxel k+2\end{minipage}}}%
-    \put(0.61807337,1.40211992){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.2940868\unitlength}\centering contribution\\ of voxel k+3\end{minipage}}}%
-    \put(0.74388856,0.68211058){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.31142421\unitlength}\centering Density\\ ${\sigma}\odot {\bf n}$\end{minipage}}}%
-    \put(0.32989982,0.67900414){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.37956309\unitlength}\raggedright Distances Matrix ${\bf D}_c$\end{minipage}}}%
-    \put(-0.02124629,0.68106453){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.22991184\unitlength}\centering Optical\\ Depth $\vect{\tau}_c$\end{minipage}}}%
-    \put(-0.00241459,0.44308643){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.32458054\unitlength}\raggedright k\end{minipage}}}%
-    \put(-0.00241459,0.44308643){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.32458054\unitlength}\raggedright k\end{minipage}}}%
-    \put(-0.00241459,0.44308643){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.32458054\unitlength}\raggedright k\end{minipage}}}%
-    \put(0.95131947,0.44225839){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.32458054\unitlength}\raggedright k\end{minipage}}}%
-    \put(0.34618937,0.61614636){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.32458054\unitlength}\raggedright k\end{minipage}}}%
-    \put(0.43429261,0.61614636){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.32458054\unitlength}\raggedright k+1\end{minipage}}}%
-    \put(0.95131947,0.34951815){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.32458054\unitlength}\raggedright k+1\end{minipage}}}%
-    \put(0.52007734,0.61614636){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.32458054\unitlength}\raggedright k+2\end{minipage}}}%
-    \put(0.95131947,0.2567779){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.32458054\unitlength}\raggedright k+2\end{minipage}}}%
-    \put(0.61612973,0.61614636){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.32458054\unitlength}\raggedright k+3\end{minipage}}}%
-    \put(0.95131947,0.16403765){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.32458054\unitlength}\raggedright k+3\end{minipage}}}%
+    \put(0.4089791,0.70217873){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.30839672\unitlength}\raggedright camera c\end{minipage}}}%
+    \put(0.70637111,0.98855622){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.30839672\unitlength}\raggedright voxel k\end{minipage}}}%
+    \put(0.5074841,1.3800786){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.1746588\unitlength}\raggedright Sun\end{minipage}}}%
+    \put(0.2731315,0.97535207){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.26434851\unitlength}\centering contribution\\ of voxel k\end{minipage}}}%
+    \put(0.64721606,1.13835357){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.29168425\unitlength}\centering contribution\\ of voxel k+1\end{minipage}}}%
+    \put(0.22910199,1.09264021){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.26434844\unitlength}\centering contribution\\ of voxel k+2\end{minipage}}}%
+    \put(0.58725578,1.23528134){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.27942342\unitlength}\centering contribution\\ of voxel k+3\end{minipage}}}%
+    \put(0.70679773,0.64809996){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.29589637\unitlength}\centering Density\\ ${\sigma}\odot {\bf n}$\end{minipage}}}%
+    \put(0.31345078,0.64514841){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.3606378\unitlength}\raggedright Distances Matrix ${\bf D}_c$\end{minipage}}}%
+    \put(-0.02018693,0.64710607){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.21844827\unitlength}\centering Optical\\ Depth $\vect{\tau}_c$\end{minipage}}}%
+    \put(-0.0022942,0.42099372){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.30839672\unitlength}\raggedright k\end{minipage}}}%
+    \put(-0.0022942,0.42099372){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.30839672\unitlength}\raggedright k\end{minipage}}}%
+    \put(-0.0022942,0.42099372){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.30839672\unitlength}\raggedright k\end{minipage}}}%
+    \put(0.90388598,0.42020698){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.30839672\unitlength}\raggedright k\end{minipage}}}%
+    \put(0.32892812,0.58542476){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.30839672\unitlength}\raggedright k\end{minipage}}}%
+    \put(0.41263846,0.58542476){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.30839672\unitlength}\raggedright k+1\end{minipage}}}%
+    \put(0.90388598,0.33209083){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.30839672\unitlength}\raggedright k+1\end{minipage}}}%
+    \put(0.4941459,0.58542476){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.30839672\unitlength}\raggedright k+2\end{minipage}}}%
+    \put(0.90388598,0.24397468){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.30839672\unitlength}\raggedright k+2\end{minipage}}}%
+    \put(0.58540905,0.58542476){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.30839672\unitlength}\raggedright k+3\end{minipage}}}%
+    \put(0.90388598,0.15585853){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.30839672\unitlength}\raggedright k+3\end{minipage}}}%
   \end{picture}%
 \endgroup%
