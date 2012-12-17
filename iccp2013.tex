@@ -360,11 +360,11 @@ Eqs.~(\ref{eq:lSRaeros},\ref{eq:Dsv}) lead to a vector of SR optical depths due 
      (\vect{\sigma} \odot {\bf n})
   \label{eq:tauSRvec1}
 \end{equation}
-where the operator $\odot$ denotes the Hadamard (element-wise) product. 
+where the operator $\odot$ denotes the Hadamard (element-wise) product.
 \begin{figure}
   \centering
   \yoavcomment{\def\svgwidth{\columnwidth}\input{images/optical_distance.pdf_tex}}
-  \caption{\small 
+  \caption{\small
   Irradiance of voxel $k$ is attenuated by voxels above it on a SR. The scattered radiance
   from voxel $k$ is then attenuated by voxels below it on a LOS to camera $c$. The
   overall attenuation of any voxel $k$ by all voxels $q$ is equivalent to an optical depth
@@ -523,27 +523,30 @@ This linear sum is formulated by a matrix operation over ${\bf p}_c$. The pixels
 \end{equation}
 The $N_{\rm pix}\times N_{\rm voxels}$ sparse matrix ${\vect{\Pi}}_c$
 expresses {\em projection} of light into camera $c$.
-For pixel $\Theta$ and voxel $k$, there is an {\em intersection} volume ${\bf V}_c(\Theta,k)$ between the cone volume of the pixel's field of view, and the voxel, as illustrated in Fig.~\ref{fig:projection}. 
+For pixel $\Theta$ and voxel $k$, there is an {\em intersection} volume ${\bf V}_c(\Theta,k)$ between the cone volume of the pixel's field of view, and the voxel, as illustrated in Fig.~\ref{fig:projection}.
 \begin{figure}
   \centering
   \yoavcomment{\def\svgwidth{\columnwidth}\input{images/sensor.pdf_tex}}
   \caption{\small
-  An image pixel captures light emanating in a cone in space. Voxels that fully or 
-  partially fall in this cone are sensed by the pixel. Factoring out 
-  scattering and attenuation (which are dealt elsewhere in our analysis), the 
+  An image pixel captures light emanating in a cone in space. Voxels that fully or
+  partially fall in this cone are sensed by the pixel. Factoring out
+  scattering and attenuation (which are dealt elsewhere in our analysis), the
   relative contribution of each voxel depends on its distance and intersection with the cone. This is formalized a matrix-vector operation.}
   \label{fig:projection}
 \end{figure}
 The corresponding element in the matrix ${\vect{\Pi}}_c$ can be written as
 \begin{equation}
- \Pi_c(\Theta,k)=\frac{a}{|{\bf V}(k)|}
+ \Pi_c(\Theta,k)=
+    %\frac{a}{|{\bf V}(k)|}
+     a
      \iiint_{{\bf V}_c(\Theta,k)}
      \frac{1}{[R({\bf v})]^2} d{\bf v}
   \;\;,
   \label{eq:Pc}
 \end{equation}
-where $a$ is the effective area of the camera lens and $|{\bf V}(k)|$ is the volume 
-of voxel $k$. The distance $R({\bf v})$ is measured between the camera and an infinitesimal volume element at ${\bf v}\in {\bf V}_c(\Theta,k)$.
+where $a$ is the effective area of the camera lens.
+% and $|{\bf V}(k)|$ is the volume of voxel $k$. 
+The distance $R({\bf v})$ is measured between the camera and an infinitesimal volume element at ${\bf v}\in {\bf V}_c(\Theta,k)$.
 
 Combining Eqs.~(\ref{eq:tautotal},\ref{eq:pc},\ref{eq:IcP}), the captured image is thus
 \begin{align}
@@ -720,13 +723,13 @@ we refer the reader to the supplementary material.
 \section{Simulations}
 \label{sec:simul}
 
-
-
 To test the model, we made simulations based on atmospheric models in the literature. Here are the details.\\
 
 \noindent{\bf Sun}: The sun is at zenith angle $\Phi^{\rm SR}=45^o$. Its
 $L^{\rm TOA}$ is obtained from~\cite{BBradiance,sun_composition}, with respective red-green-blue ratios of
  $L^{\rm TOA}_{\rm R}:L^{\rm TOA}_{\rm G}:L^{\rm TOA}_{\rm B}=255:236:224$.\\
+
+\noindent{\bf Dimensions}: The domain of sky we simulate and recover has area of $50\times 50$km, and it extends from the ground up to altitude of 10km. This volume is divided to a $50\times50\times100$ grid, where each voxel has area of $1\times1$km and vertical thickness of 100 meters. The dimension of the problem is thus $250,000$ variables.\\
 
 \noindent{\bf Aerosol}: We used particle-type 6 from the aerosol list in
 Ref.~\cite{Martonchik2009}. This is a spherical non-absorbing sea-salt/organic particle, whose anisotropy parameter per color channel is $[g_{\rm R},g_{\rm G},g_{\rm B}]=[0.763,0.775,0.786]$. Its corresponding extinction cross sections are
@@ -735,28 +738,24 @@ Ref.~\cite{Martonchik2009}. This is a spherical non-absorbing sea-salt/organic p
     \sigma^{\rm aerosol}_{\rm B}]=[16.5,16.2,15.9][1/\mu m^2]$.
 Its single-scattering albedo is $\varpi^{\rm aerosol}=1$ at all channels.
 
-We simulated two different spatial distributions. Both were set as
+We simulated various spatial distributions. All were set as
 a product of two functions. The first function is an exponential decay~\cite{Levi1980} with altitude $h(k)$ of voxel $k$,
 \begin{align}
  w_1[h(k)] = \frac{1}
  {\sigma^{\rm aerosol}_{\rm G} \mathrm{MFP^{sea level}}}
   \exp\left[-\frac{h(k)}{H^\mathrm{aerosol}}\right],
 \end{align}
-where $H^\mathrm{aerosol}=2\ km$. This expresses a general trend of reduced atmospheric density with height. Here
-The mean free path (MFP) of the aerosols layer at sea level is
-$\mathrm{MFP^{sea level}}=1/5~{\rm[1/km]}$.
+where $H^\mathrm{aerosol}=2\ km$. This expresses a general trend of reduced atmospheric density with height. Here the mean free path (MFP) of the aerosols layer at sea level was set to $\mathrm{MFP^{sea level}}=1/5~{\rm[1/km]}$.
 % is a typical characteristic thickness of the aerosol layer~\cite{Levi1980}.
 
-The second function, $w_2$, expresses a clustered nature of aerosol ``clouds''. In the first simulation we define two blobs in the form of ellipsoids: the first is
-centered at altitude
-$3.3km$, and has horizontal width of $32km$ and vertical thickness of $2.8km$. The second ellipsoid is centered at altitude $6.6km$, and has lateral width of $24km$ and vertical thickness of $2.1km$.
-In the second simulation we define front in the form of a lying down half cylinder. The half cylinder is centered at altitude $5km$, and has lateral width of $32km$ and vertical thickness of $4km$.
+The second function, $w_2$, expresses a clustered nature of aerosol ``clouds''. We define
+blobs in the form of 3D ellipsoids. There may be multiple ellipsoids suspended.  
 Then
 \begin{equation}
   w_2(k) =
   \left\{
       \begin{array}{ll}
-          1  & \mbox{ if $k\in$ any ``clouds'' cluster} \\
+          1  & \mbox{ if $k\in$ any blob cluster} \\
           0  & \mbox{ otherwise}
     \label{eq:f2}
        \end{array}
@@ -764,68 +763,78 @@ Then
   .
   \hspace{-0.05cm}
 \end{equation}
-The aerosol distribution is then ${\bf n}={\bf w}_1\odot {\bf w}_2$.
-Note that the horizontal widths are much larger than the vertical ones. This is consistent with scales of atmospheric aerosol distributions.\\
+The true aerosol distribution is then
+\begin{equation}
+  \label{eq:ntrue}
+  {\bf n}^{\rm true}={\bf w}_1\odot {\bf w}_2  .
+  \hspace{-0.05cm}
+\end{equation}
+As an example,
+we created a {\em Haze Blobs} scene (Fig.~\ref{fig:simulation1}a) using two ellipsoid blobs: \begin{figure}
+  \centering
+  \yoavcomment{\includegraphics[width=\columnwidth]{images/simulation1}}
+  \caption{\small [a] Simulated 3D aerosol distribution composed of {\em Haze Blobs}. [b] Its reconstruction. Color represents aerosol density. The density units are
+  $10^{15}~{\rm particles}/{\rm cm}^3.$}
+  \label{fig:simulation1}
+\end{figure}
+the first is centered at altitude $3.3km$, and has horizontal width of $32km$ and vertical thickness of $2.8km$. The second ellipsoid is centered at altitude $6.6km$, and has lateral width of $24km$ and vertical thickness of $2.1km$. Note that the horizontal widths are much larger than the vertical ones. This is consistent with scales of atmospheric aerosol distributions.\\
 
-\noindent{\bf Dimensions}: The domain of sky we simulate and recover has area of $50\times 50$km, and it extends from the ground up to altitude of 10km. This volume is divided to a $50\times50\times100$ grid, where each voxel has area of $1\times1$km and vertical thickness of 100 meters. The dimension of the problem is thus $250,000$ variables.\\
 
 \noindent{\bf Cameras}: Each ground-based camera has a hemispherical field of view, capturing the entire sky from its viewpoint. We used 95 viewpoints on a grid, each view $\approx 4.4$km from its neighbors.
-The resolution of each camera is low: $128\times 128$ pixels, expressing the fact that cloudless (yet hazy) sky images are rather smooth, hence there is no need for high image resolution. Each pixel has full-well depth of 40000 electrons, which corresponds to the brightest pixel value. Each measurement has photon noise, which is Poissonian distributed, according to image value $i_c$ and the full-well depth.\\
+The resolution of each camera is low: $128\times 128$ pixels, expressing the fact that cloudless (yet hazy) sky images are rather smooth, hence there is no need for high image resolution. Each pixel has full-well depth of 40000 electrons, which corresponds to the brightest pixel value. Each measurement has photon noise, which is Poissonian distributed, according to image value $i_c$ and the full-well depth. For example, Fig.~\ref{fig:simulation-results1} shows two modeled photographs 
+\begin{figure}
+  \centering
+  \yoavcomment{\includegraphics[width=0.8\columnwidth]{images/ref_images.pdf}}
+  \caption{\small Rendered photographs (contrast enhanced) corresponding
+   to different viewpoints, of sky that includes {\em Haze Blobs}. A yellow dot marks
+    the Sun location. Dashed white circles mark elevation angles.}
+  \label{fig:simulation-results1}
+\end{figure}
+of the  {\em Haze Blobs} scene that corresponds to Fig.~\ref{fig:simulation1}a.\\
+
+
 
 \noindent{\bf Computer}: We had access to an SGI-TNN cluster computer that has 88 computer nodes consisting of two 2.40 GHz six-Core Xeon with 8GB
 DDR3 memory per core. Out of it, we used 8 nodes, corresponding to 96 cores. Each core was dedicated to rendering a modeled image (in each interaction) as if captured by one of the 95 cameras. Each iteration (varying the model according to the gradient-based algorithm and varying all the rendered images) took $\approx 7$sec.\\
 
-\noindent{\bf Optimization}: We used the L-BFGS-B algorithm~\cite{BFGS}. The algorithm was initialized by ${\bf n}=0$. Satisfactory convergence occurred in several thousand iterations, taking a couple of hours to complete in total.
-
-%26, 48, 1320, 590
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Optimization Results}
-\label{sec:optimization-results}
-
-Fig.~\ref{fig:simulation-results1} shows two modeled images from the simulation of the haze-blobs. In total the simulation uses 95 modeled images.
-\begin{figure}
-  \centering
-  \yoavcomment{\includegraphics[width=0.8\columnwidth]{images/ref_images.pdf}}
-  \caption{\small Rendered sky photographs (contrast enhanced) corresponding
-   to different viewpoints. A yellow dot marks
-    the Sun location. Dashed white circles mark elevation angels.}
-  \label{fig:simulation-results1}
-\end{figure}
-
-Fig.~\ref{fig:simulation1} shows an iso-surface visualization of the original
-haze-blobs distribution and its reconstruction. Fig.~\ref{fig:simulation2}
-shows an iso-surface visualization of the original haze-front distribution and
-its reconstruction. Fig.~\ref{fig:objective} shows the progression of the
-objective as a function of the iteration number. As can be seen by the
-graph, convergence occurs after several thousand iterations.
-
-To estimate the error of the reconstruction we calculate per voxel the
-difference between real and estimated number of particles. We sum the
-absolute values of the differences and then normalize by the total number
-of particles in the real distribution. The reconstruction error for the
-haze-blobs simulation is 0.202 and for the haze-front simulation is 0.198.
-\begin{figure}
-  \centering
-  \yoavcomment{\includegraphics[width=\columnwidth]{images/simulation1}}
-  \caption{\small [a] Simulated 3D aerosol distribution composed of haze-blobs. [b] Its reconstruction. Color represents aerosol density. The density units are
-  $10^{15}~{\rm particles}/{\rm cm}^3.$}
-  \label{fig:simulation1}
-\end{figure}
-
-\begin{figure}
-  \centering
-  \yoavcomment{\includegraphics[width=\columnwidth]{images/simulation2}}
-  \caption{\small [a] Simulated 3D aerosol distribution composed of a haze-front. [b] Its reconstruction. Color represents aerosol density. The density units are
-  $10^{15}~{\rm particles}/{\rm cm}^3.$}
-  \label{fig:simulation2}
-\end{figure}
-
+\noindent{\bf Optimization}: We used the L-BFGS-B algorithm~\cite{BFGS}. The algorithm was initialized by ${\bf n}=0$. Satisfactory convergence occurred in several thousand iterations, taking a couple of hours to complete in total. For example, Fig.~\ref{fig:objective} shows
 \begin{figure}[t]
   \centering
   \includegraphics[width=\columnwidth]{images/objective.eps}
   \caption{\small The decay of $\log f({\bf n})$ with the iteration index.}
   \label{fig:objective}
 \end{figure}
+the progression of the objective as a function of the iteration number, when recovering the the {\em Haze Blobs} scene.
+
+
+%26, 48, 1320, 590
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Results}
+\label{sec:optimization-results}
+
+An iso-surface visualization of the original {\em Haze Blobs} distribution is shown in
+Fig.~\ref{fig:simulation1}a, while the recovered 3D distribution is similarly visualized in
+Fig.~\ref{fig:simulation1}b. The distributions appear consistent, though there are errors that stem from the random noise in the images. To quantify the results, we use a relative  error measure based on the $\ell_1$ norm
+\begin{equation}
+  \label{eq:ndiff}
+  \epsilon=\frac{\| \hat{\bf n}  - {\bf n}^{\rm true} \|_1}
+             {\| {\bf n}^{\rm true} \|_1} ,
+  \hspace{-0.05cm}
+\end{equation}
+It is equivalent to the aerosol mass that is over and under-estimated in all voxels, relative to the total aerosol mass in the scene.
+In the {\em Haze Blobs} case, $\epsilon=0.202$.
+
+We created a {\em Haze Front} scene. Fig.~\ref{fig:simulation2}a shows an iso-surface visualization of this distribution.
+\begin{figure}
+  \centering
+  \yoavcomment{\includegraphics[width=\columnwidth]{images/simulation2}}
+  \caption{\small [a] Simulated 3D aerosol distribution composed of a {\em Haze Front}. [b] Its reconstruction. Color represents aerosol density. The density units are
+  $10^{15}~{\rm particles}/{\rm cm}^3.$}
+  \label{fig:simulation2}
+\end{figure}
+Here an ellipsoid degenerated to an elliptic cylinder that partly enters the analyzed volume. It is centered at altitude $5km$, vertical thickness of $4km$ and length of $32km$ (only part of which enters the volume). The haze front stretches across the width of the volume.  
+Fig.~\ref{fig:simulation2}b visualizes the recovered 3D distribution of this scene. For the {\em Haze Front}, $\epsilon=0.198$.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Conclusions}
