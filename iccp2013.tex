@@ -734,7 +734,9 @@ Ref.~\cite{Martonchik2009}. This is a spherical non-absorbing sea-salt/organic p
     \sigma^{\rm aerosol}_{\rm G},
     \sigma^{\rm aerosol}_{\rm B}]=[16.5,16.2,15.9][1/\mu m^2]$.
 Its single-scattering albedo is $\varpi^{\rm aerosol}=1$ at all channels.
-We set the spatial distribution as a product of two functions. The first function is an exponential decay~\cite{Levi1980} with altitude $h(k)$ of voxel $k$,
+
+We simulated two different spatial distributions. Both were set as
+a product of two functions. The first function is an exponential decay~\cite{Levi1980} with altitude $h(k)$ of voxel $k$,
 \begin{align}
  w_1[h(k)] = \frac{1}
  {\sigma^{\rm aerosol}_{\rm G} \mathrm{MFP^{sea level}}}
@@ -745,13 +747,16 @@ The mean free path (MFP) of the aerosols layer at sea level is
 $\mathrm{MFP^{sea level}}=1/5~{\rm[1/km]}$.
 % is a typical characteristic thickness of the aerosol layer~\cite{Levi1980}.
 
-The second function, $w_2$, expresses a clustered nature of aerosol ``clouds''. We define two ellipsoids: the first is centered at altitude
-$3.3km$, and has horizontal width of $32km$ and vertical thickness of $2.8km$. The second ellipsoid is centered at altitude $6.6km$, and has lateral width of $24km$ and vertical thickness of $2.1km$. Then
+The second function, $w_2$, expresses a clustered nature of aerosol ``clouds''. In the first simulation we define two blobs in the form of ellipsoids: the first is
+centered at altitude
+$3.3km$, and has horizontal width of $32km$ and vertical thickness of $2.8km$. The second ellipsoid is centered at altitude $6.6km$, and has lateral width of $24km$ and vertical thickness of $2.1km$.
+In the second simulation we define front in the form of a lying down half cylinder. The half cylinder is centered at altitude $5km$, and has lateral width of $32km$ and vertical thickness of $4km$.
+Then
 \begin{equation}
   w_2(k) =
   \left\{
       \begin{array}{ll}
-          1  & \mbox{ if $k\in$ any ellipsoid} \\
+          1  & \mbox{ if $k\in$ any ``clouds'' cluster} \\
           0  & \mbox{ otherwise}
     \label{eq:f2}
        \end{array}
@@ -777,8 +782,7 @@ DDR3 memory per core. Out of it, we used 8 nodes, corresponding to 96 cores. Eac
 \subsection{Optimization Results}
 \label{sec:optimization-results}
 
-Fig.~\ref{fig:simulation-results1} shows two modeled images out of 95 from
-created by the `spheres' simulation.
+Fig.~\ref{fig:simulation-results1} shows two modeled images from the simulation of the haze-blobs. In total the simulation uses 95 modeled images.
 \begin{figure}
   \centering
   \yoavcomment{\includegraphics[width=0.8\columnwidth]{images/ref_images.pdf}}
@@ -789,28 +793,33 @@ created by the `spheres' simulation.
 \end{figure}
 
 Fig.~\ref{fig:simulation1} shows an iso-surface visualization of the original
-`spheres' distribution and its reconstruction.
+haze-blobs distribution and its reconstruction. Fig.~\ref{fig:simulation2}
+shows an iso-surface visualization of the original haze-front distribution and
+its reconstruction. Fig.~\ref{fig:objective} shows the progression of the
+objective as a function of the iteration number. As can be seen by the
+graph, convergence occurs after several thousand iterations.
+
+To estimate the error of the reconstruction we calculate per voxel the
+difference between real and estimated number of particles. We sum the
+absolute values of the differences and then normalize by the total number
+of particles in the real distribution. The reconstruction error for the
+haze-blobs simulation is 0.202 and for the haze-front simulation is 0.198.
 \begin{figure}
   \centering
   \yoavcomment{\includegraphics[width=\columnwidth]{images/simulation1}}
   \caption{\small [a] Simulated 3D aerosol distribution composed of haze-blobs. [b] Its reconstruction. Color represents aerosol density. The density units are
-  $10^{16}~{\rm particles}/{\rm cm}^3.$}
+  $10^{15}~{\rm particles}/{\rm cm}^3.$}
   \label{fig:simulation1}
 \end{figure}
 
-Fig.~\ref{fig:simulation2} shows an iso-surface visualization of the original
-`front' distribution and its reconstruction.
 \begin{figure}
   \centering
   \yoavcomment{\includegraphics[width=\columnwidth]{images/simulation2}}
   \caption{\small [a] Simulated 3D aerosol distribution composed of a haze-front. [b] Its reconstruction. Color represents aerosol density. The density units are
-  $10^{16}~{\rm particles}/{\rm cm}^3.$}
+  $10^{15}~{\rm particles}/{\rm cm}^3.$}
   \label{fig:simulation2}
 \end{figure}
 
-Fig.~\ref{fig:objective} shows the progression of the objective as a function
-of the iteration number. As can be seen by the graph, convergence occurs
-after several thousand iteration.
 \begin{figure}[t]
   \centering
   \includegraphics[width=\columnwidth]{images/objective.eps}
