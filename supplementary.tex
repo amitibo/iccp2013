@@ -1,0 +1,129 @@
+\documentclass[a4paper]{article}
+
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{bm}
+
+
+%
+% Some new commands I use in this text
+%
+\newcommand{\OpSphere}{\bm{\mathcal{S}}}
+\newcommand{\OpRot}{\bm{\mathcal{R}}}
+\newcommand{\OpDistance}{\bm{\mathcal{D}}}
+\newcommand{\OpCumsum}{\bm{\mathcal{C}}}
+\newcommand{\OpInt}{\bm{\mathcal{I}}}
+\newcommand{\OpCamera}{\bm{\mathcal{P}}}
+\newcommand{\OpDiag}[1]{\mathrm{diag}\left\{#1\right\}}
+\newcommand{\Grad}[1]{\bm{\triangledown_{#1}}}
+\newcommand{\argmin}{\mathrm{arg}\min}
+\newcommand{\curly}[1]{\left\{#1\right\}}
+\newcommand{\roundy}[1]{\left(#1\right)}
+\newcommand{\recty}[1]{\left[#1\right]}
+\newcommand{\PartDeriv}[2]{\frac{\partial{#1}}{\partial{#2}}}
+\newcommand{\vect}[1]{\bm{#1}}
+\newcommand{\mat}[1]{\bm{#1}}
+\newcommand{\transpose}[1]{{#1}^\intercal}
+\newcommand{\derivsym}[1]{\,d{#1}}
+
+\begin{document}
+
+\title{\vspace{-2cm}Supplementary material: \\Sky Tomography for 3D Aerosol Distribution Recovery}
+\author{Paper ID: 19}
+\date{}
+
+\maketitle
+
+\section{Gradient Derivation}
+\label{sec:gradient-derivation}
+
+Here we detail the derivation of~(\ref{eq:gradient2}).  We use
+matrices to implement the different operators. Using matrices
+simplifies the calculation of derivatives and the use of optimization
+tools. Note that~(\ref{eq:bigIA}) in column stack notation is
+\begin{align}
+  \vect{i}_c=(\rm{NA})^2\mathrm{L}^{\rm TOA} \OpCamera \, \OpInt \,
+  \roundy{ \roundy {\OpSphere_c \, \roundy{\vect{\alpha}^{\rm
+          aerosol}_c + \vect{\alpha}^{\rm air}_c} } \odot
+    \exp^{-(\vect{\tau}^{\rm aerosol}_c + \vect{\tau}^{\rm air}_c)}}.
+  \label{eq:atsensor-matrix}
+\end{align}
+First we show some results relating to differentiation. Let $\vect{a}$
+be a vector of length $q$. Let $\vect{g}(\vect{a})$ be a vector
+function: it outputs a vector of length $r$. Let $\mat{B}$ be a $q
+\times r$ matrix and
+\begin{align}
+  \vect{g}(\vect{a}) = \exp^{-\transpose{\mat{B}}\vect{a}}.
+  \label{eq:example1}
+\end{align}
+In Eq.~(\ref{eq:example1}), the exponential is element-wise (not
+raising an operator to some power). Then
+\begin{align}
+  \label{eq:partial2}
+  \PartDeriv{\vect{g}}{\vect{a}} &= - \mat{B} \,
+  \OpDiag{\exp^{-\transpose{\mat{B}}\vect{a}}}
+\end{align}
+Using~(\ref{eq:partial2}) and~(\ref{eq:tau})
+\begin{align}
+  \label{eq:partial4}
+  \PartDeriv{\exp^{-(\vect{\tau}^{\rm aerosol}_c + \vect{\tau}^{\rm
+        air}_c)}}{\vect{a}} &= - \transpose{\OpDistance_c} \,
+  \OpDiag{\exp^{-(\vect{\tau}^{\rm aerosol}_c + \vect{\tau}^{\rm
+        air}_c)}}
+\end{align}
+
+To calculate the derivative of the Hadamard product
+in~(\ref{eq:atsensor-matrix}) we first note the following: Let
+$\vect{u}(\vect{a})$ be a vector function that outputs a vector of
+length $r$. Let $\mat{B}$ be a $r \times q$ matrix. Then,
+\begin{align}
+  \label{eq:partial1}
+  \PartDeriv{\transpose{\mat{B}} (\vect{g} \odot \vect{u})}{\vect{a}}
+  = \left[ \PartDeriv{\vect{g}}{\vect{a}} \OpDiag{\vect{u}} +
+    \PartDeriv{\vect{u}}{\vect{a}} \OpDiag{\vect{g}} \right]
+  \mat{B}.
+\end{align}
+%
+% TODO: Understand if Af \odot Ag = A(f \odot g) and in what terms (on
+% A) this is important as in the docs I use the left case and in the
+% code I use the right case. It seems to me that it is correct but I
+% don't have a proof.
+%
+
+Suppose the air distribution is known. Therefore, $\vect{\alpha}^{\rm
+  air}_c$ and $\vect{\tau}^{\rm air}_c$ are constant vectors. Then,
+\begin{align}
+  \label{eq:partial3}
+  \PartDeriv{\OpSphere_c \, \vect{\alpha}^{\rm aerosol}_c}{\vect{a}}
+  &= \varpi \, \sigma^{\rm aerosol} \, \OpDiag{P^{\rm
+      aerosol}(\vect{\mu_c})} \, \transpose{\OpSphere_c}
+\end{align}
+
+Based on~(\ref{eq:partial4},~\ref{eq:partial1})
+and~(\ref{eq:partial3}) we can calculate the gradient
+of~(\ref{eq:atsensor-matrix}):
+\begin{align}
+  \PartDeriv{\vect{i}_{\rm c}}{\vect{a}} &=
+  \mat{J}_{\hat{\vect{i}}_c}(\vect{a})= \nonumber \\
+  &= (\rm{NA})^2 \mathrm{L}^{\rm TOA} \, \biggl( \varpi \, \sigma^{\rm
+    aerosol} \, \OpDiag{P^{\rm aerosol}(\vect{\mu}_c)} \,
+  \transpose{\OpSphere}_c \OpDiag{\exp^{-(\vect{\tau}^{\rm aerosol}_c
+      + \vect{\tau}^{\rm
+        air}_c)}} \nonumber \\
+  &\quad - \transpose{\OpDistance_c} \, \OpDiag{\exp^{-(\vect{\tau}^{\rm
+        aerosol}_c + \vect{\tau}^{\rm air}_c)}}\OpDiag{\OpSphere_c \,
+    (\vect{\alpha}^{\rm aerosol}_c + \vect{\alpha}^{\rm air}_c)}
+  \biggr)
+  \, \transpose{\OpInt} \, \transpose{\OpCamera} \nonumber \\
+  &= (\rm{NA})^2\mathrm{L}^{\rm TOA} \, \biggl( \sigma^{\rm aerosol}
+  \, \varpi \,
+  \OpDiag{P^{\rm aerosol}(\vect{\mu}_c)} \, \transpose{\OpSphere_c} - \nonumber \\
+  &\quad \transpose{\OpDistance_c} \, \OpDiag{\OpSphere_c \,
+    (\vect{\alpha}^{\rm aerosol}_c + \vect{\alpha}^{\rm air}_c )}
+  \biggr) \OpDiag{\exp^{-(\vect{\tau}^{\rm aerosol}_c +
+      \vect{\tau}^{\rm air}_c)}} \, \transpose{\OpInt} \,
+  \transpose{\OpCamera}
+\end{align}
+
+\end{document}

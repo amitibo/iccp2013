@@ -93,8 +93,9 @@ CA 91011, United States\\
 
 %%%%%%%%% BODY TEXT
 \section{Introduction}
+\label{sec:intro}
 
-Lightfield~\cite{Perwass} and integral imaging~\cite{bishop,horstmeyer,kim,levoy}  samples the optical radiance distribution in location and direction. This approach is mainly used in small-scale setups. This paper deals with a huge scale, up to Earth's size.
+Lightfield and integral imaging~\cite{bishop,horstmeyer,kim,levoy,Perwass} samples the optical radiance distribution in location and direction. It is mainly used in small-scale setups. This paper deals with a huge scale, up to Earth's size.
 The atmosphere allows light to pass through in multiple locations and directions. Light is affected by this medium. Therefore, in this paper we lay out a principle to recover this 3D medium using measured and modeled lightfields (Fig.~\ref{fig:front}).
 \begin{figure}[t!]
   \centering
@@ -103,27 +104,19 @@ The atmosphere allows light to pass through in multiple locations and directions
   \label{fig:front}
 \end{figure}
 
-Projecting this large object to various directions is similar to tomography in other scientific domains. However, the formulation here is distinct. Most tomography setups have a controlled and/or multidirectional radiation source~\cite{gorbunov,messer}. In contrast, our source is the uncontrolled, unidirectional Sun. Moreover, typical tomography relies on a linear model~\cite{gregson}: the pixel value is a linear combination of components along a line of sight (LOS), or a multiplicative combination (linearized by a logarithm). Linear tomography can detect a gas in volcanic plumes~\cite{wright}, which absorbs UV. Other gases in the atmosphere absorb IR. However, in visible light, atmospheric attenuation is typically dominated by {\em scattering} by particles (aerosols), rather than absorption by gasses. Thus, %in contrast to common tomography,
-in our problem, analysis does not rely on direct illumination, but on sunlight scattered into the LOS. The model turns out to be {\em nonlinear, yet tractable}.
+Projecting this large object to various directions is similar to tomography in other scientific domains. However, the formulation here is distinct. Most tomography setups have a controlled and/or multidirectional radiation source~\cite{gorbunov,messer}. In contrast, our source is the uncontrolled, unidirectional Sun. Moreover, typical tomography relies on a linear model~\cite{gregson}: the pixel value is a linear combination of components along a line of sight (LOS), or a multiplicative combination (linearized by a logarithm). Linear tomography can detect volcanic gas~\cite{wright}, which absorbs UV. Other gases in the atmosphere absorb IR. However, in visible light, atmospheric attenuation is typically dominated by {\em scattering} by particles (aerosols), rather than absorption by gasses. Thus, in our problem, we cannot rely on direct illumination, but on sunlight scattered into the LOS~\cite{Seidel}.  The model turns out to be {\em nonlinear, yet tractable}.
 
-In remote sensing~\cite{diner,Seidel}, imaging through air is associated with {\em atmospheric correction}, based on {\em aerosol retrieval}. In this discipline, the atmosphere is often assumed to be plane-parallel, for simplicity, using only 1D vertical radiative transfer. Consequently state-of-the-art aerosol retrieval is done in distinct large lateral blocks~\cite{matronchik} with limited height resolution~\cite{kalashnikova}. We, however, seek high resolution 3D recovery. Lines of thought from the computational photography community may offer a fresh way to study this medium. In addition to active lightfield descattering~\cite{fuchs,kim,levoy, Marschner} and recovery of refractive transparent objects~\cite{ihrke, Saito}, passive dehazing~\cite{Joshi2, Milanfar}
- of ground objects was studied in horizontal, fixed views~\cite{fattal,he,kopf,kratz,narasimhan2,oakley,Hschechner2,tan}. In this paper, however, the medium itself, at all relevant altitudes is the object of interest.
-
-
+We do not deal with clouds here. Clouds scatter sunlight very strongly and are easily observed. Hence they are directly recovered using common stereoscopic tools, similarly to opaque surfaces~\cite{seiz}.
+On the other hand, aerosols have much more subtle visual effects and are thus more difficult to recover. We focus on them.
+In remote sensing~\cite{diner}, imaging through air is associated with {\em atmospheric correction}, based on {\em aerosol retrieval}. In this discipline, the atmosphere is often assumed to be plane-parallel, for simplicity, using only 1D vertical radiative transfer. Consequently state-of-the-art aerosol retrieval is done in distinct large lateral blocks~\cite{matronchik} with limited height resolution~\cite{kalashnikova}. We, however, seek high resolution 3D recovery. Computational photography offers new ways to peer into media. In addition to active descattering~\cite{fuchs,kim,levoy,Marschner} and recovery of refractive transparent objects~\cite{ihrke, Saito}, overcoming the atmosphere~\cite{Joshi2,Milanfar} to view ground objects was studied in horizontal, fixed views~\cite{fattal,he,kopf,kratz,narasimhan2,oakley,Hschechner2,tan}. In this paper, however, the medium itself, at all relevant altitudes is the object of interest.
 
 3D recovery of this medium has direct implications to various scientific communities that either rely on remotely-sensed imagery, study the atmosphere, or overcome the medium to see beyond. These include meteorology, atmospheric sciences, volcanology, and climatology.
-% and planetary sciences.
-Aerosol retrieval %and clouds
-is important for %modeling the Earth's radiation transfer, and thus
-understanding climate factors and evolution~\cite{chud,dayan,kalashnikova} and
-%also for
-monitoring air quality. It is significant to aviation safety, which is tightly related to forecasting and real time sensing of the environment around flight
-paths. To keep safe, today's coarse sensing limits flight capacity. An prominent example is the 2010 eruption of Iceland's
-Eyjafjallaj$\ddot {\rm o}$kull volcano, whose ash (aerosols) covered much of Europe's airspace, grounding $\approx 100,000$ flights, affecting millions of people. Knowledge of the 3D distribution of the aerosol density may indicate safe 3D corridors to safely pass through, enhancing airspace use. Viewing beyond the medium, atmospheric correction is needed, for example, in satellite tracking of chlorophyll distributions~\cite{chang,johnsen,levy,moses}. Additional bodies in the solar system have atmospheres (e.g., Sun, Mars, Titan). These objects can be viewed from multiple directions by probes.
-% that orbit in solitude, orbit in synchrony with other probes, or flyby.
+Aerosol retrieval is important for understanding climate evolution~\cite{dayan,kalashnikova} and monitoring air quality. Mapping aerosol density is significant to aviation safety, which needs real time assessment of conditions and visibility around flight
+paths. To keep safe, today's coarse sensing limits flight capacity. A prominent example is the 2010 eruption of Iceland's
+Eyjafjallaj$\ddot {\rm o}$kull volcano, whose ash (aerosols) covered much of Europe's airspace, grounding $\approx 100,000$ flights. Knowing the 3D distribution of aerosol density may indicate safe 3D corridors to safely pass through, enhancing airspace use. Viewing beyond the medium, atmospheric correction is needed, for example, in satellite tracking of chlorophyll distributions~\cite{johnsen}. Additional bodies in the solar system have atmospheres. These objects can be viewed from multiple directions by probes.
 The approach described here may be helpful there.
 
-We model passive optical tomographic imaging of the 3D atmospheric scatterer distribution. Then, we solve this tomography problem, to recover the distribution. Recovery is formulated as an optimization that minimizes a cost function. We derive the gradient of this cost function, to enable efficient optimization.
+We model passive optical tomographic imaging of 3D atmospheric scatterer distributions in cloudless conditions. Then, we solve this tomography problem, to recover the distribution. Recovery is formulated as an optimization that minimizes a cost function. We derive the gradient of this cost function, to enable efficient optimization.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -215,7 +208,8 @@ and $\varpi^{\rm air}$=1. Air molecular density $n^{\rm air}$ falls off approxim
 \section{Image Acquisition Principle}
 \label{sec:setup} \vspace{-0.2cm}
 
-The atmosphere has a non-uniform distribution of scattering aerosols. We seek to recover this 3D volumetric distribution. To solve this problem, we formulate a process analogous to tomographic reconstruction. The scene is projected to multiple directions. Thus, a system captures integrated radiance as a function of direction and 2D projected location. Any voxel in the atmosphere contributes to the integrated radiance in multiple directional measurements. The measurements then provide a large number of constraints, to recover the distribution: the density and type of aerosols, per voxel.
+The atmosphere has a non-uniform distribution of scattering aerosols. We seek to recover this 3D volumetric distribution. To solve this problem, we formulate a process analogous to tomographic reconstruction. The scene is projected to multiple directions. Thus, a system captures integrated radiance as a function of direction and 2D projected location. Any voxel in the atmosphere contributes to the integrated radiance in multiple directional measurements
+(Fig.~\ref{fig:groundgrid}). The measurements then provide a large number of constraints, to recover the distribution: the density and type of aerosols, per voxel.
 \begin{figure*}[t!]
    \begin{center}
 \vspace{-0.4cm}
@@ -228,11 +222,11 @@ The atmosphere has a non-uniform distribution of scattering aerosols. We seek to
    \label{fig:groundgrid}
 \end{figure*}
 
-Earth's radiation is sampled both spatially and angularly from space using instruments (MISR~\cite{diner,matronchik}, POLDER~\cite{breon}, CHRIS~\cite{vanMol}). However, current system have very coarse resolution. For example, aerosol retrieval in the most complex instrument, MISR, requires spatial blocks that are about $17\times 17$km wide, each observed from just 9 views along-track. This practically leads to vertical radiative transfer analysis, degenerating atmospheric analysis to 1D. Experimental airborne instruments under development~\cite{baxter,dinerDavis10} may provide better, if still coarse resolution once they are operational.
+Earth's radiation is sampled both spatially and angularly from space~\cite{breon,diner,matronchik,vanMol}. However, current multiview spaceborne systems are very coarse. For example, aerosol retrieval in the most complex instrument, MISR, requires spatial blocks that are about $17\times 17$km wide, each observed from just 9 views along-track. This practically leads to vertical radiative transfer analysis, degenerating atmospheric analysis to 1D. Experimental airborne instruments under development~\cite{baxter,dinerDavis10} may provide better, if still coarse resolution once they are operational.
 
-We believe that high resolution atmospheric recovery can be achieved by a set of ground-based wide-angle~\cite{oliver, Peleg, kopal} sky-cameras, looking upwards and capturing the sky lightfield.
-Moreover, in contrast to satellites which image close to the orbit track (a 1D array of viewpoints), using land-based cameras form a 2D grid of viewpoints~\cite{Snavely, Joshi} is
- as easy or hard as 1D grid. However, before designing and setting up such a very large scale system requires assessment of many details that had not been explored. These include camera specifications needed to recover typical distributions. Hence, a major theoretic and numerical research phase is ahead.
+We believe that high resolution atmospheric recovery can be achieved by a large set of ground-based wide-angle~\cite{oliver, Peleg, kopal} sky-cameras, looking upwards and capturing the sky lightfield.
+Moreover, satellites image close to the orbit track (a 1D array of viewpoints). In contrast,
+land-based cameras can form a 2D set of viewpoints~\cite{Snavely} as easy or hard as a 1D grid~\cite{Joshi}. However, before designing and setting up such a very large scale system requires assessment of many details that had not been explored. These include camera specifications needed to recover typical distributions. Hence, a major theoretic and numerical research phase is ahead.
 
 This paper takes the first step, of formulating this principle and demonstrating feasibility using realistic simulations. The formulation of this paper can also apply to multiview images that are captured from satellites, for future spaceborne instruments of this capacity.
 
@@ -242,16 +236,16 @@ This paper takes the first step, of formulating this principle and demonstrating
 \section{Forward Model}
 \label{sec:skymodel} \vspace{-0.2cm}
 
-This section describe models for image formation. In the consecutive section, we describe how the image formation is inverted to recover the 3D sky structure.
+This section describes models for image formation. In the consecutive section, we describe how the image formation is inverted to recover the 3D sky structure.
 Consider Fig.~\ref{fig:groundgrid}.
 Ground-based wide-angle sky-cameras capture the sky lightfield from below. Per viewpoint, the view azimuth and elevation angles (relative to the zenith and north) are encapsulated in the vector ${\bf{\Theta}}$.  A raw image is $i_{\bf x}({\bf{\Theta}})$: a camera's location ${\bf x}$ is fixed, while any pixel in a frame represents an angle ${\bf{\Theta}}$.
 The measured radiance in all locations ${\bf x}$ and angles ${\bf{\Theta}}$ is the {\em lightfield} $I({\bf x},{\bf{\Theta}})$. Individual images are slices of the lightfield.
  %Alternatively, several ground-based cameras can be mounted on moving vehicles, assuming that the aerosol distribution does not change much during the time-lapse of the camera trajectory.
 
-Sunlight is scattered in the medium along the LOS, creating {\em airlight}~\cite{fattal,narasimhan2,Hschechner2,tan}. For each view ${\bf{\Theta}}$ and ground location ${\bf x}$, the airlight is generally different, depending on the distribution of aerosols both along the LOS, and the along the SRs that hit the LOS.
-As Fig.~\ref{fig:groundgrid} shows, for different ${\bf x}$ and ${\bf{\Theta}}$, the LOS cuts through a different set of voxels in the atmosphere. Thus, for each view, the radiance scattered from a voxel is attenuated differently, depending on the distribution of aerosols along the LOS~\cite{hansen}.
+Sunlight is scattered in the medium, creating {\em airlight}~\cite{fattal,narasimhan2,Hschechner2,tan}. For each view ${\bf{\Theta}}$ and ground location ${\bf x}$, the airlight is generally different, depending on the distribution of aerosols both along a LOS, and along the SRs that hit the LOS.
+As Fig.~\ref{fig:groundgrid} shows, different LOSs (distinct ${\bf x},{\bf{\Theta}}$) cut through different sets atmospheric voxels. Thus, for each view, the radiance scattered from a voxel is attenuated differently, depending on the distribution of aerosols along the LOS~\cite{hansen}.
 
-A forward model takes as input the aerosol distribution, and outputs image captured at different viewpoints. The model calculates radiative transfer, based on fixed parameters as the Sun's characteristics. We use a single scattering model, in which any SR changes direction (scatters) only once on the way to the camera. This model is valid in atmospheres that are not very dense: inside fog and clouds this model does not apply. Under single-scattering approximation, radiative transfer has three steps (Fig.~\ref{fig:groundgrid}):\\
+A forward model takes as input the aerosol distribution, and outputs images as if captured at various viewpoints. The model calculates radiative transfer, based on fixed parameters as the Sun's characteristics. We use a single scattering model, in which any SR changes direction (scatters) only once on the way to the camera. This model is valid in atmospheres that are not very dense: inside fog and clouds this model does not apply. Under single-scattering approximation, radiative transfer has three steps (Fig.~\ref{fig:groundgrid}):\\
 
 \vspace{-0.35cm}
 \noindent
@@ -271,14 +265,6 @@ Steps 1 and 3 involve the optical depth
 along the light path to and from voxel $k$, analyzed in Sec.~\ref{sec:optical-depth}.
 Step 2 involves the scattering coefficient at voxel $k$,
 described in Sec.~\ref{sec:scattering}.
-%
-%\begin{figure}
-%  \centering \def\svgwidth{0.8\columnwidth}
-%  \yoavcomment{\input{images/atmo_settings.pdf_tex}}
-%  \caption[Settings of the atmosphere simulation]{Settings for the
-%    atmosphere simulation.}
-%  \label{fig:settings}
-%\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Optical Depth}
@@ -305,7 +291,7 @@ extinction and scattering coefficients in this small volume are, respectively
 Any voxel generally contains both air molecules and aerosols. Voxels are indexed by $k$ or $q$. As approximation, assume that within any voxel, the molecular parameters
 $\{ \beta^{\rm air}(k),\alpha^{\rm air}(k)\}$ and the aerosol parameters
 $\{ \sigma^{\rm aerosol}(k),\varpi^{\rm aerosol}(k), n^{\rm aerosol}(k),g(k)\}$
-are constants, e.g., corresponding to the value at each voxel center. These parameters generally change between voxels.
+are constants, e.g., corresponding to the value at each voxel center. These parameters may change between voxels.
 
 A voxel's vertical geometric thickness is $\Delta z$.  The Sun zenith angle is $\Phi^{\rm SR}$. Denote a SR line segment between the TOA and the center of voxel $k$ by $[{\rm SR},k]$. This SR intersects voxel $q$. The geometric length of this intersection
 line segment is $\Delta z f_{\rm SR}(q)/\cos\Phi^{\rm SR}$: the factor
@@ -355,7 +341,8 @@ element $(k,q)$ is
   .
   \hspace{-0.05cm}
 \end{equation}
-Eqs.~(\ref{eq:lSRaeros},\ref{eq:Dsv}) lead to a vector of SR optical depths due to aerosols:
+Eqs.~(\ref{eq:lSRaeros},\ref{eq:Dsv}) lead to a vector of SR optical depths due to aerosols
+(See Fig.~\ref{fig:optidepth}):
 \begin{equation}
   \vect{\tau}_{\rm SR}^{\rm aerosol}=
   {\bf D}^{\mathrm{Sun \rightarrow voxel}}
@@ -460,14 +447,14 @@ the vector $\vect{\tau}_c^{\rm air}$ is fixed. Thus $\vect{\tau}_c^{\rm air}$ ca
 be calculated once, per sun zenith angle.
 
 Using Eqs.~(\ref{eq:lSRaa},\ref{eq:tauSRvec1},\ref{eq:lLOSair},\ref{eq:tauLOSvec1},\ref{eq:Dtotal},\ref{eq:tauairtotal}),
-The total optical depths corresponding to LOSs (of camera $c$)  and SRs that cross all voxels comprise the vector
+the total optical depths corresponding to LOSs (of camera $c$)  and SRs that cross all voxels comprise the vector
 \begin{equation}
   \vect{\tau}_c= \vect{\tau}_c^{\rm air}
                + {\bf D}_c (\vect{\sigma} \odot {\bf n})
   \;\;.
   \label{eq:tautotal}
 \end{equation}
-This vector depends on the variables $\vect{\sigma}$ and ${\bf n}$.
+This vector depends on the variables $\vect{\sigma}$ and ${\bf n}$ (See Fig.~\ref{fig:optidepth}).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Scattering}
@@ -496,8 +483,7 @@ The vector ${\bf g}$ column-stacks the anisotropy parameter of the phase functio
 \subsection{Image Capture}
 \label{sec:captured-image}
 
-Compounding the attenuation of irradiance along both $[{\rm SR},k]$ and $[{\rm LOS}_c,k]$, and scattering
-by voxel $k$ towards the camera (Eqs.~\ref{eq:beer-lambert},\ref{eq:betair},\ref{eq:tautotal}), the radiant power contributed by the voxel is
+Compounding the attenuation of irradiance along both $[{\rm SR},k]$ and $[{\rm LOS}_c,k]$, and scattering by voxel $k$ towards the camera (Eqs.~\ref{eq:beer-lambert},\ref{eq:betair},\ref{eq:tautotal}), the radiant power contributed by the voxel is
 \begin{equation}
   p_c(k)= L^{\rm TOA}
           [\tilde{\alpha}^{\rm air}_c(k) + \tilde{\alpha}^{\rm aerosol}_c(k)]
@@ -517,15 +503,13 @@ A column-stack vector of all voxel contributions is
 A camera pixel collects light from a narrow cone in the atmosphere. The cone includes some voxels, intersects with some other voxels, and oblivious to all the rest.
 Thus light power captured at a pixel is weighted sum of the power $p_c(k)$ from all voxels: most voxels have null weight, since they fall outside the pixels's conic field of view, while the rest of the voxels are aggregated.
 
-This linear sum is formulated by a matrix operation over ${\bf p}_c$. The pixels in the measured image are column-stacked to a vector $N_{\rm pix}$ long. It is given by
+This linear sum is formulated by a matrix operation over ${\bf p}_c$. The measured image is column-stacked to a vector $N_{\rm pix}$ long. It is given by
 \begin{equation}
  {\bf i}_c= {\vect{\Pi}}_c{\bf p}_c
   \;\;.
   \label{eq:IcP}
 \end{equation}
-The $N_{\rm pix}\times N_{\rm voxels}$ sparse matrix ${\vect{\Pi}}_c$
-expresses {\em projection} of light into camera $c$.
-For pixel $\Theta$ and voxel $k$, there is an {\em intersection} volume ${\bf V}_c(\Theta,k)$ between the cone volume of the pixel's field of view, and the voxel, as illustrated in Fig.~\ref{fig:projection}.
+The $N_{\rm pix}\times N_{\rm voxels}$ sparse matrix ${\vect{\Pi}}_c$ expresses {\em projection} of light into camera $c$. For pixel $\Theta$ and voxel $k$, there is an {\em intersection} volume ${\bf V}_c(\Theta,k)$ between the cone volume of the pixel's field of view, and the voxel, as illustrated in Fig.~\ref{fig:projection}.
 \begin{figure}
   \centering
   \yoavcomment{\def\svgwidth{\columnwidth}\input{images/sensor.pdf_tex}}
@@ -536,7 +520,7 @@ For pixel $\Theta$ and voxel $k$, there is an {\em intersection} volume ${\bf V}
   relative contribution of each voxel depends on its distance and intersection with the cone. This is formalized a matrix-vector operation.}
   \label{fig:projection}
 \end{figure}
-The corresponding element in the matrix ${\vect{\Pi}}_c$ can be written as
+The corresponding element in the matrix ${\vect{\Pi}}_c$ is
 \begin{equation}
  \Pi_c(\Theta,k)=
     %\frac{a}{|{\bf V}(k)|}
@@ -547,7 +531,7 @@ The corresponding element in the matrix ${\vect{\Pi}}_c$ can be written as
   \label{eq:Pc}
 \end{equation}
 where $a$ is the effective area of the camera lens.
-% and $|{\bf V}(k)|$ is the volume of voxel $k$. 
+% and $|{\bf V}(k)|$ is the volume of voxel $k$.
 The distance $R({\bf v})$ is measured between the camera and an infinitesimal volume element at ${\bf v}\in {\bf V}_c(\Theta,k)$.
 
 Combining Eqs.~(\ref{eq:tautotal},\ref{eq:pc},\ref{eq:IcP}), the captured image is thus
@@ -598,7 +582,7 @@ In general terms, the variables are the set
   \left\{
     {\bf n},
      \left\{
-       \vect{\varpi}_{\lambda},\vect{\sigma}^{\rm aerosol}_{\lambda},{\bf g}_{\lambda}
+       \vect{\varpi}_{\lambda},\vect{\sigma}_{\lambda},{\bf g}_{\lambda}
       \right\}_{\lambda}
    \right\}
   \;\;,
@@ -610,13 +594,13 @@ Thus, the number of unknown variables is in principle \mbox{$|{\cal V}|=N_{\rm v
 
 Prior knowledge reduces the unknowns. Sec.~\ref{sec:captured-image} mentions a prior:
 in many cases a single aerosol type dominates a scene. Then, the three-element
-vector $[\varpi,{\sigma}^{\rm aerosol},g]$ is rather spatially uniform. In such cases, the set of unknowns
+vector $[\varpi^{\rm aerosol},{\sigma}^{\rm aerosol},g]$ is rather spatially uniform. In such cases, the set of unknowns
 reduces to
 $ {\cal V}=
   \left\{
     {\bf n},
      \left\{
-       {\varpi}_{\lambda},{\sigma}^{\rm aerosol}_{\lambda},g_{\lambda}
+       {\varpi}^{\rm aerosol}_{\lambda},{\sigma}^{\rm aerosol}_{\lambda},g_{\lambda}
       \right\}_{\lambda}
    \right\}
 $
@@ -624,14 +608,12 @@ and \mbox{$|{\cal V}|=N_{\rm voxels}+3N_{\rm spectral}$}.
 
 Furthermore, the elements in the aerosol characteristics
 set $\left\{
-       {\varpi}_{\lambda},{\sigma}^{\rm aerosol}_{\lambda},g_{\lambda}
+       {\varpi}^{\rm aerosol}_{\lambda},{\sigma}^{\rm aerosol}_{\lambda},g_{\lambda}
       \right\}_{\lambda}$
 is not arbitrary, since all these characteristics have physical origins. This
 set is constrained to comply with what nature allows (aerosol classes).
-This significantly constrains the unknown characteristics. State-of-the-art aerosol retrieval,
-as used by NASA's MISR products indeed employ an aerosol-class prior. Types of aerosol mixtures are discretized to $N_{\rm models}=74$ classes~\cite{matronchik}, called {\em models}.
-Each class $m$ represents aerosols having a distinct characteristics set.
-State of the art retrieval is 1D (only vertical radiative transfer per large areas). We use
+This significantly constrains the unknown characteristics. State-of-the-art aerosol retrieval, as used by NASA's MISR products indeed employ an aerosol-class prior. Types of aerosol mixtures are discretized to $N_{\rm models}=74$ classes~\cite{matronchik}, called {\em models}. Each class $m$ represents aerosols having a distinct characteristics set.
+State of the art retrieval is 1D (only vertical radiative transfer per large areas). Nevertheless, we use
 this prior in our 3D problem. Then, the set of unknowns reduces to
 $ {\cal V}= \left\{ {\bf n},m  \right\}$
 and \mbox{$|{\cal V}|=N_{\rm voxels}+N_{\rm models}$}.
@@ -650,39 +632,39 @@ the images $\{ {\bf i}_c\}_{c=1}^{N_{\rm views}}$ depend on the variables set ${
 measured photographs $\{ {\bf i}^{\rm measured}_c\}_{c=1}^{N_{\rm views}}$:
 \begin{equation}
   \label{eq:mingenobjective}
-  \hat{\cal V} = \argmin_{{\cal V}\in {\cal C}} f({\cal V})
+  \hat{\cal V} = \argmin_{{\cal V}\in {\cal C}} F({\cal V})
 \end{equation}
 where
 \begin{equation}
   \label{eq:genobjective}
-  f({\cal V}) = \sum_{c=1}^{N_{\rm views}}
+  F({\cal V}) = \sum_{c=1}^{N_{\rm views}}
   \| {\bf i}^{\rm measured}_c - {\bf i}_c({\cal V})\| + {\rm Regularization}({\cal V})
   \;.
 \end{equation}
 Here ${\cal C}$ is a constraints set, which encapsulates part of the prior knowledge,
 as well as nonnegativity bounds, while $\|~\|$ is some error-distance measure.
-Here ${\rm Regularization}({\cal V})$ describes spatial regularization terms of the variables, such as smoothness, a blobby or a layered structure.
+Here ${\rm Regularization}({\cal V})$ describes spatial regularization terms of the variables, such as smoothness, or a blobby or layered structure.
 
 Spatial regularization can help overcome lack of data, if $N_{\rm views}$ is too small, and it is definitely helpful. In this work, however, we formulate and demonstrate the basic principle of our tomography task, hence
-we proceed without regularization. Relying on prior knowledge described in Sec.~\ref{sec:prior}, the problem complexity is by far dominated by the $N_{\rm voxels}$-large array ${\bf n}$, which is continuously valued. Hence, we focus here on retrieving ${\bf n}$ through continuous optimization. Relying on the mean-squared error measure, we seek:
+we proceed without regularization. Relying on prior knowledge described in Sec.~\ref{sec:prior}, the problem complexity is by far dominated by the $N_{\rm voxels}$-large array ${\bf n}$, which is continuously valued. Hence, we focus here on retrieving ${\bf n}$ through continuous optimization. Relying on the least-squares measure, we seek:
 \begin{equation}
   \label{eq:minobjectiveA}
   \hat{\bf n} =
-      \argmin_{{\bf n}} f({\bf n})
+      \argmin_{{\bf n}} F({\bf n})
 \end{equation}
 where
 \begin{equation}
   \label{eq:objectiveA}
-  f({\bf n})
+  F({\bf n})
    = \sum_{c=1}^{N_{\rm views}}
   \| {\bf i}^{\rm measured}_c - {\bf i}_c({\bf n})\|^2_2
 \end{equation}
 This is solved using standard optimization tools. Fast optimization that leads to
-to local minima ($f$ is not convex) exploits the gradient of $f$.
+to local minima ($F$ is not convex) exploits the gradient of $F$.
 
-Since our model uses close-form expressions, $f$ is differentiable. The gradient of $f$ with respect to ${\bf n}$ is
+Since our model uses close-form expressions, $F$ is differentiable. The gradient of $F$ with respect to ${\bf n}$ is
 \begin{align}
-  \Grad{{\bf n}} f = -2\sum_{c=1}^{N_{\rm views}}
+  \Grad{{\bf n}} F = -2\sum_{c=1}^{N_{\rm views}}
   \transpose{\left[{\bf J}_{{\bf i}_c}({\bf n})\right]}
   [{\bf i}^{\rm measured}_c - {\bf i}_c({\bf n})]
   \;.
@@ -694,7 +676,7 @@ differentiates the intensity in pixel ${\bf \Theta}$ (in viewpoint $c$) with var
   $\partial i_c({\bf \Theta})/\partial{n^{\rm aerosol}(k)}$.
 
 Denote by $\OpDiag{\vect{v}}$ conversion of vector $\vect{v}$ into a diagonal matrix, whose main diagonal elements correspond to the elements of $\vect{v}$.
-A close-form expression of the Jacobian is
+A close-form expression of our Jacobian is
 \begin{align}
   {\bf J}_{{\bf i}_c}({\bf n}) &=
     L^{\rm TOA}({\bf A}-{\bf B}){\bf C} ,
@@ -751,7 +733,7 @@ where $H^\mathrm{aerosol}=2\ km$. This expresses a general trend of reduced atmo
 % is a typical characteristic thickness of the aerosol layer~\cite{Levi1980}.
 
 The second function, $w_2$, expresses a clustered nature of aerosol ``clouds''. We define
-blobs in the form of 3D ellipsoids. There may be multiple ellipsoids suspended.  
+blobs in the form of 3D ellipsoids. There may be multiple ellipsoids suspended.
 Then
 \begin{equation}
   w_2(k) =
@@ -783,7 +765,7 @@ the first is centered at altitude $3.3km$, and has horizontal width of $32km$ an
 
 
 \noindent{\bf Cameras}: Each ground-based camera has a hemispherical field of view, capturing the entire sky from its viewpoint. We used 95 viewpoints on a grid, each view $\approx 4.4$km from its neighbors.
-The resolution of each camera is low: $128\times 128$ pixels, expressing the fact that cloudless (yet hazy) sky images are rather smooth, hence there is no need for high image resolution. Each pixel has full-well depth of 40000 electrons, which corresponds to the brightest pixel value. Each measurement has photon noise, which is Poissonian distributed, according to image value $i_c$ and the full-well depth. For example, Fig.~\ref{fig:simulation-results1} shows two modeled photographs 
+The resolution of each camera is low: $128\times 128$ pixels, expressing the fact that cloudless (yet hazy) sky images are rather smooth, hence there is no need for high image resolution. Each pixel has full-well depth of 40000 electrons, which corresponds to the brightest pixel value. Each measurement has photon noise, which is Poissonian distributed, according to each image-pixel value $i_c$ and the full-well depth. For example, Fig.~\ref{fig:simulation-results1} shows two modeled photographs
 \begin{figure}
   \centering
   \yoavcomment{\includegraphics[width=\columnwidth]{images/ref_images.pdf}}
@@ -795,15 +777,15 @@ The resolution of each camera is low: $128\times 128$ pixels, expressing the fac
 of the  {\em Haze Blobs} scene that corresponds to Fig.~\ref{fig:simulation1}.\\
 
 
-
 \noindent{\bf Computer}: We had access to an SGI-TNN cluster computer that has 88 computer nodes consisting of two 2.40 GHz six-Core Xeon with 8GB
 DDR3 memory per core. Out of it, we used 8 nodes, corresponding to 96 cores. Each core was dedicated to rendering a modeled image (in each interaction) as if captured by one of the 95 cameras. Each iteration (varying the model according to the gradient-based algorithm and varying all the rendered images) took $\approx 7$sec.\\
 
 \noindent{\bf Optimization}: We used the L-BFGS-B algorithm~\cite{BFGS}. The algorithm was initialized by ${\bf n}=0$. Satisfactory convergence occurred in several thousand iterations, taking a couple of hours to complete in total. For example, Fig.~\ref{fig:objective} shows
 \begin{figure}[t]
   \centering
-  \includegraphics[width=\columnwidth]{images/objective.pdf}
-  \caption{\small The decay of $\log f({\bf n})$ with the iteration index.}
+  \yoavcomment{\includegraphics[width=\columnwidth]{images/objective.pdf}}
+%  \includegraphics[width=\columnwidth]{images/objective.pdf}
+  \caption{\small The decay of $\log F({\bf n})$ with the iteration index.}
   \label{fig:objective}
 \end{figure}
 the progression of the objective as a function of the iteration number, when recovering the the {\em Haze Blobs} scene.
@@ -811,7 +793,7 @@ the progression of the objective as a function of the iteration number, when rec
 
 %26, 48, 1320, 590
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Results}
+\subsection*{Results}
 \label{sec:optimization-results}
 
 An iso-surface visualization of the original {\em Haze Blobs} distribution is shown in
@@ -834,7 +816,7 @@ We created a {\em Haze Front} scene. Fig.~\ref{fig:simulation2}a shows an iso-su
   $10^{15}~{\rm particles}/{\rm cm}^3.$}
   \label{fig:simulation2}
 \end{figure}
-Here an ellipsoid degenerated to an elliptic cylinder that partly enters the analyzed volume. It is centered at altitude $5km$, vertical thickness of $4km$ and length of $32km$ (only part of which enters the volume). The haze front stretches across the width of the volume.  
+Here an ellipsoid degenerated to an elliptic cylinder that partly enters the analyzed volume. It is centered at altitude $5km$, has vertical thickness of $4km$ and length of $32km$ (only part of which enters the volume). The haze front stretches across the width of the volume.
 Fig.~\ref{fig:simulation2}b visualizes the recovered 3D distribution of this scene. For the {\em Haze Front}, $\epsilon=0.198$.
 
 
@@ -842,20 +824,20 @@ Fig.~\ref{fig:simulation2}b visualizes the recovered 3D distribution of this sce
 \section{Conclusions}
 \label{sec:conclusions}
 
-In this work we have introduced a new method for remote sensing the
-atmosphere. We suggest and show that it is possible to alleviate  the common 1D representations of the atmosphere with detailed three  dimensional analysis.
-We have also presented a novel algorithm for reconstructing aerosol distributions. We have shown that even without regularization our
-reconstruction algorithm is able to handle arbitrary density distributions.
-We believe that prior knowledge, e.g. spatial smoothness, in the form
-of constraints will improve the error values.
+We describe a new way to sense the 3D atmosphere. We show feasibility
+of departing from common 1D aerosol distribution models, in favor of detailed 3D analysis.
+The paper describes both a novel data acquisition system concept for this recovery task, and a dedicated algorithm for reconstructing aerosol distributions.
 
-The algorithm uses the single scattering model for
-approximation the radiative transfer. This approximation is valid only
-when the
-optical depth is small, which is the case for thin aerosol distributions.
-We would like to handle other components of the atmosphere like aerosol
-plumes and clouds. For that we need to take into account multi-scattering.
-We plan to take this direction in future work.
+Even without regularization, the reconstruction algorithm handles arbitrary density distributions. Using more prior knowledge, e.g. spatial smoothness will improve the recovery.
+The algorithm uses a single scattering model. This approximation is valid
+when the optical depth is small, which is common. To handle dense atmospheric
+conditions (smoke, clouds), multi-scattering must be incorporated.
+
+The goal, of coarse, is to deploy such a system on a very large scale. However, this must first ensure that camera units are both cost effective and field-robust, and that their positioning density is proper. This will require a long-term engineering effort. Camera specifications should be set to optimally recover a wide range of aerosol distributions. This requires a major theoretic and numerical research and development phase.
+The new sensing modality and object of interest offer a new domain for computational photography problems. For example, how can compressed sensing principles be employed here? How can priors be used to make data acquisition more efficient? How can such a system be calibrated over time? Many such questions and solutions would rise.
+
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -879,29 +861,29 @@ Proc. IEEE ICCP 2009.
 F.~Br\'{e}on.
 \newblock An analytical model for the cloud-free atmosphere/ocean system
   reflectance.
-\newblock {\em Remote Sensing of Environment}, 43(2):179 -- 192, 1993.
+\newblock {\em Remote Sensing of Environment}, 43:179 -- 192, 1993.
 
-\bibitem{chang}
-G.~C. Chang and R.~W. Gould.
-\newblock Comparisons of optical properties of the coastal ocean derived from
-  satellite ocean color and in situ measurements.
-\newblock {\em Opt. Express}, 14(22):10149--10163, 2006.
+%\bibitem{chang}
+%G.~C. Chang and R.~W. Gould.
+%\newblock Comparisons of optical properties of the coastal ocean derived from
+%  satellite ocean color and in situ measurements.
+%\newblock {\em Opt. Express}, 14:10149--10163, 2006.
 
 \bibitem{BBradiance}
 M.~Charity.
 \newblock Blackbody color datafile, 2001.
 \newblock [Online; accessed 6-August-2012].
 
-\bibitem{chud}
-A.~Chudnovsky, A.~Kostinski, L.~Herrmann, I.~Koren, G.~Nutesku, and E.~Ben-Dor.
-\newblock Hyperspectral spaceborne imaging of dust-laden flows: Anatomy of
-  saharan dust storm from the Bod\'{e}l\'{e} depression.
-\newblock {\em Remote Sensing of Environment}, 115(4):1013 -- 1024, 2011.
+%\bibitem{chud}
+%A.~Chudnovsky, A.~Kostinski, L.~Herrmann, I.~Koren, G.~Nutesku, and E.~Ben-Dor.
+%\newblock Hyperspectral spaceborne imaging of dust-laden flows: Anatomy of
+%  saharan dust storm from the Bod\'{e}l\'{e} depression.
+%\newblock {\em Remote Sensing of Environment}, 115:1013 -- 1024, 2011.
 
 \bibitem{oliver}
 O. Cossairt, D. Miau, and S.K. Nayar.
 \newblock Gigapixel Computational Imaging.
-\newblock IEEE International Conference on Computational Photography (ICCP), Mar. 2011
+\newblock Proc. IEEE ICCP 2011.
 
 \bibitem{matronchik}
 J.~M. David, D.~J. Diner, R.~Kahn, T.~P. Ackerman, M.~M. Verstraete, B.~Pinty,
@@ -930,7 +912,7 @@ D.~J. Diner, A.~Davis, B.~Hancock, S.~Geier, B.~Rheingans, V.~Jovanovic,
   M.~Bull, D.~M. Rider, R.~A. Chipman, A.-B. Mahler, and S.~C. McClain.
 \newblock First results from a dual photoelastic-modulator-based polarimetric
   camera.
-\newblock {\em Appl. Opt.}, 49(15):2929--2946, 2010.
+\newblock {\em Appl. Opt.}, 49:2929--2946, 2010.
 
 % \bibitem{dinerDavis07}
 % D.~J. Diner, A.~Davis, B.~Hancock, G.~Gutt, R.~A. Chipman, and B.~Cairns.
@@ -942,7 +924,7 @@ D.~J. Diner, A.~Davis, B.~Hancock, S.~Geier, B.~Rheingans, V.~Jovanovic,
 D.~J. Diner and J.~V. Martonchik.
 \newblock Atmospheric transmittance from spacecraft using multiple view angle
   imagery.
-\newblock {\em Appl. Opt.}, 24(21):3503--3511, 1985.
+\newblock {\em Appl. Opt.}, 24:3503--3511, 1985.
 
 \bibitem{fattal}
 R.~Fattal.
@@ -952,7 +934,7 @@ R.~Fattal.
 \bibitem{fuchs}
 C.~Fuchs, M.~Heinz, M.~Levoy, H.-P. Seidel, and H.~P.~A. Lensch.
 \newblock Combining confocal imaging and descattering.
-\newblock {\em Computer Graphics Forum}, 27(4):1245--1253, 2008.
+\newblock {\em Computer Graphics Forum}, 27:1245--1253, 2008.
 
 \bibitem{gorbunov}
 M.~Gorbunov, S.~Sokolovsky, L.~Bengtsson, %and M.-P.-I. f{\"u}r Meteorologie.
@@ -962,9 +944,9 @@ M.~Gorbunov, S.~Sokolovsky, L.~Bengtsson, %and M.-P.-I. f{\"u}r Meteorologie.
 
 \bibitem{gregson}
 J.~Gregson, M.~Krimerman, M.~B. Hullin, and W.~Heidrich.
-\newblock Stochastic tomography and its applications in 3d imaging of mixing
+\newblock Stochastic tomography and its applications in 3D imaging of mixing
   fluids.
-\newblock {\em ACM TOG}, 31(4):52:1--52:10, 2012.
+\newblock {\em ACM TOG}, 31:52:1--52:10, 2012.
 
 \bibitem{hansen}
 J.~Hansen and L.~Travis.
@@ -994,7 +976,7 @@ S.~Johnsen and H.~M. Sosik.
 \bibitem{Joshi}
 N. Joshi, W. Matusik, and S. Avidan.
 \newblock Natural Video Matting using Camera Arrays.
-\newblock ACM Transactions on Graphics. 25(3) July 2006
+\newblock {\em ACM TOG} 25, 2006
 
 \bibitem{Joshi2}
 N. Joshi, and M. Cohen.
@@ -1007,7 +989,7 @@ O.~V. Kalashnikova, M.~J. Garay, A.~B. Davis, D.~J. Diner, and J.~V.
 \newblock Sensitivity of multi-angle photo-polarimetry to vertical layering and
   mixing of absorbing aerosols: Quantifying measurement uncertainties.
 \newblock {\em J. Quantitative Spectroscopy and Radiative Transfer},
-  112(13):2149 -- 2163, 2011.
+  112:2149 -- 2163, 2011.
 
 \bibitem{kim}
 J.~Kim, D.~Lanman, Y.~Mukaigawa, and R.~Raskar.
@@ -1021,14 +1003,14 @@ J.~Kim, D.~Lanman, Y.~Mukaigawa, and R.~Raskar.
 
 \bibitem{kopal}
 S.~J. Koppal, I. Gkioulekas, T. Zickler, and G. Barrows
-\newblock Wide-angle Micro Sensors for Vision on a Tight Budget
-\newblock In {\em Proc. IEEE CVPR}, June, 2011
+\newblock Wide-angle micro sensors for vision on a tight budget
+\newblock In {\em Proc. IEEE CVPR}, 2011
 
 \bibitem{kopf}
 J.~Kopf, B.~Neubert, B.~Chen, M.~F. Cohen, D.~Cohen-Or, O.~Deussen,
   M.~Uyttendaele, and D.~Lischinski.
 \newblock Deep photo: Model-based photograph enhancement and viewing.
-\newblock {\em ACM TOG}, 27(5):116:1--116:10, 2008.
+\newblock {\em ACM TOG}, 27:116:1--116:10, 2008.
 
 \bibitem{kratz}
 L.~Kratz and K.~Nishino.
@@ -1045,17 +1027,17 @@ M.~Levoy, B.~Chen, V.~Vaish, M.~Horowitz, I.~McDowall, and M.~Bolas.
 \newblock Synthetic aperture confocal imaging.
 \newblock {\em ACM TOG}, 23(3):825--834, Aug. 2004.
 
-\bibitem{levy}
-M.~Levy, Y.~Lehahn, J.-M. Andre, L.~Memery, H.~Loisel, and E.~Heifetz.
-\newblock {Production regimes in the northeast Atlantic: A study based on
-  Sea-viewing Wide Field-of-view Sensor (SeaWiFS) chlorophyll and ocean general
-  circulation model mixed layer depth}.
-\newblock {\em J. Geophys. Res.}, 110(C7):C07S10, 2005.
+%\bibitem{levy}
+%M.~Levy, Y.~Lehahn, J.-M. Andre, L.~Memery, H.~Loisel, and E.~Heifetz.
+%\newblock {Production regimes in the northeast Atlantic: A study based on
+%  Sea-viewing Wide Field-of-view Sensor (SeaWiFS) chlorophyll and ocean general
+%  circulation model mixed layer depth}.
+%\newblock {\em J. Geophys. Res.}, 110(C7):C07S10, 2005.
 
 \bibitem{Seidel}
 A. Lintu, L. Hoffmann, M. Magnor, H.~P.~A. Lensch, H. Seidel
 \newblock 3D Reconstruction of Reflection Nebulae from a Single Image
-\newblock Proceedings of Vision, Modeling, and Visualization, 2007
+\newblock Proc. Vision, Modeling, and Visualization, 2007
 
 \bibitem{Martonchik2009}
 J.~V. Martonchik, R.~A. Kahn, and D.~J. Diner.
@@ -1068,60 +1050,65 @@ J.~V. Martonchik, R.~A. Kahn, and D.~J. Diner.
 H.~Messer, A.~Zinevich, and P.~Alpert.
 \newblock Environmental sensor networks using existing wireless communication
   systems for rainfall and wind velocity measurements.
-\newblock {\em IEEE Instrumentation Measurement Magazine}, 15(2):32 --38,
-  2012.
+\newblock {\em IEEE Instrumentation Measurement Mag.}, 15:32 --38, 2012.
 
 \bibitem{Saito}
 D. Miyazaki, M. Saito, Y. Sato, and K. Ikeuchi.
 \newblock Determining surface orientations of transparent objects based on polarization degress in visible and infrared wavelengths.
-\newblock Journal of Optical Society of America A, Vol. 19, No. 4, pp. 687-694, April 2002
+\newblock {\em JOSA A}, 19:687-694, 2002.
 
 \bibitem{vanMol}
 B.~van Mol and K.Ruddick.
 \newblock The compact high resolution imaging spectrometer (CHRIS): the future
   of hyperspectral satellite sensors.
-\newblock {\em Airborne Imaging Spectros. Worksh.}, 2004.
+\newblock Airborne Imaging Spectros. Worksh., 2004.
 
 \bibitem{Marschner}
 J.~T. Moon, B. Walter, and S.~R. Marschner.
 \newblock Rendering Discrete Random Media Using Precomputed Scattering Solutions
-\newblock Eurographics Symposium on Rendering 2007 
+\newblock Eurographics Symposium on Rendering 2007
 
-\bibitem{moses}
-W.~J. Moses, A.~A. Gitelson, S.~Berdnikov, and V.~Povazhnyy.
-\newblock Estimation of chlorophyll- a concentration in case ii waters using
-  modis and meris data-successes and challenges.
-\newblock {\em Environmental Research Letters}, 4(4):045005, 2009.
+%\bibitem{moses}
+%W.~J. Moses, A.~A. Gitelson, S.~Berdnikov, and V.~Povazhnyy.
+%\newblock Estimation of chlorophyll- a concentration in case ii waters using
+%  modis and meris data-successes and challenges.
+%\newblock {\em Environmental Research Letters}, 4:045005, 2009.
 
 \bibitem{narasimhan2}
 S.~G. Narasimhan and S.~K. Nayar.
 \newblock Vision and the atmosphere.
-\newblock {\em Int. J. Comput. Vision}, 48(3):233--254,  2002.
+\newblock {\em Int. J. Comput. Vision}, 48:233--254,  2002.
 
 \bibitem{oakley}
 J.~P. Oakley and B.~L. Satherley.
 \newblock Improving image quality in poor visibility conditions using a
   physical model for contrast degradation.
-\newblock {\em Trans. Img. Proc.}, 7(2):167--179, 1998.
+\newblock {\em Trans. Img. Proc.}, 7:167--179, 1998.
 
 \bibitem{Peleg}
 S. Peleg, M. Ben-Ezra, and Y. Pritch.
 \newblock OmniStereo: Panoramic Stereo Imaging
-\newblock IEEE Trans. on PAMI, March 2001, pp. 279-290.
+\newblock {\em IEEE Trans. PAMI}, 279-290, 2001.
 
 \bibitem{Perwass}
 C. Perwass and L. Wietzke.
 \newblock Single lens 3D-camera with extended depth-of-field.
-\newblock SPIE 8291, Human Vision and Electronic Imaging XVII, Feb. 2012
+\newblock SPIE 8291, Human Vision and Electronic Imaging XVII, 2012
 
 \bibitem{Hschechner2}
 Y.~Y. Schechner, S.~G. Narasimhan, and S.~K. Nayar.
 \newblock Polarization-based vision through haze.
-\newblock {\em Appl. Opt.}, 42(3):511--525, 2003.
+\newblock {\em Appl. Opt.}, 42:511--525, 2003.
+
+\bibitem{seiz}
+G. Seiz, E. P. Balsavias and A. Gruen.
+Cloud mapping from the ground: use of photogrammetric methods.
+ {\em Photogrammetric Eng. Rem. Sense} 68:941-951, 2002.
 
 \bibitem{Snavely}
 \newblock N. Snavely, I. Simon, M. Goesele, R. Szeliski, S.~M. Seitz.
-\newblock Scene Reconstruction and Visualization From Community Photo Collections. Proceedings of the IEEE, August 2010.
+\newblock Scene Reconstruction and Visualization From Community Photo Collections.
+{\em Proceedings of IEEE}, 2010.
 
 \bibitem{tan}
 R.~Tan.
@@ -1136,18 +1123,18 @@ Wikipedia.
 \bibitem{wright}
 T.~E. Wright, M.~Burton, D.~M. Pyle, and T.~Caltabiano.
 \newblock {Scanning tomography of SO2 distribution in a volcanic gas plume}.
-\newblock {\em Geophys. Res. Lett.}, 35(17):L17811, 2008.
+\newblock {\em Geophys. Res. Lett.}, 35:L17811, 2008.
 
 \bibitem{BFGS}
 C.~Zhu, R.~H. Byrd, P.~Lu, and J.~Nocedal.
 \newblock Algorithm 778: L-BFGS-B: Fortran subroutines for large-scale
   bound-constrained optimization.
-\newblock {\em ACM Trans. Math. Softw.}, 23(4):550--560, Dec. 1997.
+\newblock {\em ACM Trans. Math. Softw.}, 23:550--560, 1997.
 
 \bibitem{Milanfar}
 X. Zhu and P. Milanfar.
-\newblock Removing Atmospheric Turbulence via Space-Invariant Deconvolution.
-\newblock IEEE Trans. on Pattern Analysis and Machine Intelligence vol. 35, no. 1, pp. 157-170, Jan. 2013 
+\newblock Removing atmospheric turbulence via space-invariant deconvolution.
+\newblock {\em IEEE Trans. PAMI} 35:157-170, 2013
 
 \end{thebibliography}
 
@@ -1161,5 +1148,5 @@ X. Zhu and P. Milanfar.
 % Sing Bing Kang
 %
 % keep article 20 and remove all other citations
-% 
+%
 
