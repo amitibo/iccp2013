@@ -38,92 +38,115 @@
 \section{Gradient Derivation}
 \label{sec:gradient-derivation}
 
-Here we detail the derivation of~(\ref{eq:gradient2}).  We use
-matrices to implement the different operators. Using matrices
-simplifies the calculation of derivatives and the use of optimization
-tools. Note that~(\ref{eq:bigIA}) in column stack notation is
+Here we detail the derivation of the gradient of the objective
+function:
+\begin{equation}
+  \label{eq:objectiveA}
+  F({\bf n})
+  = \sum_{c=1}^{N_{\rm views}}
+  \| {\bf i}^{\rm measured}_c - {\bf i}_c({\bf n})\|^2_2
+\end{equation}
+Here ${\bf i}^{\rm measured}_c$ is the image captured by camera $c$
+and ${\bf i}_c({\bf n})$ is an image modeled from the viewpoint of
+camera $c$ according to the density distribution ${\bf n}$. In the
+article we show that ${\bf i}_c({\bf n})$ can be expressed by
 \begin{align}
-  \vect{i}_c=(\rm{NA})^2\mathrm{L}^{\rm TOA} \OpCamera \, \OpInt \,
-  \roundy{ \roundy {\OpSphere_c \, \roundy{\vect{\alpha}^{\rm
-          aerosol}_c + \vect{\alpha}^{\rm air}_c} } \odot
-    \exp^{-(\vect{\tau}^{\rm aerosol}_c + \vect{\tau}^{\rm air}_c)}}.
-  \label{eq:atsensor-matrix}
+  {\bf i}_c= L^{\rm TOA} {\vect{\Pi}}_c \Big\{ e^{-(\vect{\tau}_c^{\rm
+      air} + {\sigma}^{\rm aerosol} {\bf D}_c {\bf n}) }\odot
+  \;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;
+  \nonumber \\
+  [\tilde{\vect{\alpha}}^{\rm air}_c + %\right.
+  \varpi^{\rm aerosol}\sigma^{\rm aerosol} P^{\rm
+    aerosol}_g(\vect{\Phi}^{\rm scatter}_c) \odot{\bf n} ] \Big\} .
+  \label{eq:bigIA}
 \end{align}
-First we show some results relating to differentiation. Let $\vect{a}$
-be a vector of length $q$. Let $\vect{g}(\vect{a})$ be a vector
+
+The gradient of $F$ with respect to ${\bf n}$ is
+\begin{align}
+  \Grad{{\bf n}} F = -2\sum_{c=1}^{N_{\rm views}}
+  \transpose{\left[{\bf J}_{{\bf i}_c}({\bf n})\right]} [{\bf i}^{\rm
+    measured}_c - {\bf i}_c({\bf n})] \;.
+  \label{eq:gradient1}
+\end{align}
+Here the matrix ${\bf J}_{{\bf i}_c}({\bf n})$ is the Jacobian of the
+vector ${\bf i}_c$ with respect to ${\bf n}$. Element $(\Theta,k)$ of
+this matrix differentiates the intensity in pixel ${\bf \Theta}$ (in
+viewpoint $c$) with variation of the density at voxel $k$, i.e.,
+$\partial i_c({\bf \Theta})/\partial{n^{\rm aerosol}(k)}$.
+
+In order to describe the derivation of the Jacobian ${\bf J}_{{\bf i}_c}({\bf n})$, we first show some results relating to differentiation. Let $\vect{n}$
+be a vector of length $q$. Let $\vect{g}(\vect{n})$ be a vector
 function: it outputs a vector of length $r$. Let $\mat{B}$ be a $q
 \times r$ matrix and
 \begin{align}
-  \vect{g}(\vect{a}) = \exp^{-\transpose{\mat{B}}\vect{a}}.
+  \vect{g}(\vect{n}) = \exp^{-\transpose{\mat{B}}\vect{n}}.
   \label{eq:example1}
 \end{align}
 In Eq.~(\ref{eq:example1}), the exponential is element-wise (not
 raising an operator to some power). Then
 \begin{align}
   \label{eq:partial2}
-  \PartDeriv{\vect{g}}{\vect{a}} &= - \mat{B} \,
-  \OpDiag{\exp^{-\transpose{\mat{B}}\vect{a}}}
+  \PartDeriv{\vect{g}}{\vect{n}} &= - \mat{B} \,
+  \OpDiag{\exp^{-\transpose{\mat{B}}\vect{n}}}
 \end{align}
-Using~(\ref{eq:partial2}) and~(\ref{eq:tau})
+Here we denote by $\OpDiag{\vect{v}}$ conversion of vector $\vect{v}$
+into a diagonal matrix, whose main diagonal elements correspond to the
+elements of $\vect{v}$. Using~(\ref{eq:partial2}) we can calculate
 \begin{align}
   \label{eq:partial4}
-  \PartDeriv{\exp^{-(\vect{\tau}^{\rm aerosol}_c + \vect{\tau}^{\rm
-        air}_c)}}{\vect{a}} &= - \transpose{\OpDistance_c} \,
-  \OpDiag{\exp^{-(\vect{\tau}^{\rm aerosol}_c + \vect{\tau}^{\rm
-        air}_c)}}
+  \PartDeriv{\exp^{-(\vect{\tau}_c^{\rm air} + {\sigma}^{\rm aerosol}
+      {\bf D}_c {\bf n})}}
+  {\vect{n}} &= - {\sigma}^{\rm aerosol}\transpose{\OpDistance_c} \,
+  \OpDiag{\exp^{-(\vect{\tau}_c^{\rm air} + {\sigma}^{\rm aerosol}
+      {\bf D}_c {\bf n})}}
 \end{align}
+In~(\ref{eq:partial4}) we assume that $\vect{\tau}_c^{\rm air}$ is
+known and constant.
 
 To calculate the derivative of the Hadamard product
-in~(\ref{eq:atsensor-matrix}) we first note the following: Let
-$\vect{u}(\vect{a})$ be a vector function that outputs a vector of
+in~(\ref{eq:bigIA}) we first note the following: Let
+$\vect{u}(\vect{n})$ be a vector function that outputs a vector of
 length $r$. Let $\mat{B}$ be a $r \times q$ matrix. Then,
 \begin{align}
   \label{eq:partial1}
-  \PartDeriv{\transpose{\mat{B}} (\vect{g} \odot \vect{u})}{\vect{a}}
-  = \left[ \PartDeriv{\vect{g}}{\vect{a}} \OpDiag{\vect{u}} +
-    \PartDeriv{\vect{u}}{\vect{a}} \OpDiag{\vect{g}} \right]
-  \mat{B}.
+  \PartDeriv{\transpose{\mat{B}} (\vect{g} \odot \vect{u})}{\vect{n}}
+  = \left[ \PartDeriv{\vect{g}}{\vect{n}} \OpDiag{\vect{u}} +
+    \PartDeriv{\vect{u}}{\vect{n}} \OpDiag{\vect{g}} \right] \mat{B}.
 \end{align}
-%
-% TODO: Understand if Af \odot Ag = A(f \odot g) and in what terms (on
-% A) this is important as in the docs I use the left case and in the
-% code I use the right case. It seems to me that it is correct but I
-% don't have a proof.
-%
-
-Suppose the air distribution is known. Therefore, $\vect{\alpha}^{\rm
-  air}_c$ and $\vect{\tau}^{\rm air}_c$ are constant vectors. Then,
+Then,
 \begin{align}
   \label{eq:partial3}
-  \PartDeriv{\OpSphere_c \, \vect{\alpha}^{\rm aerosol}_c}{\vect{a}}
-  &= \varpi \, \sigma^{\rm aerosol} \, \OpDiag{P^{\rm
-      aerosol}(\vect{\mu_c})} \, \transpose{\OpSphere_c}
+  \PartDeriv{\, \varpi^{\rm aerosol}\sigma^{\rm aerosol} P^{\rm
+      aerosol}_g(\vect{\Phi}^{\rm scatter}_c) \odot{\bf n}}{\vect{n}}
+  =
+  \;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;
+  \nonumber \\
+  \varpi^{\rm aerosol}\sigma^{\rm aerosol}\OpDiag{P^{\rm
+      aerosol}_g(\vect{\Phi}^{\rm scatter}_c)}
+  \;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;
 \end{align}
 
 Based on~(\ref{eq:partial4},~\ref{eq:partial1})
-and~(\ref{eq:partial3}) we can calculate the gradient
-of~(\ref{eq:atsensor-matrix}):
+and~(\ref{eq:partial3}) we can derive a close-form expression for the
+Jacobian of~(\ref{eq:bigIA}):
 \begin{align}
-  \PartDeriv{\vect{i}_{\rm c}}{\vect{a}} &=
-  \mat{J}_{\hat{\vect{i}}_c}(\vect{a})= \nonumber \\
-  &= (\rm{NA})^2 \mathrm{L}^{\rm TOA} \, \biggl( \varpi \, \sigma^{\rm
-    aerosol} \, \OpDiag{P^{\rm aerosol}(\vect{\mu}_c)} \,
-  \transpose{\OpSphere}_c \OpDiag{\exp^{-(\vect{\tau}^{\rm aerosol}_c
-      + \vect{\tau}^{\rm
-        air}_c)}} \nonumber \\
-  &\quad - \transpose{\OpDistance_c} \, \OpDiag{\exp^{-(\vect{\tau}^{\rm
-        aerosol}_c + \vect{\tau}^{\rm air}_c)}}\OpDiag{\OpSphere_c \,
-    (\vect{\alpha}^{\rm aerosol}_c + \vect{\alpha}^{\rm air}_c)}
-  \biggr)
-  \, \transpose{\OpInt} \, \transpose{\OpCamera} \nonumber \\
-  &= (\rm{NA})^2\mathrm{L}^{\rm TOA} \, \biggl( \sigma^{\rm aerosol}
-  \, \varpi \,
-  \OpDiag{P^{\rm aerosol}(\vect{\mu}_c)} \, \transpose{\OpSphere_c} - \nonumber \\
-  &\quad \transpose{\OpDistance_c} \, \OpDiag{\OpSphere_c \,
-    (\vect{\alpha}^{\rm aerosol}_c + \vect{\alpha}^{\rm air}_c )}
-  \biggr) \OpDiag{\exp^{-(\vect{\tau}^{\rm aerosol}_c +
-      \vect{\tau}^{\rm air}_c)}} \, \transpose{\OpInt} \,
-  \transpose{\OpCamera}
+  {\bf J}_{{\bf i}_c}({\bf n}) &= L^{\rm TOA}({\bf A}-{\bf B}){\bf C}
+  ,
+  \label{eq:gradient2}
+\end{align}
+where
+\begin{align}
+  \label{eq:gradient3}
+  {\bf A} &= \varpi^{\rm aerosol}\sigma^{\rm aerosol}
+  \OpDiag{ P_g^{\rm aerosol}(\vect{\Phi}^{\rm scatter}_c)} \nonumber\\
+  {\bf B} &= {\sigma}^{\rm aerosol}\transpose{{\bf D}_c} \nonumber\\
+  & \;\;\; \OpDiag{[\tilde{\vect{\alpha}}^{\rm air}_c + \varpi^{\rm
+      aerosol}\sigma^{\rm aerosol} P^{\rm aerosol}_g(\vect{\Phi}^{\rm
+      scatter}_c) \odot{\bf n}
+    ]} \nonumber \\
+  {\bf C} &= \OpDiag{\exp[-(\vect{\tau}_c^{\rm air} + {\sigma}^{\rm
+      aerosol} {\bf D}_c {\bf n})]} \transpose{{\vect{\Pi}}_c}
 \end{align}
 
 \end{document}
+
